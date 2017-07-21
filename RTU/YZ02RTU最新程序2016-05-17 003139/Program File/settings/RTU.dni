@@ -1,0 +1,111 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[DebugChecksum]
+Checksum=-1576807387
+[State Storage]
+Control Register=0
+[Sequencer]
+Control Register=0
+NextState0=0
+NextState1=0
+[Action Register]
+Break=0
+State Storage=0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[struct_types]
+Fmt0=ClassLsData-A1	3	0
+Fmt1=ClassLsData-A2	3	0
+Fmt2=ClassLsData-PT	3	0
+Fmt3=ClassLsData-Rs485	3	0
+Fmt4=DataTime-Day	3	0
+Fmt5=DataTime-Hour	3	0
+Fmt6=DataTime-Minute	3	0
+Fmt7=DataTime-Month	3	0
+Fmt8=DataTime-Second	3	0
+Fmt9=DataTime-Year	3	0
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[Breakpoints2]
+Count=0
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[RecentFlashDownload]
+Path=F:\xieF\新建文件夹 (2)\YZ02RTU最新程序2016-05-17 003139\Program File\Debug\Exe\RTU.d43
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=
+[Breakpoints]
+Count=0
+[FET]
+Extended Clock mode=-1
+Secure Password=
+Extended Clock Control Enable=1
+Advanced Extended Clock Control=0
+Emulation mode=0
+Free running=0
+Shutting Down=3
+[Memory Dump]
+Start address=
+Lenghth=
+Address info=0
+Format=0
+Dump registers=0
+PC=0
+SP=0
+SR=0
+all registers=0
+File name=
+[Aliases]
+A0=_ "C:\Documents and Settings\Administrator\桌面\水文测控终端程序更新\Program File\Public.c" ""
+A1=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\AT24C04.c" ""
+A2=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\ATConfig.c" ""
+A3=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\IIC.c" ""
+A4=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\MSP430_hardware.c" ""
+A5=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\Public.c" ""
+A6=_ "C:\Users\zhaoyang\Desktop\水文测控终端程序更新\Program File\ST7920.c" ""
+Count=7
+SuppressDialog=1
