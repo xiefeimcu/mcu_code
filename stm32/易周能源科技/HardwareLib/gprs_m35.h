@@ -16,7 +16,6 @@ typedef enum{
 	M35_OK,
 }state_m35;
 
-
 typedef enum{
 	TCP_SERVER,
 	UDP_SERVER,
