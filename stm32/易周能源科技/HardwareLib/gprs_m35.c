@@ -55,6 +55,15 @@ state_m35 register_net(void){
 }
 
 state_m35 built_link(net_param_t net_inf){
+	if(net_inf.link_type==TCP_CLIENT){
+	
+	}
+	else if(net_inf.link_type==TCP_SERVER){
+	
+	}
+	else if(net_inf.link_type==UDP){
+	
+	}
 
 }
 
@@ -65,6 +74,7 @@ void disconnect(void){
 
 uint8_t hal_receive_uart(uint8_t *data, uint8_t len,uint32_t time_out){
 	HAL_UART_Receive(&huart1,data,len,time_out);
+	//TODO
 	return huart1.RxXferSize;
 }
 

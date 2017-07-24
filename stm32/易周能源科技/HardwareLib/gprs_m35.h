@@ -18,10 +18,8 @@ typedef enum{
 
 typedef enum{
 	TCP_SERVER,
-	UDP_SERVER,
-	
 	TCP_CLIENT,
-	UDP_CLIENT,
+	UDP,
 }link_type;
 
 typedef struct{
