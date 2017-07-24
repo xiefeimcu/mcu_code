@@ -11,6 +11,10 @@
 
 #include "stm32f1xx_hal.h"
 
+const  defualt_tcp_server_domain="yz.dtu.hk";
+const  defualt_tcp_server_ip="218.145.64.217";
+const  defualt_tcp_server_port="22154";
+
 typedef enum{
 	M35_ERR=-1,
 	M35_OK,
@@ -22,11 +26,17 @@ typedef enum{
 	UDP,
 }link_type;
 
+typedef enum{
+	DOMAIN,
+	IP,
+}link_type;
+
 typedef struct{
-	uint8_t terget_ip[17];
-	uint8_t self_ip[17];
-	uint32_t terget_port;
+	uint8_t server_addr[20];
+	uint8_t self_ip[20];
+	uint32_t server_port;
 	uint32_t self_port;
+	uint8_t  add_type;
 }addr_inf_t;
 
 typedef struct{
@@ -44,6 +54,8 @@ typedef struct{
 	uint8_t   (*receive_uart) (uint8_t *data, uint8_t len,uint32_t time_out);
 	void      (*delay)        (uint32_t);
 	void      (*set_transparent_mode) (uint8_t mode);
+	void      (*socket_send)  (uint8_t *data,uint16_t len);
+	void      (*socket_receive_callBack) (uint8_t *data,uint16_t len);
 }operat_t;
 
 typedef struct{
