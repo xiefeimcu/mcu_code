@@ -69,6 +69,14 @@
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 
+void task_start(void);
+void task_ui(void);
+void task_updata(void);
+void task_uart_commd(void);
+void task_lde(void);
+void task_warning(void);
+
+
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -126,12 +134,36 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-
+	
   /* USER CODE BEGIN 3 */
 
   }
   /* USER CODE END 3 */
 
+}
+void task_start(void){
+	
+	
+}
+
+void task_ui(void){
+	
+}
+
+void task_updata(void){
+	
+}
+
+void task_uart_commd(void){
+	
+}
+
+void task_lde(void){
+	
+}
+
+void task_warning(void){
+	
 }
 
 /** System Clock Configuration
@@ -206,6 +238,7 @@ void _Error_Handler(char * file, int line)
   /* User can add his own implementation to report the HAL error return state */
   while(1) 
   {
+	  
   }
   /* USER CODE END Error_Handler_Debug */ 
 }
