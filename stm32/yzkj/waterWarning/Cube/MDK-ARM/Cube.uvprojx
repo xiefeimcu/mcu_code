@@ -560,6 +560,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\HardwareLib\modbus.c</FilePath>
             </File>
+            <File>
+              <FileName>lcd_12864.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\HardwareLib\lcd_12864.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

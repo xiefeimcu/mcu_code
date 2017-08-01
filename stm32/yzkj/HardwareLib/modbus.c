@@ -27,7 +27,6 @@ void set_485_dir(port_485_idx_t port, dir_485_t dir){
 			SET_TX_485_2();
 		else
 		  SET_RX_485_2();
-		
 	}
 }
 

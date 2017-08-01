@@ -1,6 +1,8 @@
+
 #include "lcd_12864.h"
 
-void init           (void){
+
+void init(void){
 	
 }
 
