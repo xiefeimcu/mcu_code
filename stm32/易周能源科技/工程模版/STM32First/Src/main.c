@@ -72,7 +72,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	int i=0;
   /* USER CODE END 1 */
-	
+
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -108,14 +108,6 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-		hm35.operat.test_at_cmd();
-		HAL_Delay(500);
-	
-		hm35.operat.register_net();
-		HAL_Delay(500);
-		
-		hm35.operat.built_link();
-		HAL_Delay(500);
 
   /* USER CODE BEGIN 3 */
 
