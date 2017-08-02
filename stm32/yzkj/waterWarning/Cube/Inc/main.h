@@ -58,6 +58,8 @@
 
 /* USER CODE BEGIN Private defines */
 
+#define VER_MAIN 1u
+#define VER_SUB  0u
 
 
 typedef enum {
