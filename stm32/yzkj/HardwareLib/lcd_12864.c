@@ -1,8 +1,6 @@
-
 #include "lcd_12864.h"
 #include "main.h"
 #include "delay.h"
-
 
  /******************************************************************************* 
 【产品型号】：BJ12864M-1
@@ -64,7 +62,6 @@ void open_bk(void){
 	LCD_OPEN_BK();
 }
 
-
 /*
 * 1 out
 * 0 in
@@ -104,8 +101,7 @@ int8_t check_busy(uint8_t time_out){
 		}
 		
 		LCD_E_ENABLE();
-		__NOP();
-	    __NOP();
+		delay_us(5);
 		LCD_E_DISABLE();		
 	}while(1);
 	
@@ -124,8 +120,7 @@ void send_cmd (uint8_t cmd){
 	LCD_SETUP_DATA(cmd);
 	
 	LCD_E_ENABLE();
-	__NOP();
-	__NOP();
+	delay_us(5);
 	LCD_E_DISABLE();
 }
 
@@ -140,8 +135,7 @@ void send_data(uint8_t data){
 	LCD_SETUP_DATA(data);
 	
 	LCD_E_ENABLE();
-	__NOP();
-	__NOP();
+	delay_us(5);
 	LCD_E_DISABLE();
 }
 
@@ -165,12 +159,10 @@ void init(void){
 	
 }
 
-void lcd_clear_ddram(void)
-{
+void lcd_clear_ddram(void){
   send_cmd(0x01);  //基本指令集
   HAL_Delay(2);        //datasheet >=1.4ms 
 }
-
 
 void lcd_clear_gdram(void)
 {    
@@ -199,15 +191,16 @@ void lcd_set_pos(uint8_t  row, uint8_t  col)
 {  
     uint8_t  pos;  
     if( row == 0)  
-            row = 0x80;  
+        row = 0x80;  
     else if(row == 1)  
-            row = 0x90;  
+        row = 0x90;  
     else if(row == 2)  
-            row = 0x88;  
+        row = 0x88;  
     else if(row == 3)  
-            row = 0x98;     
+        row = 0x98;    
+	
     pos = row + col;  
-    send_cmd(pos);//在写入数据前先指定显示地址 
+    send_cmd(pos);
     delay_us(8);
 } 
 
@@ -241,8 +234,8 @@ void show_string(uint8_t  *s)
 
 void show_strings(uint8_t  row, uint8_t  col,uint8_t  *s)     //col is full char wide 
 {  
-     uint8_t   i = 0;  
-     lcd_set_pos(row, col);    
+    uint8_t   i = 0;  
+    lcd_set_pos(row, col);    
     while(s[i] != '\0')  
     {       
       send_data(s[i++]);        
@@ -307,9 +300,11 @@ void show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
 void show_blanks(uint8_t  row, uint8_t  col, uint8_t  num)
 {
   uint8_t  i ;
+	
   lcd_set_pos(row,col);   
-  for (i = 0; i < num;i++) 
-    send_data(0x20); //写空格
+  for (i = 0; i < num;i++) {
+	send_data(0x20); 
+  }  
 }
 
 
@@ -323,17 +318,19 @@ void show_blanks(uint8_t  row, uint8_t  col, uint8_t  num)
 void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex)
 {     
     char buf[16]; 
-    if(DecOrHex==10)  // dex 
-    sprintf(buf, "%d", num);
-    else
-    sprintf(buf,"%X",num);  //"0x%X"
+	
+    if(DecOrHex==10)  
+		sprintf(buf, "%d", num);
+    else if(DecOrHex == 16)
+		sprintf(buf,"%X",num);  
+	
     show_strings(row,col,(uint8_t  *)(buf));
 }
 
 void lcd_dis_use_char(uint8_t row, uint8_t col,uint8_t index)
 {
-  lcd_set_pos(row, col);   //cgram char 映射输出的DDRAM地址
-  send_data(0x00);	//Must exist!
+  lcd_set_pos(row, col);    //cgram char 映射输出的DDRAM地址
+  send_data(0x00);			//Must exist!
   send_data( (index-1)*2);	// cgram :00,02,04,06  第index个字符存储地址偏移量
 }
 
@@ -342,24 +339,24 @@ void lcd_dis_image(const uint8_t *str)
    uint16_t i,j;
    
    send_cmd(0x36);	//绘图显示开，扩充指令集extended instruction(DL=8BITS,RE=1,G=1)
-   delay_us(370);		  //delay is important!
+   delay_us(370);   //delay is important!
    
-//*******显示上半屏内容  
-   for(i=0;i<32;i++)              //20H
+/*显示上半屏内容*/
+   for(i=0;i<32;i++)        
     { 
-      send_cmd(0x80 + i);   //SET  垂直地址 VERTICAL ADD
-      send_cmd(0x80);       //SET  水平地址 HORIZONTAL ADD
+      send_cmd(0x80 + i);   
+      send_cmd(0x80);       
       for(j=0;j<16;j++)
        {
          send_data(*str++);     
        }
     }
 
-//*******显示下半屏内容
+/*显示下半屏内容*/
    for(i=0;i<32;i++)        
     {
-      send_cmd(0x80 + i); //SET 垂直地址 VERTICAL ADD
-      send_cmd(0x88);     //SET 水平地址 HORIZONTAL ADD
+      send_cmd(0x80 + i); 
+      send_cmd(0x88);     
       for(j=0;j<16;j++)
        {
          send_data(*str++);
@@ -371,26 +368,25 @@ void lcd_dis_image(const uint8_t *str)
 void lcd_test_ban_dot(void)
 {
    uint16_t i,j;
+	
+   /*绘图显示开，扩充指令集extended instruction(DL=8BITS,RE=1,G=1)*/
+   send_cmd(0x36);	
+   delay_us(370);  
    
-   send_cmd(0x36);	//绘图显示开，扩充指令集extended instruction(DL=8BITS,RE=1,G=1)
-   delay_us(370);		//delay is important!
-   
-//*******显示上半屏内容  
-   for(i=0;i<32;i++)              //20H
+   for(i=0;i<32;i++)       
     { 
-      send_cmd(0x80 + i);   //SET  垂直地址 VERTICAL ADD
-      send_cmd(0x80);       //SET  水平地址 HORIZONTAL ADD
+      send_cmd(0x80 + i);  
+      send_cmd(0x80);       
       for(j=0;j<16;j++)
        {
         send_data(0xff);   
        }
     }
 
-//*******显示下半屏内容
    for(i=0;i<32;i++)        
     {
-      send_cmd(0x80 + i); //SET 垂直地址 VERTICAL ADD
-      send_cmd(0x88);     //SET 水平地址 HORIZONTAL ADD
+      send_cmd(0x80 + i); 
+      send_cmd(0x88);     
       for(j=0;j<16;j++)
        {
          send_data(0xff);   
