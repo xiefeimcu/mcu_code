@@ -14,6 +14,9 @@
 #define	READ_KEY_SET()    HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_5)
 #define	READ_KEY_RETURN() HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_4)
 
+#define KEY_DATA (uint8_t)((uint8_t)(GPIOE->IDR >>1) | 0xC0)
+}while(0)
+
 typedef enum {
 	KEY_NULL,
 	KEY_UP,

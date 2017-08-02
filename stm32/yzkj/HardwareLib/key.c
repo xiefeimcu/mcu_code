@@ -1,98 +1,53 @@
 
 #include "key.h"
 
-#define KEY_MAX_COUNT        200
-#define KEY_SCAN_INTERVAL_MS 10
-#define KEY_VALVE_COUNT      4
-
-key_event_t key_event_handle=KEY_NULL;
-
-key_event_t scan_key(void){
+key_event_t key_scan_test(){
+	static uint8_t trg=0;
+	static uint8_t state=0;
 	
-static	uint8_t key_count[6]={0,0,0,0,0,0};
-static  uint8_t last_push=0;
-static  uint8_t loss_flag=1;
-
-	if(loss_flag){
-		if(READ_KEY_UP() == RESET){
-			if(key_count[0] < KEY_MAX_COUNT){
-				key_count[0]++;
-				
-				if(key_count[0]>=KEY_VALVE_COUNT){
-					key_count[0]=0;
-					last_push=1;
-					return KEY_UP;
-				}
-			}
-		}
+	/*记录被按下的bit*/
+	uint8_t pin_data=KEY_DATA ^ 0xFF;
+	
+	/*触发机制,按键发生变化时相应bit为1*/
+	trg= pin_data & (pin_data ^ state);
+	/*记录本次按键数据*/
+	state=pin_data;
+	/*按键发生改变并且当前为按下时,才能认定为按下*/
+	switch(state & trg){
+		case 0x01: return KEY_UP;
 		
-		else if(READ_KEY_DOWN() == RESET){
-			if(key_count[1] < KEY_MAX_COUNT){
-				key_count[1]++;
-				
-				if(key_count[1]>=KEY_VALVE_COUNT){
-					key_count[1]=0;
-					last_push=1;
-					return KEY_DOWN;
-				}
-			}
-		}
+		case 0x02: return KEY_DOWN;
 		
-		else if(READ_KEY_LEFT() == RESET){
-			if(key_count[2] < KEY_MAX_COUNT){
-				key_count[2]++;
-				
-				if(key_count[2]>=KEY_VALVE_COUNT){
-					key_count[2]=0;
-					last_push=1;
-					return KEY_LEFT;
-				}
-			}	
-		}
+		case 0x04: return KEY_LEFT;
 		
-		else if(READ_KEY_RIGHT() == RESET){
-			if(key_count[3] < KEY_MAX_COUNT){
-				key_count[3]++;
-				
-				if(key_count[3]>=KEY_VALVE_COUNT){
-					key_count[3]=0;
-					last_push=1;
-					return KEY_RIGHT;
-				}
-			}
-		}
+		case 0x08: return KEY_RETURN;
 		
-		else if(READ_KEY_SET() == RESET){
-			if(key_count[4] < KEY_MAX_COUNT){
-				key_count[4]++;
-				
-				if(key_count[4]>=KEY_VALVE_COUNT){
-					key_count[4]=0;
-					last_push=1;
-					return KEY_SET;
-				}
-			}
-		}
+		case 0x10: return KEY_SET;
 		
-		else if(READ_KEY_RETURN() == RESET){
-			if(key_count[5] < KEY_MAX_COUNT){
-				key_count[5]++;
-				
-				if(key_count[5]>=KEY_VALVE_COUNT){
-					key_count[5]=0;
-					last_push=1;
-					return KEY_RETURN;
-				}
-			}
-		}	
+		case 0x20: return KEY_RIGHT;	
 		
-		else{
-			if(!last_push){
-				last_push=0;
-				loss_flag=1;
-			}
-		}
+		default :return   KEY_NULL;
 	}
-	
-	memset(key_count,0,sizeof(key_count));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
