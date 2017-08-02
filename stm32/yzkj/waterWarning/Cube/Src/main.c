@@ -200,7 +200,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void log_err(sys_err_t err_code)
+{
+	
+}
 /* USER CODE END 4 */
 
 /**
@@ -210,13 +213,7 @@ void SystemClock_Config(void)
   */
 void _Error_Handler(char * file, int line)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
-	  
-  }
-  /* USER CODE END Error_Handler_Debug */ 
+	
 }
 
 #ifdef USE_FULL_ASSERT

@@ -565,6 +565,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\HardwareLib\lcd_12864.c</FilePath>
             </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\HardwareLib\delay.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
