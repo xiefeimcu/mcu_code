@@ -21,18 +21,23 @@
 /*E*/
 #define LCD_E_ENABLE()  HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3, GPIO_PIN_SET)
 #define LCD_E_DISABLE() HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3, GPIO_PIN_RESET)
-#define LCD_SETUP_DATA(a) do{GPIOD->ODR &= (uint8_t )0x00; GPIOD->ODR |= (uint8_t )a;}while(0);
+
+#define LCD_SETUP_DATA(a) do{\
+	uint16_t temp=0x0000;\
+	temp |= a;\
+	GPIOD->ODR |=temp;\
+}while(0);
 
 #define LCD_BUSY_PIN    GPIO_PIN_7
 #define LCD_BUSY_PORT   GPIOD
 
 typedef struct{
 	void (*init)            (void);
-	void (*show_char)       (uint8_t  row, uint8_t  col,uint8_t  dat);
-	void (*show_string)     (uint8_t  row, uint8_t  col,uint8_t  *s);
+	void (*show_char)       (uint8_t  row, uint8_t  col, uint8_t  dat);
+	void (*show_string)     (uint8_t  row, uint8_t  col, uint8_t  *s);
 	void (*show_gbs)        (uint8_t  row, uint8_t  col, uint8_t  *s);
 	void (*show_num)        (uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex);
-	void (*show_image)  		(const uint8_t *str);
+	void (*show_image)      (const uint8_t *str);
 	void (*open_power)      (void);
 	void (*close_power)     (void);
 	void (*open_back_light) (void);

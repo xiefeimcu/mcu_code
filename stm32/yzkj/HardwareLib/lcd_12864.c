@@ -15,27 +15,11 @@
 【控制器类型】：ST7920
 【简单介绍】：带字库，SPI串并口，3.3V或5V
 
-2015-7-12 程序更新了!
-更新记录：
-1.增加了24*32大字体显示功能；
-2.增加了16*32大字体显示功能；
-3.优化了读LCD忙的代码；
-4.新增了是sprintf的任意位数数字直接显示；
-5.新增了CGRAM的写入，读出操作函数；
-6.优化了绘图GDRAM函数的操作，绘图速度提高；
- 控制器 : ST7920  
- 
-1、ST7920 内部固化了8192 个16×16 点阵的中文字型在CGROM里。
-2、固化有126 个16×8 点阵的西文字符在HCGROM里。
-3、提供4个16×16点阵自造字符的存储空间CGRAM。
-4、提供128×64的点阵绘图共1024个字节的存储空间GDRAM。
-5、提供1个16×15点阵图标的存储空间IRAM（ICON RAM）。
-
 DDRAM地址
 0x80  0x81  0x82  0x83  0x84  0x85  0x86  0x87    //第一行汉字位置
 0x90  0x91  0x92  0x93  0x94  0x95  0x96  0x97    //第二行汉字位置
-0x88  0x89  0x8a  0x8b  0x8c  0x8d  0x8e  0x8f     //第三行汉字位置
-0x98  0x99  0x9a  0x9b  0x9c  0x9d  0x9e  0x9f     //第四行汉字位置
+0x88  0x89  0x8a  0x8b  0x8c  0x8d  0x8e  0x8f    //第三行汉字位置
+0x98  0x99  0x9a  0x9b  0x9c  0x9d  0x9e  0x9f    //第四行汉字位置
 
 *******************************************************************************/  
 void init(void);
@@ -110,20 +94,19 @@ int8_t check_busy(uint8_t time_out){
 	set_lcd_busy_pin_dir(0);
 	
 	do{
-			if(HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_RESET){
-				break;
-			}
-			
-			if(HAL_GetTick() > (time_out + time_last) ){
-				ret= -1;
-				break;
-			}
-			
-			LCD_E_ENABLE();
-			__NOP();
+		if(HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_RESET){
+			break;
+		}
+		
+		if(HAL_GetTick() > (time_out + time_last) ){
+			ret= -1;
+			break;
+		}
+		
+		LCD_E_ENABLE();
+		__NOP();
 	    __NOP();
-			LCD_E_DISABLE();
-			
+		LCD_E_DISABLE();		
 	}while(1);
 	
 	set_lcd_busy_pin_dir(1);
@@ -144,7 +127,6 @@ void send_cmd (uint8_t cmd){
 	__NOP();
 	__NOP();
 	LCD_E_DISABLE();
-	
 }
 
 void send_data(uint8_t data){

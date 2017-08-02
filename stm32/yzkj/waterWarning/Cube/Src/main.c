@@ -55,6 +55,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "lcd_12864.h"
 
 /* USER CODE END Includes */
 
@@ -202,6 +203,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void log_err(sys_err_t err_code)
 {
+	
 	
 }
 /* USER CODE END 4 */
