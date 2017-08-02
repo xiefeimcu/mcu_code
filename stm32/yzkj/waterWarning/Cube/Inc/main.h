@@ -58,6 +58,14 @@
 
 /* USER CODE BEGIN Private defines */
 
+
+
+typedef enum {
+	LCD_BUSY_ERR,
+}sys_err_t;
+
+void log_err(sys_err_t err_code);
+
 /* USER CODE END Private defines */
 
 void _Error_Handler(char *, int);

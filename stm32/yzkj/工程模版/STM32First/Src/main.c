@@ -44,6 +44,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "lcd_tft.h"
+#include "gprs_m35.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -71,7 +72,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	int i=0;
   /* USER CODE END 1 */
-	
+
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -102,39 +103,14 @@ int main(void)
 	HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
 	LCD_Init();
 	LCD_Clear(WHITE);
-	
+	init_m35();
+	hm35.operat.init_param();
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	POINT_COLOR=WHITE;
-	LCD_Clear(WHITE);	
-	
-	for(i=0;i<480/2;i++){
-		LCD_Draw_Circle(480/2,800/2,i);
-		
-		if(i<10)
-			POINT_COLOR=RED;
-		
-		if((i>10)&&(i<40)){
-			POINT_COLOR=GRED;
-		}	
-		
-		if((i>40)&&(i<80)){
-			POINT_COLOR=MAGENTA;
-		}	
-		
-		if((i>80)&&(i<160)){
-			POINT_COLOR=GREEN;
-		}	
-		
-		if((i>160)&&(i<240)){
-			POINT_COLOR=YELLOW;
-		}	
-		
-		HAL_Delay(30);
-	}		
+
   }
   /* USER CODE END 3 */
 

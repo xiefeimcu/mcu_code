@@ -55,6 +55,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "lcd_12864.h"
 
 /* USER CODE END Includes */
 
@@ -142,31 +143,6 @@ int main(void)
 
 }
 
-void task_start(void){
-	
-	
-}
-
-void task_ui(void){
-	
-}
-
-void task_updata(void){
-	
-}
-
-void task_uart_commd(void){
-	
-}
-
-void task_lde(void){
-	
-}
-
-void task_warning(void){
-	
-}
-
 /** System Clock Configuration
 */
 void SystemClock_Config(void)
@@ -225,7 +201,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void log_err(sys_err_t err_code)
+{
+	
+}
 /* USER CODE END 4 */
 
 /**
@@ -235,13 +214,7 @@ void SystemClock_Config(void)
   */
 void _Error_Handler(char * file, int line)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
-	  
-  }
-  /* USER CODE END Error_Handler_Debug */ 
+	
 }
 
 #ifdef USE_FULL_ASSERT
@@ -259,7 +232,6 @@ void assert_failed(uint8_t* file, uint32_t line)
   /* User can add his own implementation to report the file name and line number,
     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
-
 }
 
 #endif

@@ -5,7 +5,11 @@
 
 handle_m35_t hm35;
 
-uint8_t search_string(uint8_t *target,uint8_t *src,uint8_t len){
+uint8_t defualt_tcp_server_domain[]="yz.dtu.hk";
+uint8_t defualt_tcp_server_ip[]="218.145.64.217";
+uint8_t defualt_tcp_server_port[]="22154";
+
+state_m35 search_string(uint8_t *target,uint8_t *src,uint8_t len){
 	uint8_t count=0;
 	uint8_t *p1=target,*p2=src;
 	uint8_t last=0;
@@ -31,6 +35,12 @@ uint8_t search_string(uint8_t *target,uint8_t *src,uint8_t len){
 		return M35_ERR; 
 }
 
+void copy_string(uint8_t *target,uint8_t *src){
+	while(*src){
+		*(target++) = *(src++);
+	}
+}
+
 state_m35 test_at(void){
 	uint8_t rx_buf[6];
 	hm35.operat.send_uart("AT+?\r\n",sizeof("AT+?\r\n"));
@@ -48,13 +58,23 @@ state_m35 init_param(void){
 	}
 	//defualt
 	else{
-		hm35.net_param.addr_inf.add_type=IP;
+		//hm35.net_param.addr_inf.add_type=IP;
+		hm35.net_param.addr_inf.add_type=DOMAIN;
 		hm35.net_param.link_type=TCP_CLIENT;
 		
+		memset(hm35.net_param.addr_inf.server_addr,0,MAX_ADDR_LEN);
+		
 		//init yz tcp server addr and port
-		strcpy(hm35.net_param.addr_inf.server_addr,defualt_tcp_server_ip);
-		strcpy(hm35.net_param.addr_inf.server_port,defualt_tcp_server_port);
+		if(hm35.net_param.addr_inf.add_type==IP){
+			copy_string(hm35.net_param.addr_inf.server_addr,defualt_tcp_server_ip);
+		}
+		else{
+			copy_string(hm35.net_param.addr_inf.server_addr,defualt_tcp_server_domain);
+		}
+		
+		copy_string(hm35.net_param.addr_inf.server_port,defualt_tcp_server_port);
 	}
+	return M35_OK;
 }
 
 state_m35 register_net(void){
@@ -62,14 +82,16 @@ state_m35 register_net(void){
 	hm35.operat.delay(75);
 	hm35.operat.send_uart("AT+CGDCONT=1,\"IP\",\"CMNET\"\r\n",sizeof("AT+CGDCONT=1,\"IP\",\"CMNET\"\r\n"));
 	hm35.operat.delay(300);
+	
+	return M35_OK;
 }
 
-state_m35 built_link(net_param_t net_inf){
-	uint8_t cmd_open_tcp[]={"\"AT+QIOPEN=\"TCP\",\"218.145.64.217\",\"22154\""};
+state_m35 built_link(void){
+	uint8_t cmd_open_tcp[]={"AT+QIOPEN=\"TCP\",\"                    \",\"22154\"\r\n"};
 	
-	if(net_inf.link_type==TCP_CLIENT){
+	if(hm35.net_param.link_type==TCP_SERVER){
 	}
-	else if(net_inf.link_type==TCP_SERVER){
+	else if(hm35.net_param.link_type==TCP_CLIENT){
 		
 	  if(hm35.net_param.addr_inf.add_type==IP){
 			hm35.operat.send_uart("AT+QIDNSIP=0\r\n",sizeof("AT+QIDNSIP=1\r\n"));
@@ -78,19 +100,19 @@ state_m35 built_link(net_param_t net_inf){
 			hm35.operat.send_uart("AT+QIDNSIP=1\r\n",sizeof("AT+QIDNSIP=1\r\n"));
 		}
 		else {
-			assert_failed(0);
+			assert_param(0); 
 		}
 	
-		strcpy(cmd_open_tcp+17,hm35.net_param.addr_inf.server_addr);
-		strcpy(cmd_open_tcp+34,hm35.net_param.addr_inf.server_port);
+		copy_string(cmd_open_tcp+17,hm35.net_param.addr_inf.server_addr);
+		copy_string(cmd_open_tcp+39,hm35.net_param.addr_inf.server_port);
 		hm35.operat.send_uart(cmd_open_tcp,sizeof(cmd_open_tcp));
 		
 	}
-	else if(net_inf.link_type==UDP){
+	else if(hm35.net_param.link_type==UDP){
 		hm35.operat.send_uart("",sizeof(""));
 	}
 	else {
-		assert_failed(0);
+		assert_param(0);
 	}
 	//进入透明传输模式
 	return M35_OK;
@@ -125,7 +147,8 @@ void set_transparent_mode(uint8_t mode){
 } 
 
 void socket_send(uint8_t *data,uint16_t len){
-	const uint8_t ctrl_z[2]={0x2c,0x1a};
+	uint8_t ctrl_z[2]={0x2c,0x1a};
+	
 	hm35.operat.send_uart("AT+QISEND\r\n",sizeof("AT+QISEND\r\n"));
 	hm35.operat.delay(5);
 	hm35.operat.send_uart(data,len);
