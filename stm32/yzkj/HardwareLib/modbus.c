@@ -81,21 +81,15 @@ void  modbus_clear_msg(dev_modbus_handle_t *dev){
 }
 
 int8_t modbus_recver_data(dev_modbus_handle_t *dev,uint8_t *rx_buf , uint8_t len){
-uint16_t crc=0;
-	if(len==MODBUS_MSG_LEN){
-	//TODO 字节顺讯处理	
-		memcpy(dev->modbus_msg,rx_buf,len);
-		
-		//CRC校验
-		crc=(uint16_t)(rx_buf[len-2]) <<8 | rx_buf[len-1];
+uint16_t crc=(uint16_t)(rx_buf[len-2]) <<8 | rx_buf[len-1];
+
 		if(crc == calculate_crc(rx_buf,len - 2)){
 			return 0;
 		}
 		else{
-			modbus_clear_msg(dev);
 			return -1;
 		}
-	}
+		
 	return -2;
 }
 
