@@ -9,13 +9,14 @@
 
 #define MODBUS_MSG_LEN     9
 
-#define SET_TX_485_1() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5, GPIO_PIN_RESET)
-#define SET_RX_485_1() HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5, GPIO_PIN_SET)
+#define SET_TX_485_1() HAL_GPIO_WritePin(GPIOD,GPIO_PIN_7, GPIO_PIN_SET)
+#define SET_RX_485_1() HAL_GPIO_WritePin(GPIOD,GPIO_PIN_7, GPIO_PIN_RESET)
 #define SET_TX_485_2() HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12, GPIO_PIN_RESET)
 #define SET_RX_485_2() HAL_GPIO_WritePin(GPIOB,GPIO_PIN_12, GPIO_PIN_SET)
 
 typedef enum {
 	DEV_NULL,
+	MODBUS_RTU_TEST,
 }dev_inf_t;
 
 
@@ -28,12 +29,15 @@ typedef enum {
 typedef union{
 	 uint8_t modbus_msg[MODBUS_MSG_LEN];
 	 struct {
-		port_485_idx_t  port_idx;//PORT_485_1 or  PORT_485_2
-		uint8_t         dev_add; 
+		uint8_t         port_idx;//PORT_485_1 or  PORT_485_2
+		uint8_t         dev_addr; 
 		uint8_t         fun_code;
-		uint16_t        start_add;
-		uint16_t        data_size;
-		uint16_t        crc_code;	
+		uint8_t         start_addr_l;
+		uint8_t         start_addr_h;
+		uint8_t         read_count_l;
+		uint8_t         read_count_h;
+		uint8_t         crc_h;
+		uint8_t         crc_l;
 	}member;
 }
 dev_modbus_handle_t;
