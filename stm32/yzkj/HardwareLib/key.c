@@ -2,9 +2,8 @@
 #include "key.h"
 
 static uint8_t last_valid_key = 0;
-static uint8_t now_valid_key = 0;
+static uint8_t now_valid_key =  0;
 static uint8_t last_press_key = 0;
-static uint8_t now_press_key = 0;
 
 /*
 *LastReadKey代表上次KeyScan()采样读取的键值
@@ -23,7 +22,10 @@ key_event_t key_scan_test(){
 	
 	/*算法2*/
 	uint8_t now_press_key=KEY_DATA ^ 0xFF;
-	now_valid_key=(now_press_key & last_press_key) | last_valid_key & (now_press_key ^ last_press_key);
+	now_valid_key=(now_press_key & last_press_key) | (last_valid_key & (now_press_key ^ last_press_key));
+	
+	last_press_key=now_press_key;
+	last_valid_key=now_valid_key;
 	
 	/*按键发生改变并且当前为按下时,才能认定为按下*/
 	switch(now_valid_key){
@@ -31,7 +33,7 @@ key_event_t key_scan_test(){
 		now_valid_key|=0x01;
 		return KEY_UP;
 		
-		case 0x02: 
+		case 0x02:  
 		now_valid_key|=0x02;
 		return KEY_DOWN;
 		
@@ -56,8 +58,6 @@ key_event_t key_scan_test(){
 		return  KEY_NULL;
 	}
 	
-	last_press_key=now_press_key;
-	last_valid_key=now_valid_key;
 }
 
 
