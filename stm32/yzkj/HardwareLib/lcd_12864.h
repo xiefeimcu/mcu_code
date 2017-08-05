@@ -28,6 +28,9 @@
 	GPIOD->ODR |=temp;\
 }while(0);
 
+#define LCD_WIDTH 64
+#define LCD_LONG  128
+
 #define LCD_BUSY_PIN    GPIO_PIN_7
 #define LCD_BUSY_PORT   GPIOD
 

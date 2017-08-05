@@ -10,7 +10,7 @@ static	uint16_t crc=0;
 		return;
 	
 	switch(dev_inf){
-	//根据厂家文档填写相应格式
+		//根据不同厂家modbus协议获取配置
 		case MODBUS_RTU_TEST:
 		dev->member.port_idx=PORT_485_1;
 		dev->member.dev_addr=01;
