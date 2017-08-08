@@ -51,6 +51,7 @@
   /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
+#include "stm32f1xx_hal.h"
 
 /* USER CODE END Includes */
 

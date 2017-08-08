@@ -52,11 +52,17 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */     
-
+#include "main.h"
+#include "rtc.h"
+#include "modbus.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
 osThreadId defaultTaskHandle;
+osThreadId sensorSampleHandle;
+osThreadId keyAndUiHandle;
+osThreadId communicationHandle;
+osThreadId ldleHandle;
 
 /* USER CODE BEGIN Variables */
 
@@ -64,6 +70,10 @@ osThreadId defaultTaskHandle;
 
 /* Function prototypes -------------------------------------------------------*/
 void StartDefaultTask(void const * argument);
+void sensor_sample(void const * argument);
+void interaction(void const * argument);
+void process_comm(void const * argument);
+void sys_ldle(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -97,6 +107,22 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
+  /* definition and creation of sensorSample */
+  osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 512);
+  sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
+
+  /* definition and creation of keyAndUi */
+  osThreadDef(keyAndUi, interaction, osPriorityNormal, 0, 128);
+  keyAndUiHandle = osThreadCreate(osThread(keyAndUi), NULL);
+
+  /* definition and creation of communication */
+  osThreadDef(communication, process_comm, osPriorityHigh, 0, 512);
+  communicationHandle = osThreadCreate(osThread(communication), NULL);
+
+  /* definition and creation of ldle */
+  osThreadDef(ldle, sys_ldle, osPriorityIdle, 0, 128);
+  ldleHandle = osThreadCreate(osThread(ldle), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -111,6 +137,7 @@ void StartDefaultTask(void const * argument)
 {
 
   /* USER CODE BEGIN StartDefaultTask */
+
   /* Infinite loop */
   for(;;)
   {
@@ -119,7 +146,87 @@ void StartDefaultTask(void const * argument)
   /* USER CODE END StartDefaultTask */
 }
 
+/* sensor_sample function */
+void sensor_sample(void const * argument)
+{
+  /* USER CODE BEGIN sensor_sample */
+	dev_modbus_handle_t hmodbus;
+	
+	creat_dev_inf(&hmodbus,MODBUS_RTU_TEST);
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(500);
+		modbus_read_request(&hmodbus);
+  }
+  /* USER CODE END sensor_sample */
+}
+
+/* interaction function */
+void interaction(void const * argument)
+{
+  /* USER CODE BEGIN interaction */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END interaction */
+}
+
+/* process_comm function */
+void process_comm(void const * argument)
+{
+  /* USER CODE BEGIN process_comm */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END process_comm */
+}
+
+/* sys_ldle function */
+void sys_ldle(void const * argument)
+{
+  /* USER CODE BEGIN sys_ldle */
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+  /* Infinite loop */
+  for(;;)
+  {	
+		
+		HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
+	  HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
+		
+		printf("sys ldle %x-%x-%x-%x:%x:%x\r\n",date.Year,date.Month,date.Date,time.Hours,time.Minutes,time.Seconds);
+		TOGGLE_LED1();
+    osDelay(1000);
+  }
+  /* USER CODE END sys_ldle */
+}
+
 /* USER CODE BEGIN Application */
+
+void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if(huart->Instance==USART1){
+	
+	}
+	else if(huart->Instance == USART2){
+	
+	}
+	else if(huart->Instance == USART3){
+	
+	}
+	else if(huart->Instance == UART5){
+	
+	}
+	TOGGLE_LED2();
+}
      
 /* USER CODE END Application */
 

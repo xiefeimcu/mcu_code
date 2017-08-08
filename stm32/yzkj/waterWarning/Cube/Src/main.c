@@ -83,7 +83,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	dev_modbus_handle_t hmodbus;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -116,26 +115,20 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
- // MX_FREERTOS_Init();
+  MX_FREERTOS_Init();
 
   /* Start scheduler */
- // osKernelStart();
+  osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
-	creat_dev_inf(&hmodbus,MODBUS_RTU_TEST);
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
-		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);
-		printf("你大爷\r\n");
-		HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 

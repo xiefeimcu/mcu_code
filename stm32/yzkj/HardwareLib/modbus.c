@@ -14,11 +14,11 @@ static	uint16_t crc=0;
 		case MODBUS_RTU_TEST:
 		dev->member.port_idx=PORT_485_2;
 		dev->member.dev_addr=01;
-		dev->member.fun_code=02;
-		dev->member.start_addr_l=0x00;
-		dev->member.start_addr_h=0x0c;
-		dev->member.read_count_l=0x00;
-		dev->member.read_count_h=0x0b;
+		dev->member.fun_code=03;
+		dev->member.start_addr_l=0x02;
+		dev->member.start_addr_h=0x00;
+		dev->member.read_count_l=0x01;
+		dev->member.read_count_h=0x00;
 	
 		crc=calculate_crc(dev->modbus_msg +1 , MODBUS_MSG_LEN - 3);
 
