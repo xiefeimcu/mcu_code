@@ -12,7 +12,7 @@ static	uint16_t crc=0;
 	switch(dev_inf){
 		//根据不同厂家modbus协议获取配置
 		case MODBUS_RTU_TEST:
-		dev->member.port_idx=PORT_485_1;
+		dev->member.port_idx=PORT_485_2;
 		dev->member.dev_addr=01;
 		dev->member.fun_code=02;
 		dev->member.start_addr_l=0x00;
@@ -53,7 +53,7 @@ void send_uart(uint8_t port,uint8_t *data ,uint8_t len){
 		HAL_UART_Transmit(&huart2,data,len,WAIT_FOR_485_TX_MS);
 	}
 	else if(port==PORT_485_2){
-		HAL_UART_Transmit(&huart2,data,len,WAIT_FOR_485_TX_MS);
+		HAL_UART_Transmit(&huart3 ,data,len,WAIT_FOR_485_TX_MS);
 	}
 	
 	set_485_dir(port,DIR_485_RX);

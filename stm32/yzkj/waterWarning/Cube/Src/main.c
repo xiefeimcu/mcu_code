@@ -56,7 +56,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "lcd_12864.h"
-
+#include "modbus.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -83,7 +83,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	dev_modbus_handle_t hmodbus;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -104,31 +104,38 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_CRC_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_RTC_Init();
+  MX_UART4_Init();
 
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init();
+ // MX_FREERTOS_Init();
 
   /* Start scheduler */
-  osKernelStart();
+ // osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
+	creat_dev_inf(&hmodbus,MODBUS_RTU_TEST);
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
+		HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);
+		printf("你大爷\r\n");
+		HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 
@@ -145,11 +152,11 @@ void SystemClock_Config(void)
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -173,7 +180,7 @@ void SystemClock_Config(void)
   }
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -228,8 +235,11 @@ void _Error_Handler(char * file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
+  while(1) {
+		HAL_Delay(1000);
+		printf("hal lib err in file: %s at line:%d",file,line);
+		TOGGLE_LED1();
+		TOGGLE_LED2();
   }
   /* USER CODE END Error_Handler_Debug */ 
 }
