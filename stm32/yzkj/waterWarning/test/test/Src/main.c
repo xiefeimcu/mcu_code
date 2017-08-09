@@ -67,7 +67,7 @@ void SystemClock_Config(void);
 
 int main(void)
 {
-
+	uint8_t test[10];
   /* USER CODE BEGIN 1 */
 	dev_modbus_handle_t modbus;
 
@@ -104,9 +104,11 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-		modbus_read_request(&modbus);
-		HAL_Delay(1000);
-
+	//	modbus_read_request(&modbus);
+		test[9]=HAL_UART_Receive(&huart1,test,10,100);
+		
+		HAL_Delay(500);
+		HAL_UART_Transmit(&huart1,"123",5,10);
   /* USER CODE BEGIN 3 */
 
   }

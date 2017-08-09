@@ -55,6 +55,8 @@
 #include "main.h"
 #include "rtc.h"
 #include "modbus.h"
+#include "usart.h"
+#include "lcd_12864.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -65,6 +67,7 @@ osThreadId communicationHandle;
 osThreadId ldleHandle;
 
 /* USER CODE BEGIN Variables */
+uint8_t uarto_rx_buf[32];
 
 /* USER CODE END Variables */
 
@@ -153,11 +156,13 @@ void sensor_sample(void const * argument)
 	dev_modbus_handle_t hmodbus;
 	
 	creat_dev_inf(&hmodbus,MODBUS_RTU_TEST);
+	HAL_UART_Receive_IT(&huart3, uarto_rx_buf,0);
   /* Infinite loop */
   for(;;)
   {
     osDelay(500);
 		modbus_read_request(&hmodbus);
+		
   }
   /* USER CODE END sensor_sample */
 }
@@ -169,7 +174,11 @@ void interaction(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		
+		LCD_CLOSE_BK();
+    osDelay(500);
+		LCD_OPEN_BK();
+		osDelay(500);
   }
   /* USER CODE END interaction */
 }
@@ -192,6 +201,8 @@ void sys_ldle(void const * argument)
   /* USER CODE BEGIN sys_ldle */
 	RTC_TimeTypeDef time;
 	RTC_DateTypeDef date;
+	
+		HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
   /* Infinite loop */
   for(;;)
   {	
@@ -202,6 +213,7 @@ void sys_ldle(void const * argument)
 		printf("sys ldle %x-%x-%x-%x:%x:%x\r\n",date.Year,date.Month,date.Date,time.Hours,time.Minutes,time.Seconds);
 		TOGGLE_LED1();
     osDelay(1000);
+	
   }
   /* USER CODE END sys_ldle */
 }
@@ -209,23 +221,29 @@ void sys_ldle(void const * argument)
 /* USER CODE BEGIN Application */
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
-
+		TOGGLE_LED2();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if(huart->Instance==USART1){
 	
+	UBaseType_t uxSavedInterruptStatus;
+	
+	portSET_INTERRUPT_MASK_FROM_ISR();
+	
+	if(huart->Instance==USART1){
+			HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
 	}
 	else if(huart->Instance == USART2){
 	
 	}
 	else if(huart->Instance == USART3){
-	
+		HAL_UART_Receive_IT(&huart3, uarto_rx_buf,1);
 	}
 	else if(huart->Instance == UART5){
-	
+
 	}
 	TOGGLE_LED2();
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
      
 /* USER CODE END Application */

@@ -63,7 +63,7 @@
 #define VER_SUB  0u
 
 #define TOGGLE_LED1() HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15);
-#define TOGGLE_LED2() HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
+#define TOGGLE_LED2() HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_14);
 
 typedef enum {
 	LCD_BUSY_ERR,
