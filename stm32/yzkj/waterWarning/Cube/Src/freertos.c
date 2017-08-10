@@ -171,14 +171,24 @@ void sensor_sample(void const * argument)
 void interaction(void const * argument)
 {
   /* USER CODE BEGIN interaction */
+//	GPIO_InitTypeDef GPIO_InitStruct;
+//	
+//	GPIO_InitStruct.Pin = GPIO_PIN_13;
+//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+//  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	lcd_handle.init();
+	
+	
+	
   /* Infinite loop */
   for(;;)
   {
-		
-		LCD_CLOSE_BK();
-    osDelay(500);
-		LCD_OPEN_BK();
-		osDelay(500);
+		portENTER_CRITICAL();				
+
+    portEXIT_CRITICAL();	
+		osDelay(1000);
   }
   /* USER CODE END interaction */
 }

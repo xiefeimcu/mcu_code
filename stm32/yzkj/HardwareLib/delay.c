@@ -6,5 +6,9 @@ void delay_us(uint16_t count){
  {
   __ASM("NOP");
   __ASM("NOP");
+  __ASM("NOP");
+  __ASM("NOP");
+
+
  }
 }

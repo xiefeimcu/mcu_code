@@ -32,7 +32,6 @@ void open_power(void);
 void close_bk(void);
 void open_bk(void);
 
-
 const lcd_12864_opt lcd_handle={
 	.init=						init,
 	.show_char=				show_char,
@@ -72,22 +71,46 @@ void set_lcd_busy_pin_dir(uint8_t dir){
 	GPIO_SetStruct.Pin=LCD_BUSY_PIN;
 	
 	if(dir){
-	 GPIO_SetStruct.Mode=GPIO_MODE_OUTPUT_PP;
+		GPIO_SetStruct.Mode=GPIO_MODE_OUTPUT_PP;
+		GPIO_SetStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		GPIO_SetStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	}
 	else{
 	 GPIO_SetStruct.Mode=GPIO_MODE_INPUT;
+		GPIO_SetStruct.Mode = GPIO_MODE_INPUT;
+		GPIO_SetStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	}
 	
 	HAL_GPIO_Init(LCD_BUSY_PORT,&GPIO_SetStruct);
 }
 	
+
+void sendbyte(uint8_t zdata){
+	uint8_t i;
+	 set_lcd_busy_pin_dir(1);
 	
+	for(i=0;i<8;i++){
+		if((zdata << i ) & 0x80){
+			LCD_RW_HIGH();
+		}
+		else{
+			LCD_RW_LOW();
+		}
+		delay_us(30);
+		
+		LCD_E_LOW();
+		delay_us(70);
+		LCD_E_HIGH();
+	}
+
+}
+
 int8_t check_busy(uint8_t time_out){
 	uint32_t time_last=HAL_GetTick();
 	int8_t ret=0;
 	
-	LCD_RS_CMD();
-	LCD_RW_READ();
+	sendbyte(READ_STATE);
+	
 	set_lcd_busy_pin_dir(0);
 	
 	do{
@@ -100,48 +123,84 @@ int8_t check_busy(uint8_t time_out){
 			break;
 		}
 		
-		LCD_E_ENABLE();
-		delay_us(5);
-		LCD_E_DISABLE();		
 	}while(1);
 	
 	set_lcd_busy_pin_dir(1);
+	
 	return ret;
 }
 
+static uint8_t ReceiveByte(void)
+{
+   uint8_t i,d1,d2;
+	
+	set_lcd_busy_pin_dir(0);
+	
+   for (i = 0; i < 8; i++)
+   {
+    LCD_E_LOW();
+    delay_us(10);
+    LCD_E_HIGH();
+    
+    if (HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_SET) d1++;
+    d1 = d1<<1;
+   }
+   
+   for (i = 0; i < 8; i++)
+   {
+    LCD_E_LOW();
+     delay_us(1);
+    LCD_E_HIGH();   
+    if (HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_SET) d2++;
+    d2 = d2<<1;
+   }
+   
+   set_lcd_busy_pin_dir(1);
+   return (d1&0xf0 + d2&0x0f);
+}
+
+
+
 void send_cmd (uint8_t cmd){
+	
+	LCD_RS_HIGH();
 	
 	if(!check_busy(10)){
 		log_err(LCD_BUSY_ERR);
 	}
 	
-	LCD_RW_WRITE();
-	LCD_RS_CMD();
-	LCD_SETUP_DATA(cmd);
-	
-	LCD_E_ENABLE();
-	delay_us(5);
-	LCD_E_DISABLE();
+	sendbyte(WR_CMD); 
+	sendbyte(cmd & 0xf0);  
+	sendbyte((cmd & 0x0f)<<4); 
+	check_busy(10);
+		
+	LCD_RS_LOW();
 }
 
 void send_data(uint8_t data){
+	LCD_RS_HIGH();
 	
 	if(!check_busy(10)){
 		log_err(LCD_BUSY_ERR);
 	}
 	
-	LCD_RW_WRITE();
-	LCD_RS_DATA();
-	LCD_SETUP_DATA(data);
-	
-	LCD_E_ENABLE();
-	delay_us(5);
-	LCD_E_DISABLE();
+	sendbyte(WR_DATA); 
+	sendbyte(data & 0xf0);  
+	sendbyte((data & 0x0f)<<4); 
+	check_busy(10);
+		
+	LCD_RS_LOW();
 }
 
+
+
+
+
+
 void init(void){
-	LCD_OPEN_PW();
 	LCD_OPEN_BK();
+	LCD_OPEN_PW();
+	
 	//1>芯片上电；
 	//2>延时40ms以上；
 	//3>复位操作：RST出现一个上升沿（RST=1;RST=0;RST=1;）
