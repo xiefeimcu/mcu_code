@@ -82,6 +82,31 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
 
+void bcd_to_char(uint8_t bcdNum,uint8_t *p){
+	p[0]=bcdNum / 16 + '0';
+	p[1]=bcdNum % 16 + '0';	
+}
+
+void get_date_into_string(uint8_t *str){
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+	uint8_t time_code[]="20XX/XX/XX/XX/XX";
+	uint8_t i;
+	
+	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
+  HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
+	
+	bcd_to_char(date.Year,time_code + 2);
+	bcd_to_char(date.Month,time_code + 5);
+	bcd_to_char(date.Date,time_code + 8);
+	bcd_to_char(time.Hours,time_code + 11);
+	bcd_to_char(time.Minutes,time_code + 14);
+	
+	for(i=0;i<sizeof(time_code);i++){
+		str[i]=time_code[i];
+	}
+}
+
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
@@ -171,13 +196,15 @@ void sensor_sample(void const * argument)
 void interaction(void const * argument)
 {
   /* USER CODE BEGIN interaction */
+	uint8_t time_buf[17];
 	lcd_init();
   /* Infinite loop */
   for(;;)
   {
-		lcd_show_strings(0,0,"xiefei1234567890");
+		get_date_into_string(time_buf);
+		lcd_show_strings(0,0,time_buf);
 
-		lcd_show_gbs(2,0,"你好中国");
+		lcd_show_gbs(2,0,"南京易周科技");
 		osDelay(1000);
   }
   /* USER CODE END interaction */
