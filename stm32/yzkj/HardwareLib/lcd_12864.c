@@ -20,74 +20,24 @@ DDRAM地址
 0x98  0x99  0x9a  0x9b  0x9c  0x9d  0x9e  0x9f    //第四行汉字位置
 
 *******************************************************************************/  
-void init(void);
-void show_char(uint8_t  row, uint8_t  col,uint8_t  dat);
-void show_strings(uint8_t  row, uint8_t  col,uint8_t  *s);
-void show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s);
-void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex);
-void lcd_dis_image(const uint8_t *str);
-void lcd_test_ban_dot(void);
-void close_power(void);
-void open_power(void);
-void close_bk(void);
-void open_bk(void);
-
-const lcd_12864_opt lcd_handle={
-	.init=						init,
-	.show_char=				show_char,
-	.show_string=			show_strings,
-	.close_power=			close_power,
-	.close_back_light=close_bk,
-	.open_back_light=	open_bk,
-	.open_power=			open_power,
-	.show_gbs=				show_gbs,
-	.show_image=			lcd_dis_image,
-	.show_num=        show_num,
-};
-
-void close_power(void){
-	LCD_CLOSE_PW();
-}
-	
-void open_power(void){
-	LCD_OPEN_PW();
-}
-
-void close_bk(void){
-	LCD_CLOSE_BK();
-}
-
-void open_bk(void){
-	LCD_OPEN_BK();
-}
 
 /*
 * 1 out
 * 0 in
 */
-void set_lcd_busy_pin_dir(uint8_t dir){
-	GPIO_InitTypeDef GPIO_SetStruct;
+void set_rw_dir(uint32_t mode){
+	GPIO_InitTypeDef GPIO_InitStruct;
 	
-	GPIO_SetStruct.Pin=LCD_BUSY_PIN;
+	GPIO_InitStruct.Mode=mode;
+	GPIO_InitStruct.Pin=LCD_RW_PIN;
 	
-	if(dir){
-		GPIO_SetStruct.Mode=GPIO_MODE_OUTPUT_PP;
-		GPIO_SetStruct.Mode = GPIO_MODE_OUTPUT_PP;
-		GPIO_SetStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	}
-	else{
-	 GPIO_SetStruct.Mode=GPIO_MODE_INPUT;
-		GPIO_SetStruct.Mode = GPIO_MODE_INPUT;
-		GPIO_SetStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	}
+	HAL_GPIO_Init(LCD_RW_PORT,&GPIO_InitStruct);
 	
-	HAL_GPIO_Init(LCD_BUSY_PORT,&GPIO_SetStruct);
 }
-	
 
 void sendbyte(uint8_t zdata){
 	uint8_t i;
-	 set_lcd_busy_pin_dir(1);
+	//set_rw_dir(GPIO_MODE_OUTPUT_PP);
 	
 	for(i=0;i<8;i++){
 		if((zdata << i ) & 0x80){
@@ -96,45 +46,19 @@ void sendbyte(uint8_t zdata){
 		else{
 			LCD_RW_LOW();
 		}
-		delay_us(30);
 		
 		LCD_E_LOW();
-		delay_us(70);
+		delay_us(10);
 		LCD_E_HIGH();
 	}
 
-}
-
-int8_t check_busy(uint8_t time_out){
-	uint32_t time_last=HAL_GetTick();
-	int8_t ret=0;
-	
-	sendbyte(READ_STATE);
-	
-	set_lcd_busy_pin_dir(0);
-	
-	do{
-		if(HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_RESET){
-			break;
-		}
-		
-		if(HAL_GetTick() > (time_out + time_last) ){
-			ret= -1;
-			break;
-		}
-		
-	}while(1);
-	
-	set_lcd_busy_pin_dir(1);
-	
-	return ret;
 }
 
 static uint8_t ReceiveByte(void)
 {
    uint8_t i,d1,d2;
 	
-	set_lcd_busy_pin_dir(0);
+	set_rw_dir(GPIO_MODE_INPUT);
 	
    for (i = 0; i < 8; i++)
    {
@@ -142,37 +66,43 @@ static uint8_t ReceiveByte(void)
     delay_us(10);
     LCD_E_HIGH();
     
-    if (HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_SET) d1++;
+    if (LCD_RW_READ() == GPIO_PIN_SET) d1++;
     d1 = d1<<1;
    }
    
    for (i = 0; i < 8; i++)
    {
     LCD_E_LOW();
-     delay_us(1);
+     delay_us(10);
     LCD_E_HIGH();   
-    if (HAL_GPIO_ReadPin(LCD_BUSY_PORT,LCD_BUSY_PIN)== GPIO_PIN_SET) d2++;
+    if (LCD_RW_READ() == GPIO_PIN_SET) d2++;
     d2 = d2<<1;
    }
    
-   set_lcd_busy_pin_dir(1);
+	 set_rw_dir(GPIO_MODE_OUTPUT_PP);
+	 
    return (d1&0xf0 + d2&0x0f);
 }
 
-
+int8_t check_busy(void){
+	if(ReceiveByte() & 0x80){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
 
 void send_cmd (uint8_t cmd){
 	
 	LCD_RS_HIGH();
 	
-	if(!check_busy(10)){
-		log_err(LCD_BUSY_ERR);
-	}
+	while(check_busy());
 	
 	sendbyte(WR_CMD); 
 	sendbyte(cmd & 0xf0);  
-	sendbyte((cmd & 0x0f)<<4); 
-	check_busy(10);
+	sendbyte((cmd << 4) & 0xf0); 
+	while(check_busy());
 		
 	LCD_RS_LOW();
 }
@@ -180,42 +110,44 @@ void send_cmd (uint8_t cmd){
 void send_data(uint8_t data){
 	LCD_RS_HIGH();
 	
-	if(!check_busy(10)){
-		log_err(LCD_BUSY_ERR);
-	}
+	while(check_busy());	
 	
 	sendbyte(WR_DATA); 
 	sendbyte(data & 0xf0);  
 	sendbyte((data & 0x0f)<<4); 
-	check_busy(10);
+	while(check_busy());
 		
 	LCD_RS_LOW();
 }
 
-
-
-
-
-
-void init(void){
-	LCD_OPEN_BK();
+void lcd_init(void){
 	LCD_OPEN_PW();
+	//LCD_OPEN_BK();
 	
 	//1>芯片上电；
 	//2>延时40ms以上；
 	//3>复位操作：RST出现一个上升沿（RST=1;RST=0;RST=1;）
-    HAL_Delay(50);  // this delay is necessary !
-    send_cmd(0x30);//功能设置，一次送8位数据，基本指令集
-    send_cmd(0x0C);//0000,1100  显示状态开关：整体显示ON，光标显示OFF，光标显示反白OFF
-    //send_cmd(0x0f);//整体显示 ON C=1； 游标ON(方块闪烁) B=1； 游标位置(游标下划线)ON
-    //如果有按键输入数字，则开光标，左右移动：send_cmd(0x10); send_cmd(0x10);  
-    send_cmd(0x01);//0000,0001 清除显示DDRAM
-    send_cmd(0x02);//0000,0010 DDRAM地址归位
-    //send_cmd(0x80);//1000,0000 设定DDRAM 7位地址000，0000到地址计数器AC
-    //send_cmd(0x04);//点设定，显示字符/光标从左到右移位，DDRAM地址加1
-    send_cmd(0x06); //点设定，画面不移动,游标右移，DDRAM位地址加1
-    HAL_Delay(10);  // this delay is necessary !
+	HAL_Delay(50);
 	
+	LCD_RST_HIGH();
+	HAL_Delay(50);
+	LCD_RST_LOW();
+	HAL_Delay(50);
+	LCD_RST_HIGH();
+		
+	send_cmd(0x30);
+	HAL_Delay(50);  
+	
+	send_cmd(0x0C);
+	HAL_Delay(50); 
+	
+	send_cmd(0x01);
+	HAL_Delay(50); 
+		
+	send_cmd(0x06); 
+	HAL_Delay(50); 
+		
+
 }
 
 void lcd_clear_ddram(void){
@@ -291,7 +223,7 @@ void show_string(uint8_t  *s)
     }  
 }  
 
-void show_strings(uint8_t  row, uint8_t  col,uint8_t  *s)     //col is full char wide 
+void lcd_show_strings(uint8_t  row, uint8_t  col,uint8_t  *s)     //col is full char wide 
 {  
     uint8_t   i = 0;  
     lcd_set_pos(row, col);    
@@ -333,7 +265,7 @@ void show_gb(uint8_t  row, uint8_t  col, uint8_t  *HZ)
 * 输出 : 无 
 * 说明 : 自动换行:lcm默认换行顺序是乱的，0--2--1--3--0
 ***********************************************************************/  
-void show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
+void lcd_show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
 {
   uint8_t  i = 0;
   lcd_set_pos(row, col);
@@ -383,7 +315,7 @@ void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex)
     else if(DecOrHex == 16)
 		sprintf(buf,"%X",num);  
 	
-    show_strings(row,col,(uint8_t  *)(buf));
+    lcd_show_strings(row,col,(uint8_t  *)(buf));
 }
 
 void lcd_dis_use_char(uint8_t row, uint8_t col,uint8_t index)
@@ -438,7 +370,7 @@ void lcd_test_ban_dot(void)
       send_cmd(0x80);       
       for(j=0;j<16;j++)
        {
-        send_data(0xff);   
+        send_data(0xaa);   
        }
     }
 
@@ -448,7 +380,7 @@ void lcd_test_ban_dot(void)
       send_cmd(0x88);     
       for(j=0;j<16;j++)
        {
-         send_data(0xff);   
+         send_data(0xaa);   
        }
     }
 }

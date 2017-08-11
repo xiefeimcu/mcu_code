@@ -171,23 +171,13 @@ void sensor_sample(void const * argument)
 void interaction(void const * argument)
 {
   /* USER CODE BEGIN interaction */
-//	GPIO_InitTypeDef GPIO_InitStruct;
-//	
-//	GPIO_InitStruct.Pin = GPIO_PIN_13;
-//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	lcd_handle.init();
-	
-	
-	
+	lcd_init();
   /* Infinite loop */
   for(;;)
   {
-		portENTER_CRITICAL();				
+		lcd_show_strings(0,0,"xiefei1234567890");
 
-    portEXIT_CRITICAL();	
+		lcd_show_gbs(2,0,"ÄãºÃÖÐ¹ú");
 		osDelay(1000);
   }
   /* USER CODE END interaction */
@@ -212,18 +202,17 @@ void sys_ldle(void const * argument)
 	RTC_TimeTypeDef time;
 	RTC_DateTypeDef date;
 	
-		HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
+	HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
   /* Infinite loop */
   for(;;)
   {	
-		
 		HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
-	  HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
-		
-		printf("sys ldle %x-%x-%x-%x:%x:%x\r\n",date.Year,date.Month,date.Date,time.Hours,time.Minutes,time.Seconds);
+		HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
+			
+		printf("sleep%x-%x-%x-%x:%x:%x\r\n",date.Year,date.Month,date.Date,time.Hours,time.Minutes,time.Seconds);
+		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		TOGGLE_LED1();
-    osDelay(1000);
-	
+		osDelay(1000);
   }
   /* USER CODE END sys_ldle */
 }

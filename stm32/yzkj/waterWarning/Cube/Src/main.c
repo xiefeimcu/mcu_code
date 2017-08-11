@@ -83,12 +83,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t  code[]={
-"  白日依山尽，  "			//0x80
-"  欲穷千里目，  "			//0x90
-"  黄河入海流。  "			//0x88
-"  更上一层楼。  "			//0x98
-	};
 	
 	
   /* USER CODE END 1 */
@@ -118,36 +112,25 @@ int main(void)
   MX_RTC_Init();
   MX_UART4_Init();
 
-//  /* USER CODE BEGIN 2 */
+  /* USER CODE BEGIN 2 */
 
 
-//  /* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-//  /* Call init function for freertos objects (in freertos.c) */
- // MX_FREERTOS_Init();
+  /* Call init function for freertos objects (in freertos.c) */
+  MX_FREERTOS_Init();
 
-//  /* Start scheduler */
- // osKernelStart();
+  /* Start scheduler */
+  osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	lcd_handle.init();
-	HAL_Delay(500);
-	lcd_clear_gdram();
-	lcd_handle.show_string(0,0, "xiefei");
-	HAL_Delay(800);
-	//lcd_clear_ddram();
-
-
   while (1)
   {
   /* USER CODE END WHILE */
-//	lcd_handle.show_gbs(0,0,code);
-		//lcd_handle.show_gbs(0,0,code);
-		HAL_Delay(500);
-		TOGGLE_LED1();
+
   /* USER CODE BEGIN 3 */
 
   }
