@@ -2,9 +2,26 @@
 #include "gui.h"
 #include "string.h"
 
-menu_t  menu[5*2];
+uint8_t gram[4][8];
 
-uint8_t gram[LCD_LONG / 8][LCD_WIDTH / 8];
+void gui_memset_gram(uint8_t value){
+  uint8_t   i = 0 ,j =0;  		
+	for(i=0;i<4;i++){
+		for(j=0;j<8;j++){
+			//gram[i][j]=value;
+		}
+	}
+}
+
+void gui_show_gram(void)   
+{  
+   uint8_t   i = 0 ,j =0;  
+	for(i=0;i<4;i++){
+		for(j=0;j<8;j++){
+			show_char(i, j,'B');
+		}
+	}
+} 
 
 void clear_gram(void){
 	memset(gram,0,sizeof(gram));
@@ -76,29 +93,6 @@ void ui_drew_rectangle(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,fill_type fil
 		ui_drew_line(x2,y2,x1,y2,FILL_TYPE_DEFUALT);
 		ui_drew_line(x2,y2,x2,y1,FILL_TYPE_DEFUALT);
 	}
-	
-}
-
-void ui_creat_menu(void){
-//	const	char	menu_string[5*3][LCD_LONG / 8 +2]={
-//		"基本设置",/*0*/
-//		"通信设置",
-//		"测控设置",
-//		"出厂设置",
-//		
-//		"更改日期",/*4*/
-//		"背光时间",
-//		"休眠时间",
-//		
-//		"波特率RS485_1",/*7*/
-//		"波特率RS485_2",
-//		"波特率RS232_1",
-//		"波特率RS232_2",
-//	};
-	
-//	strcpy((char *)menu[0].string,"基本设置");
-//	menu[0].last=NULL;
-//	menu[0].next=menu[4]
 	
 }
 

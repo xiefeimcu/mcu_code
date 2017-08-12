@@ -57,6 +57,9 @@
 #include "modbus.h"
 #include "usart.h"
 #include "lcd_12864.h"
+#include "key.h"
+#include "gui.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -140,7 +143,7 @@ void MX_FREERTOS_Init(void) {
   sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
 
   /* definition and creation of keyAndUi */
-  osThreadDef(keyAndUi, interaction, osPriorityNormal, 0, 128);
+  osThreadDef(keyAndUi, interaction, osPriorityBelowNormal, 0, 512);
   keyAndUiHandle = osThreadCreate(osThread(keyAndUi), NULL);
 
   /* definition and creation of communication */
@@ -197,16 +200,63 @@ void interaction(void const * argument)
 {
   /* USER CODE BEGIN interaction */
 	uint8_t time_buf[17];
-	lcd_init();
-  /* Infinite loop */
-  for(;;)
-  {
-		get_date_into_string(time_buf);
-		lcd_show_strings(0,0,time_buf);
+	static	key_event_t key=KEY_NULL;
 
-		lcd_show_gbs(2,0,"南京易周科技");
-		osDelay(1000);
-  }
+	lcd_init();
+
+	lcd_show_strings(1,0,(uint8_t*)"水质检测预警");
+
+	/* Infinite loop */
+	for(;;)
+	{
+			portENTER_CRITICAL();
+		
+			get_date_into_string(time_buf);
+	    lcd_show_strings(0,0,time_buf);
+		
+			key=key_scan_test();
+
+			if(key!=KEY_NULL){
+			switch(key){
+				
+				case KEY_RIGHT:
+				lcd_show_strings(3,0,(uint8_t *)"KEY_RIGHT ");
+
+				break;
+								
+				case KEY_LEFT:
+				lcd_show_strings(3,0,(uint8_t *)"KEY_LEFT  ");
+
+				break;
+				
+				case KEY_DOWN:
+				lcd_show_strings(3,0,(uint8_t *)"KEY_DOWN  ");
+
+				break;
+								
+				case KEY_RETURN:
+				lcd_show_strings(3,0,(uint8_t *)"KEY_RETURN");
+
+				break;
+				
+				case KEY_SET:  
+				lcd_show_strings(3,0,(uint8_t *)"KEY_SET   ");
+
+				break;
+								
+				case KEY_UP:
+				lcd_show_strings(3,0,(uint8_t *)"KEY_UP    ");
+
+				break;
+				
+				default :
+					break;
+			
+			}
+		}	
+	portEXIT_CRITICAL();
+	osDelay(50);
+}
   /* USER CODE END interaction */
 }
 
@@ -214,11 +264,11 @@ void interaction(void const * argument)
 void process_comm(void const * argument)
 {
   /* USER CODE BEGIN process_comm */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+/* Infinite loop */
+for(;;)
+{
+	  osDelay(500);
+}
   /* USER CODE END process_comm */
 }
 
@@ -236,8 +286,8 @@ void sys_ldle(void const * argument)
 		HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
 		HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
 			
-		printf("sleep%x-%x-%x-%x:%x:%x\r\n",date.Year,date.Month,date.Date,time.Hours,time.Minutes,time.Seconds);
-		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		//printf("南京易周科技");
+		//HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		TOGGLE_LED1();
 		osDelay(1000);
   }

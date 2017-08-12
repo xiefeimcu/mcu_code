@@ -14,7 +14,7 @@
 #define	READ_KEY_SET()    HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_5)
 #define	READ_KEY_RETURN() HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_4)
 
-#define KEY_DATA (uint8_t)((uint8_t)(GPIOE->IDR >>1) | 0xC0)
+#define KEY_DATA (uint32_t) (GPIOE->IDR)
 
 typedef enum {
 	KEY_NULL,
@@ -29,6 +29,7 @@ typedef enum {
 extern key_event_t key_event_handle;
 
 key_event_t scan_key(void);
+key_event_t key_scan_test(void );
 
 #endif
 

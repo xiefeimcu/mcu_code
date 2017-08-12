@@ -57,6 +57,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd_12864.h"
 #include "modbus.h"
+#include "gui.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -113,7 +114,6 @@ int main(void)
   MX_UART4_Init();
 
   /* USER CODE BEGIN 2 */
-
 
   /* USER CODE END 2 */
 

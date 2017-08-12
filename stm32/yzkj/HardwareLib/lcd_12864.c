@@ -30,7 +30,6 @@ void set_rw_dir(uint32_t mode){
 	
 	GPIO_InitStruct.Mode=mode;
 	GPIO_InitStruct.Pin=LCD_RW_PIN;
-	
 	HAL_GPIO_Init(LCD_RW_PORT,&GPIO_InitStruct);
 	
 }
@@ -48,7 +47,7 @@ void sendbyte(uint8_t zdata){
 		}
 		
 		LCD_E_LOW();
-		delay_us(10);
+		delay_us(15);
 		LCD_E_HIGH();
 	}
 
@@ -56,41 +55,58 @@ void sendbyte(uint8_t zdata){
 
 static uint8_t ReceiveByte(void)
 {
-   uint8_t i,d1,d2;
+   uint8_t i,d1=0,d2=0;
 	
 	set_rw_dir(GPIO_MODE_INPUT);
 	
    for (i = 0; i < 8; i++)
    {
     LCD_E_LOW();
-    delay_us(10);
+    delay_us(15);
     LCD_E_HIGH();
-    
-    if (LCD_RW_READ() == GPIO_PIN_SET) d1++;
+    delay_us(15);
+		 
+    if (LCD_RW_READ() == GPIO_PIN_SET) 
+			d1++;
+		
     d1 = d1<<1;
    }
    
    for (i = 0; i < 8; i++)
    {
     LCD_E_LOW();
-     delay_us(10);
-    LCD_E_HIGH();   
-    if (LCD_RW_READ() == GPIO_PIN_SET) d2++;
+    delay_us(15);
+    LCD_E_HIGH();  
+    delay_us(15);		 
+		 
+    if (LCD_RW_READ() == GPIO_PIN_SET)
+			d2++;
+		
     d2 = d2<<1;
    }
    
 	 set_rw_dir(GPIO_MODE_OUTPUT_PP);
 	 
-   return (d1&0xf0 + d2&0x0f);
+   return ((d1 & 0xf0) + (d2 & 0x0f));
 }
 
 int8_t check_busy(void){
-	if(ReceiveByte() & 0x80){
-		return 1;
-	}
-	else{
-		return 0;
-	}
+//	uint8_t data=0;
+//	
+//	sendbyte(READ_STATE);
+//	
+//	delay_us(10);
+//	data=ReceiveByte();
+//	
+//	if(data & 0x80){
+//		return 0;
+//	}
+//	
+//	else{
+//		return 0;
+//	}
+	delay_us(50);
+	return 0;
 }
 
 void send_cmd (uint8_t cmd){
@@ -223,7 +239,7 @@ void show_string(uint8_t  *s)
     }  
 }  
 
-void lcd_show_strings(uint8_t  row, uint8_t  col,uint8_t  *s)     //col is full char wide 
+void lcd_show_strings(uint8_t  row, uint8_t  col, uint8_t  *s)     //col is full char wide 
 {  
     uint8_t   i = 0;  
     lcd_set_pos(row, col);    
@@ -234,7 +250,6 @@ void lcd_show_strings(uint8_t  row, uint8_t  col,uint8_t  *s)     //col is full 
       {          
         lcd_set_pos(++row,0);     //display start at next row.
       }
-   
     }  
 }  
 

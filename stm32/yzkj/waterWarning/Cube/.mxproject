@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=F:/xieF/code/stm32/yzkj/waterWarning/Cube/Inc
+HeaderPath=E:/A/xf/Code/GitHub/mcu_code/stm32/yzkj/waterWarning/Cube/Inc
 HeaderFiles=gpio.h;crc.h;FreeRTOSConfig.h;rtc.h;usart.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=F:/xieF/code/stm32/yzkj/waterWarning/Cube/Src
+SourcePath=E:/A/xf/Code/GitHub/mcu_code/stm32/yzkj/waterWarning/Cube/Src
 SourceFiles=gpio.h;crc.h;FreeRTOSConfig.h;rtc.h;usart.h;stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;gpio.c;crc.c;freertos.c;rtc.c;usart.c;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;stm32f1xx_hal_timebase_TIM.c;
 
 [PreviousLibFiles]
