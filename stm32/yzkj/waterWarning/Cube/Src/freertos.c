@@ -93,7 +93,7 @@ void bcd_to_char(uint8_t bcdNum,uint8_t *p){
 void get_date_into_string(uint8_t *str){
 	RTC_TimeTypeDef time;
 	RTC_DateTypeDef date;
-	uint8_t time_code[]="20XX/XX/XX/XX/XX";
+	uint8_t time_code[]="20XX/XX/XX/XX:XX";
 	uint8_t i;
 	
 	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
@@ -203,59 +203,14 @@ void interaction(void const * argument)
 	static	key_event_t key=KEY_NULL;
 
 	lcd_init();
-
-	lcd_show_strings(1,0,(uint8_t*)"水质检测预警");
+	gui_main_windows();
+	//lcd_show_strings(1,0,(uint8_t*)"水质检测预警");
 
 	/* Infinite loop */
 	for(;;)
 	{
-			portENTER_CRITICAL();
-		
-			get_date_into_string(time_buf);
-	    lcd_show_strings(0,0,time_buf);
-		
-			key=key_scan_test();
 
-			if(key!=KEY_NULL){
-			switch(key){
-				
-				case KEY_RIGHT:
-				lcd_show_strings(3,0,(uint8_t *)"KEY_RIGHT ");
-
-				break;
-								
-				case KEY_LEFT:
-				lcd_show_strings(3,0,(uint8_t *)"KEY_LEFT  ");
-
-				break;
-				
-				case KEY_DOWN:
-				lcd_show_strings(3,0,(uint8_t *)"KEY_DOWN  ");
-
-				break;
-								
-				case KEY_RETURN:
-				lcd_show_strings(3,0,(uint8_t *)"KEY_RETURN");
-
-				break;
-				
-				case KEY_SET:  
-				lcd_show_strings(3,0,(uint8_t *)"KEY_SET   ");
-
-				break;
-								
-				case KEY_UP:
-				lcd_show_strings(3,0,(uint8_t *)"KEY_UP    ");
-
-				break;
-				
-				default :
-					break;
-			
-			}
-		}	
-	portEXIT_CRITICAL();
-	osDelay(50);
+		osDelay(50);
 }
   /* USER CODE END interaction */
 }
@@ -276,20 +231,12 @@ for(;;)
 void sys_ldle(void const * argument)
 {
   /* USER CODE BEGIN sys_ldle */
-	RTC_TimeTypeDef time;
-	RTC_DateTypeDef date;
-	
-	HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
   /* Infinite loop */
   for(;;)
   {	
-		HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
-		HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
-			
-		//printf("南京易周科技");
-		//HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-		TOGGLE_LED1();
-		osDelay(1000);
+
+	 HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		osDelay(1);
   }
   /* USER CODE END sys_ldle */
 }

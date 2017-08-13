@@ -22,6 +22,7 @@ typedef struct {
   struct	menu_t   *last;
 	register_t       *regis;
 }menu_t;
+void gui_main_windows(void);
 
 void gui_memset_gram(uint8_t value);
 void gui_show_gram(void);

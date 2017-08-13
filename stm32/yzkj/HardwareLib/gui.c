@@ -4,6 +4,12 @@
 
 uint8_t gram[4][8];
 
+
+void gui_main_windows(void){
+	
+	lcd_show_strings(1,0,(uint8_t*) " 水质检测预警 ");
+}
+
 void gui_memset_gram(uint8_t value){
   uint8_t   i = 0 ,j =0;  		
 	for(i=0;i<4;i++){
