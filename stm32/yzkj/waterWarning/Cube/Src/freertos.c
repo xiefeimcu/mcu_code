@@ -85,31 +85,6 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
 
-void bcd_to_char(uint8_t bcdNum,uint8_t *p){
-	p[0]=bcdNum / 16 + '0';
-	p[1]=bcdNum % 16 + '0';	
-}
-
-void get_date_into_string(uint8_t *str){
-	RTC_TimeTypeDef time;
-	RTC_DateTypeDef date;
-	uint8_t time_code[]="20XX/XX/XX/XX:XX";
-	uint8_t i;
-	
-	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
-	HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
-	
-	bcd_to_char(date.Year,time_code + 2);
-	bcd_to_char(date.Month,time_code + 5);
-	bcd_to_char(date.Date,time_code + 8);
-	bcd_to_char(time.Hours,time_code + 11);
-	bcd_to_char(time.Minutes,time_code + 14);
-	
-	for(i=0;i<sizeof(time_code);i++){
-		str[i]=time_code[i];
-	}
-}
-
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
@@ -178,41 +153,33 @@ void StartDefaultTask(void const * argument)
 }
 
 /* sensor_sample function */
-void sensor_sample(void const * argument)
-{
-  /* USER CODE BEGIN sensor_sample */
+void sensor_sample(void const * argument) {
+	/* USER CODE BEGIN sensor_sample */
 	dev_modbus_handle_t hmodbus;
-	
-	creat_dev_inf(&hmodbus,MODBUS_RTU_TEST);
-	HAL_UART_Receive_IT(&huart3, uarto_rx_buf,0);
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(500);
+
+	creat_dev_inf(&hmodbus, MODBUS_RTU_TEST);
+	HAL_UART_Receive_IT(&huart3, uarto_rx_buf, 0);
+	/* Infinite loop */
+	for (;;) {
+		osDelay(500);
 		modbus_read_request(&hmodbus);
-		
-  }
-  /* USER CODE END sensor_sample */
+	}
+	/* USER CODE END sensor_sample */
 }
 
 /* interaction function */
-void interaction(void const * argument)
-{
-  /* USER CODE BEGIN interaction */
-	uint8_t time_buf[17];
-	static	key_event_t key=KEY_NULL;
+void interaction(void const * argument) {
+	/* USER CODE BEGIN interaction */
 
 	lcd_init();
-	gui_main_windows();
-	//lcd_show_strings(1,0,(uint8_t*)"Ë®ÖÊ¼ì²âÔ¤¾¯");
-
 	/* Infinite loop */
-	for(;;)
-	{
-
-		osDelay(50);
-}
-  /* USER CODE END interaction */
+	for (;;) {
+		HAL_UART_Transmit(&huart1 ,"ÄãºÃ",5,2);
+		gui_main_windows();
+		TOGGLE_LED2();
+		osDelay(1000);
+	}
+	/* USER CODE END interaction */
 }
 
 /* process_comm function */
@@ -222,7 +189,8 @@ void process_comm(void const * argument)
 /* Infinite loop */
 for(;;)
 {
-	  osDelay(500);
+	TOGGLE_LED1();
+    osDelay(500);
 }
   /* USER CODE END process_comm */
 }
@@ -236,7 +204,7 @@ void sys_ldle(void const * argument)
   {	
 
 	 HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-		osDelay(1);
+	osDelay(1);
   }
   /* USER CODE END sys_ldle */
 }
@@ -247,25 +215,23 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
 		TOGGLE_LED2();
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+
 	UBaseType_t uxSavedInterruptStatus;
-	
+
 	portSET_INTERRUPT_MASK_FROM_ISR();
-	
-	if(huart->Instance==USART1){
-			HAL_UART_Receive_IT(&huart1, uarto_rx_buf,5);
-	}
-	else if(huart->Instance == USART2){
-	
-	}
-	else if(huart->Instance == USART3){
-		HAL_UART_Receive_IT(&huart3, uarto_rx_buf,1);
-	}
-	else if(huart->Instance == UART5){
+
+	if (huart->Instance == USART1) {
+		HAL_UART_Receive_IT(&huart1, uarto_rx_buf, 5);
+	} else if (huart->Instance == USART2) {
+
+	} else if (huart->Instance == USART3) {
+		HAL_UART_Receive_IT(&huart3, uarto_rx_buf, 1);
+	} else if (huart->Instance == UART5) {
 
 	}
-	TOGGLE_LED2();
+	TOGGLE_LED2()
+	;
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
      

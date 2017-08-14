@@ -1,13 +1,55 @@
 
 #include "gui.h"
 #include "string.h"
+#include "stm32f1xx_hal.h"
+#include "rtc.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "cmsis_os.h"
+#include "usart.h"
 
 uint8_t gram[4][8];
 
+void shell_show_main_menu(){
+	printf("xiefei\r\n");
+	osDelay(2);
+}
+
+void bcd_to_char(uint8_t bcdNum,uint8_t *p){
+	p[0]=bcdNum / 16 + '0';
+	p[1]=bcdNum % 16 + '0';
+}
+
+void get_date_into_string(uint8_t *str){
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+	uint8_t time_code[]="20XX/XX/XX/XX:XX";
+	uint8_t i;
+
+	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
+	HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
+
+	bcd_to_char(date.Year,time_code + 2);
+	bcd_to_char(date.Month,time_code + 5);
+	bcd_to_char(date.Date,time_code + 8);
+	bcd_to_char(time.Hours,time_code + 11);
+	bcd_to_char(time.Minutes,time_code + 14);
+
+	for(i=0;i<sizeof(time_code);i++){
+		str[i]=time_code[i];
+	}
+}
 
 void gui_main_windows(void){
-	
-	lcd_show_strings(1,0,(uint8_t*) "ENV1.0");
+	uint8_t time[17];
+	get_date_into_string(time);
+
+	lcd_show_strings(0,0,time);
+
+	lcd_show_strings(1,0,(uint8_t *)"  ϵͳһ������");
+	lcd_show_strings(2,0,(uint8_t *)"  ϵͳ��������");
+	lcd_show_strings(3,0,(uint8_t *)"״̬");
+	lcd_show_strings(3,6,(uint8_t *)"����");
 }
 
 void gui_memset_gram(uint8_t value){
@@ -56,19 +98,19 @@ void ui_drew_line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,fill_type fill_typ
 	int xerr=0,yerr=0,delta_x,delta_y,distance; 
 	int incx,incy,uRow,uCol; 
 	
-	delta_x=x2-x1; //璁＄畻鍧愭爣澧為噺
+	delta_x=x2-x1;
 	delta_y=y2-y1; 
 	uRow=x1; 
 	uCol=y1; 
-	if(delta_x>0)incx=1; //璁剧疆鍗曟鏂瑰悜
-	else if(delta_x==0)incx=0;//鍨傜洿绾�
+	if(delta_x>0)incx=1;
+	else if(delta_x==0)incx=0;
 	else {incx=-1;delta_x=-delta_x;} 
 	if(delta_y>0)incy=1; 
-	else if(delta_y==0)incy=0;//姘村钩绾�
+	else if(delta_y==0)incy=0;
 	else{incy=-1;delta_y=-delta_y;} 
-	if( delta_x>delta_y)distance=delta_x; //閫夊彇鍩烘湰澧為噺鍧愭爣杞�
+	if( delta_x>delta_y)distance=delta_x;
 	else distance=delta_y; 
-	for(t=0;t<=distance+1;t++ )//鐢荤嚎杈撳嚭
+	for(t=0;t<=distance+1;t++ )
 	{  
 		ui_drew_point(uRow,uCol,fill_type);
 		xerr+=delta_x ; 

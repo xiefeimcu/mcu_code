@@ -76,7 +76,7 @@ void MX_RTC_Init(void)
     */
   if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x32F2){
   sTime.Hours = 0x1;
-  sTime.Minutes = 0x0;
+  sTime.Minutes = 0x54;
   sTime.Seconds = 0x0;
 
   if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
@@ -85,9 +85,9 @@ void MX_RTC_Init(void)
   }
 
   DateToUpdate.WeekDay = RTC_WEEKDAY_MONDAY;
-  DateToUpdate.Month = RTC_MONTH_JANUARY;
-  DateToUpdate.Date = 0x1;
-  DateToUpdate.Year = 0x0;
+  DateToUpdate.Month = RTC_MONTH_AUGUST;
+  DateToUpdate.Date = 0x14;
+  DateToUpdate.Year = 0x17;
 
   if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK)
   {

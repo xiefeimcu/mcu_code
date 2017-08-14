@@ -28,5 +28,5 @@ void gui_memset_gram(uint8_t value);
 void gui_show_gram(void);
 void ui_drew_line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,fill_type fill_type);
 void ui_drew_rectangle(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2,fill_type fill_type);
-
+void shell_show_main_menu(void);
 #endif
