@@ -97,7 +97,7 @@ void get_date_into_string(uint8_t *str){
 	uint8_t i;
 	
 	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
-  HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
+	HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
 	
 	bcd_to_char(date.Year,time_code + 2);
 	bcd_to_char(date.Month,time_code + 5);
