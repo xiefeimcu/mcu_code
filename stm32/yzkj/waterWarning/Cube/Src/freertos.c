@@ -230,8 +230,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	} else if (huart->Instance == UART5) {
 
 	}
-	TOGGLE_LED2()
-	;
+	TOGGLE_LED2();
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
      

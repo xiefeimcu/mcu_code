@@ -10,9 +10,37 @@
 
 uint8_t gram[4][8];
 
+const uint8_t menu_main[][15]={
+	"1、基本设置\r\n\r\n" ,
+	"2、采样设置\r\n\r\n" ,
+	"3、发报设置\r\n\r\n" ,
+	"4、重置设置\r\n\r\n" ,
+};
+
+const uint8_t menu_0[][]{
+	"1、时间设置\r\n\r\n" ,
+	"2、休眠时间\r\n\r\n" ,
+	"3、背光时间\r\n\r\n" ,
+}
+
+const uint8_t menu_1[][]{
+	"1、RS485_1\r\n\r\n" ,
+	"2、RS485_2\r\n\r\n" ,
+}
+
+const uint8_t menu_1_0[][13]{
+	"1、波特率\r\n\r\n" ,
+	"2、采样间隔\r\n\r\n" ,
+}
+
+const uint8_t menu_1_1[][13]{
+	"1、波特率\r\n\r\n" ,
+	"2、采样间隔\r\n\r\n" ,
+}
+
+
 void shell_show_main_menu(){
-	printf("xiefei\r\n");
-	osDelay(2);
+	HAL_UART_Transmit(&huart1 ,menu_main,sizeof(menu_main),10);
 }
 
 void bcd_to_char(uint8_t bcdNum,uint8_t *p){
