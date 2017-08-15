@@ -20,7 +20,7 @@ void bcd_to_char(uint8_t bcdNum,uint8_t *p){
 	p[1]=bcdNum % 16 + '0';
 }
 
-void float_to_char(flaot num,uint8_t *p,uint8_t pre){
+void float_to_char(flaot){
 
 }
 

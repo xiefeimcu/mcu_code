@@ -18,10 +18,17 @@
 		</list>
 	</section>
 	<section name="GitCommitMessageComponent">
+		<list key="F:\xieF\code\.git">
+			<item value="false"/>
+			<item value="xiefeimcu &lt;1120181085@qq.com&gt;"/>
+			<item value="解决lcd中文问题"/>
+			<item value="xiefeimcu &lt;1120181085@qq.com&gt;"/>
+			<item value="245cc8f09921b2f68c17e963a3a0973ca8c4db39"/>
+		</list>
 	</section>
 	<section name="org.eclipse.egit.ui.internal.staging.StagingView">
-		<item value="200,200" key="STAGING_SASH_FORM_WEIGHT"/>
+		<item value="500,500" key="STAGING_SASH_FORM_WEIGHT"/>
 		<item value="false" key="sortItemState"/>
-		<item value="200,200" key="HORIZONTAL_SASH_FORM_WEIGHT"/>
+		<item value="500,500" key="HORIZONTAL_SASH_FORM_WEIGHT"/>
 	</section>
 </section>
