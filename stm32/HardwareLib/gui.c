@@ -10,9 +10,39 @@
 
 uint8_t gram[4][8];
 
+const uint8_t ctr_str[]={"\r\n\r\n"};
+
+const uint8_t menu_main[][9]={
+	"基本设置" ,
+	"采样设置" ,
+	"发报设置" ,
+	"重置设置" ,
+};
+
+const uint8_t menu_0[][9]={
+	"时间设置" ,
+	"休眠时间" ,
+	"背光时间" ,
+};
+
+const uint8_t menu_1[][9]={
+	"RS485_1 " ,
+	"RS485_2 " ,
+};
+
+const uint8_t menu_1_0[][9]={
+	"波特率  "  ,
+	"采样间隔" ,
+};
+
+const uint8_t menu_1_1[][9]={
+	"波特率   ",
+	"采样间隔" ,
+};
+
+
 void shell_show_main_menu(){
-	printf("xiefei\r\n");
-	osDelay(2);
+	HAL_UART_Transmit(&huart1 ,(uint8_t *)menu_main,sizeof(menu_main),10);
 }
 
 void bcd_to_char(uint8_t bcdNum,uint8_t *p){
@@ -20,7 +50,7 @@ void bcd_to_char(uint8_t bcdNum,uint8_t *p){
 	p[1]=bcdNum % 16 + '0';
 }
 
-void float_to_char(flaot num,uint8_t *p,uint8_t pre){
+void float_to_char(float num,uint8_t *p,uint8_t pre){
 
 }
 
@@ -44,24 +74,14 @@ void get_date_into_string(uint8_t *str){
 	}
 }
 
+
 void gui_main_windows(void){
 	uint8_t time[17];
 	get_date_into_string(time);
 
 	lcd_show_strings(0,0,time);
 
-	lcd_show_strings(1,0,(uint8_t *)"  系统一切正常");
-	lcd_show_strings(2,0,(uint8_t *)"  系统正在运行");
-	lcd_show_strings(3,0,(uint8_t *)"状态");
-	lcd_show_strings(3,6,(uint8_t *)"设置");
-}
-void gui_main_windows(void){
-	uint8_t time[17];
-	get_date_into_string(time);
 
-	lcd_show_strings(0,0,time);
-
-	lcd_show_strings(1,0,(uint8_t *)"  系统一切正常");
 	lcd_show_strings(2,0,(uint8_t *)"  系统正在运行");
 	lcd_show_strings(3,0,(uint8_t *)"状态");
 	lcd_show_strings(3,6,(uint8_t *)"设置");

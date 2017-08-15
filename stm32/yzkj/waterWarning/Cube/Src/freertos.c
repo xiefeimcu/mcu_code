@@ -60,6 +60,7 @@
 #include "key.h"
 #include "gui.h"
 #include "string.h"
+#include "AT24C04.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -153,8 +154,9 @@ void StartDefaultTask(void const * argument)
 }
 
 /* sensor_sample function */
-void sensor_sample(void const * argument) {
-	/* USER CODE BEGIN sensor_sample */
+void sensor_sample(void const * argument)
+{
+  /* USER CODE BEGIN sensor_sample */
 	dev_modbus_handle_t hmodbus;
 
 	creat_dev_inf(&hmodbus, MODBUS_RTU_TEST);
@@ -164,22 +166,27 @@ void sensor_sample(void const * argument) {
 		osDelay(500);
 		modbus_read_request(&hmodbus);
 	}
-	/* USER CODE END sensor_sample */
+  /* USER CODE END sensor_sample */
 }
 
 /* interaction function */
-void interaction(void const * argument) {
-	/* USER CODE BEGIN interaction */
+void interaction(void const * argument)
+{
+  /* USER CODE BEGIN interaction */
 
 	lcd_init();
+	gui_main_windows();
 	/* Infinite loop */
 	for (;;) {
-		HAL_UART_Transmit(&huart1 ,"你好",5,2);
-		gui_main_windows();
-		TOGGLE_LED2();
+		portENTER_CRITICAL();
+		if(AT24C04TEST(0x02)){
+			lcd_show_strings(1,0,(uint8_t *)"  系统一切正常");
+			TOGGLE_LED2();
+		}
+		portEXIT_CRITICAL();
 		osDelay(1000);
 	}
-	/* USER CODE END interaction */
+  /* USER CODE END interaction */
 }
 
 /* process_comm function */
@@ -203,7 +210,7 @@ void sys_ldle(void const * argument)
   for(;;)
   {	
 
-	 HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+	HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 	osDelay(1);
   }
   /* USER CODE END sys_ldle */
@@ -212,7 +219,7 @@ void sys_ldle(void const * argument)
 /* USER CODE BEGIN Application */
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
-		TOGGLE_LED2();
+
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
@@ -230,8 +237,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	} else if (huart->Instance == UART5) {
 
 	}
-	TOGGLE_LED2()
-	;
+	TOGGLE_LED2();
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
      

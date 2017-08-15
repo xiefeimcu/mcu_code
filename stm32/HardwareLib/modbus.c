@@ -2,15 +2,13 @@
 #include "usart.h"
 #include "stm32f1xx_hal.h"
 #include "string.h"
-#include "crc.h"
-
+#include "Public.h"
 void creat_dev_inf(dev_modbus_handle_t *dev ,dev_inf_t dev_inf){
 static	uint16_t crc=0;
 	if(dev_inf==DEV_NULL)
 		return;
 	
 	switch(dev_inf){
-		//根据不同厂家modbus协议获取配置
 		case MODBUS_RTU_TEST:
 		dev->member.port_idx=PORT_485_2;
 		dev->member.dev_addr=01;
@@ -20,7 +18,7 @@ static	uint16_t crc=0;
 		dev->member.read_count_l=0x01;
 		dev->member.read_count_h=0x00;
 	
-		crc=calculate_crc(dev->modbus_msg +1 , MODBUS_MSG_LEN - 3);
+		crc=CRC16(dev->modbus_msg +1 , MODBUS_MSG_LEN - 3);
 
 		dev->member.crc_l=(uint8_t)crc;
 	  dev->member.crc_h=(uint8_t)(crc>>8);
@@ -83,7 +81,7 @@ void  modbus_clear_msg(dev_modbus_handle_t *dev){
 int8_t modbus_recver_data(dev_modbus_handle_t *dev,uint8_t *rx_buf , uint8_t len){
 uint16_t crc=(uint16_t)(rx_buf[len-2]) <<8 | rx_buf[len-1];
 
-		if(crc == calculate_crc(rx_buf,len - 2)){
+		if(crc == CRC16(rx_buf,len - 2)){
 			return 0;
 		}
 		else{

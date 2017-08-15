@@ -347,7 +347,12 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-
+void change_uart_baudrate(UART_HandleTypeDef *huart,uint32_t BaudRate) {
+	huart->Init.BaudRate=BaudRate;
+	if (HAL_UART_Init(huart) != HAL_OK) {
+		_Error_Handler(__FILE__, __LINE__);
+	}
+}
 
 int fputc(int ch,FILE *f)
 {

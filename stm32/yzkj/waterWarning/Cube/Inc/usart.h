@@ -78,6 +78,7 @@ void MX_USART2_UART_Init(void);
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void change_uart_baudrate(UART_HandleTypeDef *huart,uint32_t BaudRate);
 
 /* USER CODE END Prototypes */
 

@@ -110,6 +110,9 @@
 							<tool id="com.atollic.truestudio.ar.base.512407128" name="Archiver" superClass="com.atollic.truestudio.ar.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.atollic.truestudio.exe.debug.1518366166.1731736931" name="gprs_m35.c" rcbsApplicability="disable" resourcePath="HardwareLib/gprs_m35.c" toolsToInvoke="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1290508529">
+						<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1290508529" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447"/>
+					</fileInfo>
 					<fileInfo id="com.atollic.truestudio.exe.debug.311825581.983937533" name="" rcbsApplicability="disable" resourcePath="nofile" toolsToInvoke="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1976695455">
 						<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1976695455" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447">
 							<inputType id="com.atollic.truestudio.gcc.input.1274347818" superClass="com.atollic.truestudio.gcc.input"/>
@@ -117,7 +120,7 @@
 					</fileInfo>
 					<sourceEntries>
 						<entry excluding="HardwareLib" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="HardwareLib"/>
+						<entry excluding="gprs_m35.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="HardwareLib"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -252,7 +255,7 @@
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="Cube"/>
+			<resource resourceType="PROJECT" workspacePath="/Cube"/>
 		</configuration>
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/Cube"/>

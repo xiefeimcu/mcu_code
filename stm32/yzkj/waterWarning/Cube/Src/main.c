@@ -58,6 +58,7 @@
 #include "modbus.h"
 #include "gui.h"
 #include "lcd_12864.h"
+#include "AT24C04.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
