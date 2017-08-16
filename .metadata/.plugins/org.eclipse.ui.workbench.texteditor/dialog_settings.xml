@@ -2,27 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="TOGGLE_LE" key="selection"/>
+		<item value="TIM_delay_us" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="TOGGLE_LE"/>
-			<item value="TOGGLE_LED2"/>
-			<item value="_NOP()"/>
-			<item value="SDA_L"/>
-			<item value="SCL_L"/>
-			<item value="SDA_H"/>
-			<item value="SCL_H"/>
-			<item value="IniRAM"/>
+			<item value="delay_us"/>
+			<item value="AT24C04delayus(50);"/>
+			<item value="NOP"/>
+			<item value="__NOP"/>
+			<item value="AT24C04delayus(25)"/>
+			<item value="SDA_val"/>
+			<item value="SDA_out"/>
+			<item value="SDA_in"/>
 		</list>
 		<list key="replacehistory">
+			<item value="TIM_delay_us"/>
+			<item value="AT24C04delayus(25);"/>
+			<item value="AT24C04delayus(50)"/>
+			<item value="SDA_VAL()"/>
+			<item value="SDA_OUT()"/>
+			<item value="SDA_IN()"/>
 			<item value="__NOP()"/>
 			<item value="SDA_L()"/>
-			<item value="SCL_L()"/>
-			<item value="SDA_H()"/>
-			<item value="SCL_H()"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

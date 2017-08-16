@@ -123,7 +123,7 @@ int main(void)
   MX_FREERTOS_Init();
 
   /* Start scheduler */
-  osKernelStart();
+ osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
@@ -134,6 +134,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+
   }
   /* USER CODE END 3 */
 

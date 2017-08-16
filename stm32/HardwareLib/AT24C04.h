@@ -31,7 +31,7 @@
 #define SDA_IN()       set_sda_dir(GPIO_MODE_INPUT)       //SDA改成输入模式
 #define SDA_OUT()      set_sda_dir(GPIO_MODE_OUTPUT_PP)     //SDA变回输出模式
 
-#define SDA_VAL()       HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_12)
+#define SDA_VAL()       HAL_GPIO_ReadPin(SDA_PORT,SDA_PIN)
 
 #define deviceaddress          0xA0                  //AT24C02的设备地址
 

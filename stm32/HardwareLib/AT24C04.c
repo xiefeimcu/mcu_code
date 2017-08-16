@@ -12,7 +12,7 @@
 
 #include "AT24C04.h"
 #include "Public.h"     /*函数WriteSInt32、ReadSInt32、WriteUInt16、ReadUInt16使用*/
-
+#include "lcd_12864.h"
 /*
  * 函数名：set_io_dir
  * 功能：设置相应IO的输入输出模式
@@ -35,6 +35,7 @@ void set_sda_dir(uint32_t mode) {
  ********************************************/
 void start(void) {
 //  IniRAM;       //初始化I/O
+	SDA_OUT();
 	SCL_H();
 	SDA_H();
 	AT24C04delayus(25);
@@ -103,14 +104,18 @@ unsigned char check(void) {
 	unsigned char slaveack;
 
 	SDA_H();
-	AT24C04delayus(10);
+	AT24C04delayus(25);
+
 	SCL_H();
-	AT24C04delayus(10);
+	AT24C04delayus(25);
+
 	SDA_IN();
-	AT24C04delayus(10);
+	AT24C04delayus(25);
+
 	slaveack = SDA_VAL();   //读入SDA数值
 	SCL_L();
 	AT24C04delayus(25);
+
 	SDA_OUT();
 
 	if (slaveack)
@@ -246,7 +251,9 @@ void readNbyte(unsigned char * inbuffer, unsigned char n) {
  ********************************************/
 unsigned char Write_1Byte(unsigned char wdata, unsigned char dataaddress) {
 	start();
+
 	write1byte(deviceaddress);
+
 	if (check())
 		write1byte(dataaddress);
 	else
@@ -499,7 +506,11 @@ unsigned char AT24C04TEST(unsigned char testadd) {
 	unsigned int x = 0XAAAA;
 	unsigned int y = 0;
 
-	WriteUInt16(x, testadd);
+	if(WriteUInt16(x, testadd)){
+
+		lcd_show_strings(1,0,(uint8_t *)"wrok");
+	}
+
 	y = ReadUInt16(testadd);
 
 	if (x == y)

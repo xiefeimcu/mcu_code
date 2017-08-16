@@ -180,8 +180,7 @@ void interaction(void const * argument)
 		portENTER_CRITICAL();
 		gui_main_windows();
 
-		if(AT24C04TEST(0x02)){
-			lcd_show_strings(1,0,(uint8_t *)"  系统一切正常");
+		if(AT24C04TEST(255)){
 			TOGGLE_LED2();
 		}
 		portEXIT_CRITICAL();

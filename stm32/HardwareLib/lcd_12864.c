@@ -28,13 +28,13 @@ void sendbyte(uint8_t zdata){
 		}
 		
 		LCD_E_LOW();
-		TIM_delay_us(15);
+		TIM_delay_us(10);
 		LCD_E_HIGH();
 	}
 
 }
 
-static uint8_t ReceiveByte(void)
+uint8_t ReceiveByte(void)
 {
    uint8_t i,d1=0,d2=0;
 	
@@ -136,7 +136,7 @@ void lcd_init(void){
 
 void lcd_clear_ddram(void){
   send_cmd(0x01);  //閸╃儤婀伴幐鍥︽姢闂嗭拷
-  HAL_Delay(2);        //datasheet >=1.4ms 
+  HAL_Delay(1);        //datasheet >=1.4ms
 }
 
 void lcd_clear_gdram(void)

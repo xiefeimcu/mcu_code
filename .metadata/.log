@@ -14826,3 +14826,19 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 !MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.mi.service.MIRunControl$9@1380b26): Status ERROR: org.eclipse.cdt.dsf.gdb code=10001 Context cannot be suspended. null' resulted in an error.
 !SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10001 2017-08-16 10:37:50.959
 !MESSAGE Context cannot be suspended.
+
+!ENTRY org.eclipse.cdt.launch 4 104 2017-08-16 10:54:39.699
+!MESSAGE Program file does not exist
+
+!ENTRY org.eclipse.cdt.launch 4 104 2017-08-16 10:57:57.854
+!MESSAGE Program file does not exist
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2017-08-16 15:16:08.369
+!MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.mi.service.MIRunControl$9@1912293): Status ERROR: org.eclipse.cdt.dsf code=10001 Sequence "" failed while rolling back. null children=[Status ERROR: org.eclipse.cdt.dsf.gdb code=10001 Connection is shut down null Status ERROR: org.eclipse.cdt.dsf.gdb code=10001 Connection is shut down null]' resulted in an error.
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10001 2017-08-16 15:16:08.369
+!MESSAGE Connection is shut down
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10001 2017-08-16 15:16:08.369
+!MESSAGE Connection is shut down
+
+!ENTRY com.atollic.truestudio.productmanager 1 0 2017-08-16 17:18:12.860
+!MESSAGE Unloading product manager
