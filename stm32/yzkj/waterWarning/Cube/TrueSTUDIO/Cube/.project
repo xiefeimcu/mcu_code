@@ -296,5 +296,9 @@
 			<type>1</type>
 			<location>PARENT-2-PROJECT_LOC/Middlewares/Third_Party/FreeRTOS/Source/timers.c</location>
 		</link>
-	</linkedResources>
+	<link>
+			<name>Application/User/tim.c</name>
+			<type>1</type>
+			<location>PARENT-2-PROJECT_LOC/Src/tim.c</location>
+		</link></linkedResources>
 </projectDescription>

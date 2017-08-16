@@ -13,10 +13,10 @@
 #define __AT24C04_H
  
 #include "stm32f1xx_hal.h"
-#include "delay.h"
-
-#define MAX_PAGE 32
-#define BYTE_NUM_PRE_PAGE 16
+#include "tim.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "cmsis_os.h"
   
 // I/O口定义
 #define SCL_H()       HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
@@ -28,15 +28,15 @@
 #define SDA_PORT      GPIOD
 #define SDA_PIN       GPIO_PIN_12
 
-#define SDA_in        set_sda_dir(GPIO_MODE_INPUT)       //SDA改成输入模式
-#define SDA_out       set_sda_dir(GPIO_MODE_OUTPUT_PP)     //SDA变回输出模式
+#define SDA_IN()       set_sda_dir(GPIO_MODE_INPUT)       //SDA改成输入模式
+#define SDA_OUT()      set_sda_dir(GPIO_MODE_OUTPUT_PP)     //SDA变回输出模式
 
-#define SDA_val       (HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_12)==GPIO_PIN_SET)
+#define SDA_VAL()       HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_12)
 
-#define deviceaddress          0xa0                  //AT24C02的设备地址
+#define deviceaddress          0xA0                  //AT24C02的设备地址
 
-#define AT24C04delayus(x)      delay_us(x)     //延时us
-#define AT24C04delayms(x)      HAL_Delay(x)
+#define AT24C04delayus(x)     TIM_delay_us(x)
+#define AT24C04delayms(x)     HAL_Delay(x)
 
 #define WriteUInt8(x,y)        Write_1Byte(x,y)                        //写入1byte数据
 #define ReadUInt8(x)           Read_1Byte_Randomaddress(x)             //读1byte数据

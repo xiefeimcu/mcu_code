@@ -1,25 +1,6 @@
 #include "lcd_12864.h"
 #include "main.h"
-#include "delay.h"
-
- /******************************************************************************* 
-【产品型号】：BJ12864M-1
-【点 阵 数】：128X64
-【外型尺寸】：93X70
-【视域尺寸】：72X40
-【定位尺寸】：88X64
-【点 间 距】：0.52X0.52
-【点 大 小】：0.48X0.48
-【控制器类型】：ST7920
-【简单介绍】：带字库，SPI串并口，3.3V或5V
-
-DDRAM地址
-0x80  0x81  0x82  0x83  0x84  0x85  0x86  0x87    //第一行汉字位置
-0x90  0x91  0x92  0x93  0x94  0x95  0x96  0x97    //第二行汉字位置
-0x88  0x89  0x8a  0x8b  0x8c  0x8d  0x8e  0x8f    //第三行汉字位置
-0x98  0x99  0x9a  0x9b  0x9c  0x9d  0x9e  0x9f    //第四行汉字位置
-
-*******************************************************************************/  
+#include "tim.h"
 
 /*
 * 1 out
@@ -47,7 +28,7 @@ void sendbyte(uint8_t zdata){
 		}
 		
 		LCD_E_LOW();
-		delay_us(15);
+		TIM_delay_us(15);
 		LCD_E_HIGH();
 	}
 
@@ -62,9 +43,9 @@ static uint8_t ReceiveByte(void)
    for (i = 0; i < 8; i++)
    {
     LCD_E_LOW();
-    delay_us(15);
+    TIM_delay_us(10);
     LCD_E_HIGH();
-    delay_us(15);
+    TIM_delay_us(10);
 		 
     if (LCD_RW_READ() == GPIO_PIN_SET) 
 			d1++;
@@ -75,9 +56,9 @@ static uint8_t ReceiveByte(void)
    for (i = 0; i < 8; i++)
    {
     LCD_E_LOW();
-    delay_us(15);
+    TIM_delay_us(15);
     LCD_E_HIGH();  
-    delay_us(15);		 
+    TIM_delay_us(15);
 		 
     if (LCD_RW_READ() == GPIO_PIN_SET)
 			d2++;
@@ -91,21 +72,8 @@ static uint8_t ReceiveByte(void)
 }
 
 int8_t check_busy(void){
-//	uint8_t data=0;
-//	
-//	sendbyte(READ_STATE);
-//	
-//	delay_us(10);
-//	data=ReceiveByte();
-//	
-//	if(data & 0x80){
-//		return 0;
-//	}
-//	
-//	else{
-//		return 0;
-//	}
-	delay_us(50);
+
+	TIM_delay_us(25);
 	return 0;
 }
 
@@ -140,9 +108,9 @@ void lcd_init(void){
 	LCD_OPEN_PW();
 	//LCD_OPEN_BK();
 	
-	//1>芯片上电；
-	//2>延时40ms以上；
-	//3>复位操作：RST出现一个上升沿（RST=1;RST=0;RST=1;）
+	//1>閼侯垳澧栨稉濠勬暩閿涳拷
+	//2>瀵よ埖妞�40ms娴犮儰绗傞敍锟�
+	//3>婢跺秳缍呴幙宥勭稊閿涙瓓ST閸戣櫣骞囨稉锟芥稉顏冪瑐閸楀洦閮ㄩ敍鍦T=1;RST=0;RST=1;閿涳拷
 	HAL_Delay(50);
 	
 	LCD_RST_HIGH();
@@ -167,7 +135,7 @@ void lcd_init(void){
 }
 
 void lcd_clear_ddram(void){
-  send_cmd(0x01);  //基本指令集
+  send_cmd(0x01);  //閸╃儤婀伴幐鍥︽姢闂嗭拷
   HAL_Delay(2);        //datasheet >=1.4ms 
 }
 
@@ -175,24 +143,24 @@ void lcd_clear_gdram(void)
 {    
   uint8_t j, i;
   send_cmd(0x36);
-  for(j=0;j<32;j++) //上半屏32点行
+  for(j=0;j<32;j++) //娑撳﹤宕愮仦锟�32閻愮顢�
   {
     send_cmd(0x80+j);
-    send_cmd(0x80);//X坐标
-    for(i=0;i<32;i++)//32表示如1行写完,自动写第3行
+    send_cmd(0x80);//X閸ф劖鐖�
+    for(i=0;i<32;i++)//32鐞涖劎銇氭俊锟�1鐞涘苯鍟撶�癸拷,閼奉亜濮╅崘娆戭儑3鐞涳拷
     {
       send_data(0x00);  
     }
   }
-  send_cmd(0x30);     //基本指令 
+  send_cmd(0x30);     //閸╃儤婀伴幐鍥︽姢
 }
 
 /******************************************************************************* 
-* 名称 :  lcd_set_pos
-* 功能 : 设定显示位置,只适用于标准指令集 
-* 输入 :  x (0~3)行
-          y (0~127)列
-* 输出 : 无 
+* 閸氬秶袨 :  lcd_set_pos
+* 閸旂喕鍏� : 鐠佹儳鐣鹃弰鍓с仛娴ｅ秶鐤�,閸欘亪锟藉倻鏁ゆ禍搴㈢垼閸戝棙瀵氭禒銈夋肠
+* 鏉堟挸鍙� :  x (0~3)鐞涳拷
+          y (0~127)閸掞拷
+* 鏉堟挸鍤� : 閺冿拷
 *******************************************************************************/  
 void lcd_set_pos(uint8_t  row, uint8_t  col)  
 {  
@@ -208,15 +176,15 @@ void lcd_set_pos(uint8_t  row, uint8_t  col)
 	
     pos = row + col;  
     send_cmd(pos);
-    delay_us(8);
+    TIM_delay_us(8);
 } 
 
 
 /******************************************************************** 
-* 名称 : ShowCharPos 
-* 功能 : 在当前坐标位置显示单个字符,col=0,1,2,每个col占16dot
-* 输入 : uint8_t  row, uint8_t  col,uint8_t  dat
-* 输出 : 无 
+* 閸氬秶袨 : ShowCharPos
+* 閸旂喕鍏� : 閸︺劌缍嬮崜宥呮綏閺嶅洣缍呯純顔芥▔缁�鍝勫礋娑擃亜鐡х粭锟�,col=0,1,2,濮ｅ繋閲渃ol閸楋拷16dot
+* 鏉堟挸鍙� : uint8_t  row, uint8_t  col,uint8_t  dat
+* 鏉堟挸鍤� : 閺冿拷
 ***********************************************************************/ 
 void show_char(uint8_t  row, uint8_t  col,uint8_t  dat)
 {    
@@ -225,10 +193,10 @@ void show_char(uint8_t  row, uint8_t  col,uint8_t  dat)
 }
 
 /******************************************************************************* 
-* 名称 : ShowEnString(uint8_t  *s)  
-* 功能 : 显示英文字符串  col=0,1,2,1 col=16dot
-* 输入 : *s 
-* 输出 : 无 
+* 閸氬秶袨 : ShowEnString(uint8_t  *s)
+* 閸旂喕鍏� : 閺勫墽銇氶懟杈ㄦ瀮鐎涙顑佹稉锟�  col=0,1,2,1 col=16dot
+* 鏉堟挸鍙� : *s
+* 鏉堟挸鍤� : 閺冿拷
 *******************************************************************************/  
 void show_string(uint8_t  *s)  
 {    
@@ -255,15 +223,15 @@ void lcd_show_strings(uint8_t  row, uint8_t  col, uint8_t  *s)     //col is full
 
 
 /******************************************************************************* 
-* 名称 : show_gb 
-* 功能 : 显示单个汉字
-* 输入 : i 
-* 输出 : 无 
+* 閸氬秶袨 : show_gb
+* 閸旂喕鍏� : 閺勫墽銇氶崡鏇氶嚋濮瑰鐡�
+* 鏉堟挸鍙� : i
+* 鏉堟挸鍤� : 閺冿拷
 ********************************************************************************/  
 void send_gb( unsigned char *HZ)
 {
-   send_data(HZ[0]);                //写入汉字的高八位数据
-   send_data(HZ[1]);                //写入汉字的低八位数据 
+   send_data(HZ[0]);                //閸愭瑥鍙嗗Ч澶婄摟閻ㄥ嫰鐝崗顐＄秴閺佺増宓�
+   send_data(HZ[1]);                //閸愭瑥鍙嗗Ч澶婄摟閻ㄥ嫪缍嗛崗顐＄秴閺佺増宓�
 }
 
 void show_gb(uint8_t  row, uint8_t  col, uint8_t  *HZ)
@@ -274,11 +242,11 @@ void show_gb(uint8_t  row, uint8_t  col, uint8_t  *HZ)
 
 
 /******************************************************************** 
-* 名称 : show_gbs
-* 功能 : 显示多个汉字
-* 输入 : uint8_t  row, uint8_t  col :汉字串的起始地址
-* 输出 : 无 
-* 说明 : 自动换行:lcm默认换行顺序是乱的，0--2--1--3--0
+* 閸氬秶袨 : show_gbs
+* 閸旂喕鍏� : 閺勫墽銇氭径姘嚋濮瑰鐡�
+* 鏉堟挸鍙� : uint8_t  row, uint8_t  col :濮瑰鐡ф稉鑼畱鐠у嘲顫愰崷鏉挎絻
+* 鏉堟挸鍤� : 閺冿拷
+* 鐠囧瓨妲� : 閼奉亜濮╅幑銏ｎ攽:lcm姒涙顓婚幑銏ｎ攽妞ゅ搫绨弰顖欒础閻ㄥ嫸绱�0--2--1--3--0
 ***********************************************************************/  
 void lcd_show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
 {
@@ -288,9 +256,9 @@ void lcd_show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
   {
     send_gb(s+i);
     i+=2;   
-    if((2*col+i)%(16)==0)                 //如果满一行
+    if((2*col+i)%(16)==0)                 //婵″倹鐏夊鈥茬鐞涳拷
     {            
-       lcd_set_pos(++row,0);            //重新设置显示的起始地址
+       lcd_set_pos(++row,0);            //闁插秵鏌婄拋鍓х枂閺勫墽銇氶惃鍕崳婵婀撮崸锟�
     }     
   } 
 }
@@ -298,10 +266,10 @@ void lcd_show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s)
 
 
 /******************************************************************** 
-* 名称 : show_blank_by_pos 
-* 功能 : 
-* 输入 : col = 0~7 1num =1半宽字符
-* 功能 : 黑板擦功能，擦除不显示的内容
+* 閸氬秶袨 : show_blank_by_pos
+* 閸旂喕鍏� :
+* 鏉堟挸鍙� : col = 0~7 1num =1閸楀﹤顔旂�涙顑�
+* 閸旂喕鍏� : 姒涙垶婢橀幙锕�濮涢懗鏂ょ礉閹匡箓娅庢稉宥嗘▔缁�铏规畱閸愬懎顔�
 ***********************************************************************/ 
 void show_blanks(uint8_t  row, uint8_t  col, uint8_t  num)
 {
@@ -315,11 +283,11 @@ void show_blanks(uint8_t  row, uint8_t  col, uint8_t  num)
 
 
 /******************************************************************** 
-* 名称 : show_num
-* 功能 : 
-* 输入 : uint8_t  row, uint8_t  col 起始地址 col=0,1,2,每个col占16dot
-* 输出 : 无 
-* 说明 : 自动换行:lcm默认换行顺序是乱的，0--2--1--3--0
+* 閸氬秶袨 : show_num
+* 閸旂喕鍏� :
+* 鏉堟挸鍙� : uint8_t  row, uint8_t  col 鐠у嘲顫愰崷鏉挎絻 col=0,1,2,濮ｅ繋閲渃ol閸楋拷16dot
+* 鏉堟挸鍤� : 閺冿拷
+* 鐠囧瓨妲� : 閼奉亜濮╅幑銏ｎ攽:lcm姒涙顓婚幑銏ｎ攽妞ゅ搫绨弰顖欒础閻ㄥ嫸绱�0--2--1--3--0
 ***********************************************************************/ 
 void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex)
 {     
@@ -335,19 +303,19 @@ void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex)
 
 void lcd_dis_use_char(uint8_t row, uint8_t col,uint8_t index)
 {
-  lcd_set_pos(row, col);    //cgram char 映射输出的DDRAM地址
+  lcd_set_pos(row, col);    //cgram char 閺勭姴鐨犳潏鎾冲毉閻ㄥ嚍DRAM閸︽澘娼�
   send_data(0x00);			//Must exist!
-  send_data( (index-1)*2);	// cgram :00,02,04,06  第index个字符存储地址偏移量
+  send_data( (index-1)*2);	// cgram :00,02,04,06  缁楃惒ndex娑擃亜鐡х粭锕�鐡ㄩ崒銊ユ勾閸э拷閸嬪繒些闁诧拷
 }
 
 void lcd_dis_image(const uint8_t *str)
 {
    uint16_t i,j;
    
-   send_cmd(0x36);	//绘图显示开，扩充指令集extended instruction(DL=8BITS,RE=1,G=1)
-   delay_us(370);   //delay is important!
+   send_cmd(0x36);	//缂佹ê娴橀弰鍓с仛瀵拷閿涘本澧块崗鍛瘹娴犮倝娉xtended instruction(DL=8BITS,RE=1,G=1)
+   TIM_delay_us(370);   //delay is important!
    
-/*显示上半屏内容*/
+/*閺勫墽銇氭稉濠傚磹鐏炲繐鍞寸�癸拷*/
    for(i=0;i<32;i++)        
     { 
       send_cmd(0x80 + i);   
@@ -358,7 +326,7 @@ void lcd_dis_image(const uint8_t *str)
        }
     }
 
-/*显示下半屏内容*/
+/*閺勫墽銇氭稉瀣磹鐏炲繐鍞寸�癸拷*/
    for(i=0;i<32;i++)        
     {
       send_cmd(0x80 + i); 
@@ -375,9 +343,9 @@ void lcd_test_ban_dot(void)
 {
    uint16_t i,j;
 	
-   /*绘图显示开，扩充指令集extended instruction(DL=8BITS,RE=1,G=1)*/
+   /*缂佹ê娴橀弰鍓с仛瀵拷閿涘本澧块崗鍛瘹娴犮倝娉xtended instruction(DL=8BITS,RE=1,G=1)*/
    send_cmd(0x36);	
-   delay_us(370);  
+   TIM_delay_us(370);
    
    for(i=0;i<32;i++)       
     { 

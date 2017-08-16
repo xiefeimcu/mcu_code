@@ -7,6 +7,7 @@
 #include "task.h"
 #include "cmsis_os.h"
 #include "usart.h"
+#include "lcd_12864.h"
 
 uint8_t gram[4][8];
 
@@ -43,6 +44,7 @@ const uint8_t menu_1_1[][9]={
 
 void shell_show_main_menu(){
 	HAL_UART_Transmit(&huart1 ,(uint8_t *)menu_main,sizeof(menu_main),10);
+
 }
 
 void bcd_to_char(uint8_t bcdNum,uint8_t *p){
@@ -77,14 +79,14 @@ void get_date_into_string(uint8_t *str){
 
 void gui_main_windows(void){
 	uint8_t time[17];
+
+	lcd_clear_ddram();
 	get_date_into_string(time);
 
 	lcd_show_strings(0,0,time);
-
-
 	lcd_show_strings(2,0,(uint8_t *)"  系统正在运行");
-	lcd_show_strings(3,0,(uint8_t *)"状态");
 	lcd_show_strings(3,6,(uint8_t *)"设置");
+
 }
 
 void gui_show_gram(void)   

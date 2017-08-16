@@ -51,6 +51,7 @@
 #include "cmsis_os.h"
 #include "crc.h"
 #include "rtc.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -86,7 +87,6 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	
-	
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -113,6 +113,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_RTC_Init();
   MX_UART4_Init();
+  MX_TIM1_Init();
 
   /* USER CODE BEGIN 2 */
 
@@ -133,7 +134,6 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
   }
   /* USER CODE END 3 */
 

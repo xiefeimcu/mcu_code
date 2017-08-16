@@ -66,13 +66,11 @@ void stop(void) {
  ********************************************/
 void mack(void) {
 	SDA_L();
-	__NOP();
-	__NOP();
+	AT24C04delayus(10);
 	SCL_H();
 	AT24C04delayus(25);
 	SCL_L();
-	__NOP();
-	__NOP();
+	AT24C04delayus(10);
 	SDA_H();
 	AT24C04delayus(25);
 }
@@ -84,13 +82,11 @@ void mack(void) {
  ********************************************/
 void mnack(void) {
 	SDA_H();
-	__NOP();
-	__NOP();
+	AT24C04delayus(10);
 	SCL_H();
 	AT24C04delayus(25);
 	SCL_L();
-	__NOP();
-	__NOP();
+	AT24C04delayus(10);
 	SDA_L();
 	AT24C04delayus(25);
 }
@@ -107,19 +103,16 @@ unsigned char check(void) {
 	unsigned char slaveack;
 
 	SDA_H();
-	__NOP();
-	__NOP();
+	AT24C04delayus(10);
 	SCL_H();
-	__NOP();
-	__NOP();
-	SDA_in;
-	__NOP();
-	__NOP();
-	slaveack = SDA_val
-	;   //读入SDA数值
+	AT24C04delayus(10);
+	SDA_IN();
+	AT24C04delayus(10);
+	slaveack = SDA_VAL();   //读入SDA数值
 	SCL_L();
 	AT24C04delayus(25);
-	SDA_out;
+	SDA_OUT();
+
 	if (slaveack)
 		return 0;
 	else
@@ -169,7 +162,7 @@ void write1byte(unsigned char wdata) {
 		wdata <<= 1;
 	}
 	SDA_H();
-	__NOP();
+	AT24C04delayus(10);
 }
 /*******************************************
  函数名称：writeNbyte
@@ -209,16 +202,15 @@ unsigned char read1byte(void) {
 		SDA_H();
 		AT24C04delayus(25);
 		SCL_H();
-		SDA_in;
+		SDA_IN();
 		AT24C04delayus(25);
-		flag = SDA_val
-		;
+		flag = SDA_VAL();
 		rdata <<= 1;
 
 		if (flag)
 			rdata |= 0x01;
 
-		SDA_out;
+		SDA_OUT();
 		SCL_L();
 		AT24C04delayus(25);
 	}

@@ -119,7 +119,7 @@ void MX_FREERTOS_Init(void) {
   sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
 
   /* definition and creation of keyAndUi */
-  osThreadDef(keyAndUi, interaction, osPriorityBelowNormal, 0, 512);
+  osThreadDef(keyAndUi, interaction, osPriorityBelowNormal, 0, 1024);
   keyAndUiHandle = osThreadCreate(osThread(keyAndUi), NULL);
 
   /* definition and creation of communication */
@@ -175,10 +175,11 @@ void interaction(void const * argument)
   /* USER CODE BEGIN interaction */
 
 	lcd_init();
-	gui_main_windows();
 	/* Infinite loop */
 	for (;;) {
 		portENTER_CRITICAL();
+		gui_main_windows();
+
 		if(AT24C04TEST(0x02)){
 			lcd_show_strings(1,0,(uint8_t *)"  系统一切正常");
 			TOGGLE_LED2();
@@ -222,7 +223,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
 
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 	UBaseType_t uxSavedInterruptStatus;
 
