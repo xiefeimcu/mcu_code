@@ -1,57 +1,57 @@
 /**
-  ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
-  ******************************************************************************
-  * This notice applies to any and all portions of this file
-  * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether 
-  * inserted by the user or by software development tools
-  * are owned by their respective copyright owners.
-  *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without 
-  * modification, are permitted, provided that the following conditions are met:
-  *
-  * 1. Redistribution of source code must retain the above copyright notice, 
-  *    this list of conditions and the following disclaimer.
-  * 2. Redistributions in binary form must reproduce the above copyright notice,
-  *    this list of conditions and the following disclaimer in the documentation
-  *    and/or other materials provided with the distribution.
-  * 3. Neither the name of STMicroelectronics nor the names of other 
-  *    contributors to this software may be used to endorse or promote products 
-  *    derived from this software without specific written permission.
-  * 4. This software, including modifications and/or derivative works of this 
-  *    software, must execute solely and exclusively on microcontroller or
-  *    microprocessor devices manufactured by or for STMicroelectronics.
-  * 5. Redistribution and use of this software other than as permitted under 
-  *    this license is void and will automatically terminate your rights under 
-  *    this license. 
-  *
-  * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
-  * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
-  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-  * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
-  * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
-  * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * File Name          : freertos.c
+ * Description        : Code for freertos applications
+ ******************************************************************************
+ * This notice applies to any and all portions of this file
+ * that are not between comment pairs USER CODE BEGIN and
+ * USER CODE END. Other portions of this file, whether
+ * inserted by the user or by software development tools
+ * are owned by their respective copyright owners.
+ *
+ * Copyright (c) 2017 STMicroelectronics International N.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted, provided that the following conditions are met:
+ *
+ * 1. Redistribution of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name of STMicroelectronics nor the names of other
+ *    contributors to this software may be used to endorse or promote products
+ *    derived from this software without specific written permission.
+ * 4. This software, including modifications and/or derivative works of this
+ *    software, must execute solely and exclusively on microcontroller or
+ *    microprocessor devices manufactured by or for STMicroelectronics.
+ * 5. Redistribution and use of this software other than as permitted under
+ *    this license is void and will automatically terminate your rights under
+ *    this license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+ * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT
+ * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
 #include "task.h"
 #include "cmsis_os.h"
 
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 #include "main.h"
 #include "rtc.h"
 #include "modbus.h"
@@ -86,6 +86,51 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
 
+void power_standby_mode(void) {
+	/*
+	 * 关闭传感器电源
+	 * */
+
+	/*
+	 * 关闭3.3V外围芯片电源
+	 * */
+
+	/*
+	 *关闭部分外设，按键IO不能关闭！！
+	 */
+	 __HAL_RCC_GPIOC_CLK_DISABLE();
+	 __HAL_RCC_GPIOA_CLK_DISABLE();
+	 __HAL_RCC_GPIOB_CLK_DISABLE();
+	 __HAL_RCC_GPIOD_CLK_DISABLE();
+
+	 /*
+	 * 关闭外部高速时钟
+	 * */
+
+}
+
+void power_norm_mode(void){
+
+	/*恢复外设时钟
+	 * */
+	 __HAL_RCC_GPIOC_CLK_ENABLE();
+	 __HAL_RCC_GPIOA_CLK_ENABLE();
+	 __HAL_RCC_GPIOB_CLK_ENABLE();
+	 __HAL_RCC_GPIOD_CLK_ENABLE();
+
+	/*
+	 * 打开传感器电源
+	 * */
+
+	/*
+	 * 打开3.3V外围芯片电源
+	 * */
+
+	/*
+	 * 打开外部高速时钟
+	 * */
+}
+
 /* USER CODE END FunctionPrototypes */
 
 /* Hook prototypes */
@@ -93,70 +138,65 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 /* Init FreeRTOS */
 
 void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
-       
-  /* USER CODE END Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
+	/* USER CODE END Init */
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
+	/* USER CODE BEGIN RTOS_MUTEX */
+	/* add mutexes, ... */
+	/* USER CODE END RTOS_MUTEX */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* add semaphores, ... */
+	/* USER CODE END RTOS_SEMAPHORES */
 
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	/* USER CODE BEGIN RTOS_TIMERS */
+	/* start timers, add new ones, ... */
+	/* USER CODE END RTOS_TIMERS */
 
-  /* definition and creation of sensorSample */
-  osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 512);
-  sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
+	/* Create the thread(s) */
+	/* definition and creation of defaultTask */
+	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of keyAndUi */
-  osThreadDef(keyAndUi, interaction, osPriorityBelowNormal, 0, 1024);
-  keyAndUiHandle = osThreadCreate(osThread(keyAndUi), NULL);
+	/* definition and creation of sensorSample */
+	osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 512);
+	sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
 
-  /* definition and creation of communication */
-  osThreadDef(communication, process_comm, osPriorityHigh, 0, 512);
-  communicationHandle = osThreadCreate(osThread(communication), NULL);
+	/* definition and creation of keyAndUi */
+	osThreadDef(keyAndUi, interaction, osPriorityBelowNormal, 0, 1024);
+	keyAndUiHandle = osThreadCreate(osThread(keyAndUi), NULL);
 
-  /* definition and creation of ldle */
-  osThreadDef(ldle, sys_ldle, osPriorityIdle, 0, 128);
-  ldleHandle = osThreadCreate(osThread(ldle), NULL);
+	/* definition and creation of communication */
+	osThreadDef(communication, process_comm, osPriorityHigh, 0, 512);
+	communicationHandle = osThreadCreate(osThread(communication), NULL);
 
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
+	/* definition and creation of ldle */
+	osThreadDef(ldle, sys_ldle, osPriorityIdle, 0, 128);
+	ldleHandle = osThreadCreate(osThread(ldle), NULL);
 
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+	/* USER CODE BEGIN RTOS_THREADS */
+	/* add threads, ... */
+	/* USER CODE END RTOS_THREADS */
+	/* USER CODE BEGIN RTOS_QUEUES */
+	/* add queues, ... */
+	/* USER CODE END RTOS_QUEUES */
 }
 
 /* StartDefaultTask function */
-void StartDefaultTask(void const * argument)
-{
+void StartDefaultTask(void const * argument) {
+	/* USER CODE BEGIN StartDefaultTask */
 
-  /* USER CODE BEGIN StartDefaultTask */
-
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartDefaultTask */
+	/* Infinite loop */
+	for (;;) {
+		osDelay(1);
+	}
+	/* USER CODE END StartDefaultTask */
 }
 
 /* sensor_sample function */
-void sensor_sample(void const * argument)
-{
-  /* USER CODE BEGIN sensor_sample */
+void sensor_sample(void const * argument) {
+	/* USER CODE BEGIN sensor_sample */
 	dev_modbus_handle_t hmodbus;
 
 	creat_dev_inf(&hmodbus, MODBUS_RTU_TEST);
@@ -166,13 +206,12 @@ void sensor_sample(void const * argument)
 		osDelay(500);
 		modbus_read_request(&hmodbus);
 	}
-  /* USER CODE END sensor_sample */
+	/* USER CODE END sensor_sample */
 }
 
 /* interaction function */
-void interaction(void const * argument)
-{
-  /* USER CODE BEGIN interaction */
+void interaction(void const * argument) {
+	/* USER CODE BEGIN interaction */
 
 	lcd_init();
 	/* Infinite loop */
@@ -180,49 +219,46 @@ void interaction(void const * argument)
 		portENTER_CRITICAL();
 		gui_main_windows();
 
-		if(AT24C04TEST(255)){
+		if (AT24C04TEST(255)) {
 			TOGGLE_LED2();
 		}
 		portEXIT_CRITICAL();
 		osDelay(1000);
 	}
-  /* USER CODE END interaction */
+	/* USER CODE END interaction */
 }
 
 /* process_comm function */
-void process_comm(void const * argument)
-{
-  /* USER CODE BEGIN process_comm */
-/* Infinite loop */
-for(;;)
-{
-	TOGGLE_LED1();
-    osDelay(500);
-}
-  /* USER CODE END process_comm */
+void process_comm(void const * argument) {
+	/* USER CODE BEGIN process_comm */
+	/* Infinite loop */
+	for (;;) {
+		TOGGLE_LED1();
+		osDelay(500);
+	}
+	/* USER CODE END process_comm */
 }
 
 /* sys_ldle function */
-void sys_ldle(void const * argument)
-{
-  /* USER CODE BEGIN sys_ldle */
-  /* Infinite loop */
-  for(;;)
-  {	
+void sys_ldle(void const * argument) {
+	/* USER CODE BEGIN sys_ldle */
+	/* Infinite loop */
+	for (;;) {
 
-	HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-	osDelay(1);
-  }
-  /* USER CODE END sys_ldle */
+
+		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		osDelay(1);
+	}
+	/* USER CODE END sys_ldle */
 }
 
 /* USER CODE BEGIN Application */
 
-void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
+void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
 
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	UBaseType_t uxSavedInterruptStatus;
 
@@ -237,10 +273,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	} else if (huart->Instance == UART5) {
 
 	}
-	TOGGLE_LED2();
+	TOGGLE_LED2()
+	;
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
-     
+
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

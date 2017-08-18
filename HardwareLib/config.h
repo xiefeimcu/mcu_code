@@ -10,6 +10,14 @@
 
 #include "stm32f1xx_hal.h"
 
+/*
+ * ¶Ë¿ÚÓ³Éä¹ØÏµ
+ */
+#define RS2321_UART_HANDLE huart4
+#define RS2322_UART_HANDLE huart1
+#define RS4851_UART_HANDLE huart2
+#define RS4852_UART_HANDLE huart3
+
 typedef struct{
 	uint16_t mcuStopTime;
 	uint16_t lcdCloseTime;
