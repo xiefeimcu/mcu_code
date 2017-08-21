@@ -84,7 +84,7 @@
 		<link>
 			<name>HardwareLib</name>
 			<type>2</type>
-			<locationURI>WORKSPACE_LOC/mcu_code/HardwareLib</locationURI>
+			<locationURI>WORKSPACE_LOC/mcu_code/stm32/HardwareLib</locationURI>
 		</link>
 		<link>
 			<name>Middlewares</name>
