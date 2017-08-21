@@ -4,6 +4,9 @@
 		<extension point="org.eclipse.cdt.core.LanguageSettingsProvider">
 			<provider id="com.atollic.truestudio.mbs.provider">
 				<language id="org.eclipse.cdt.core.gcc">
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_DSP">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
 					<entry kind="includePath" name="E:/Program Files (x86)/TrueSTUDIO for ARM 8.0.0/ARMTools/lib/gcc/arm-atollic-eabi/6.3.1/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
@@ -12,6 +15,9 @@
 					</entry>
 					<entry kind="includePath" name="E:/Program Files (x86)/TrueSTUDIO for ARM 8.0.0/ARMTools/arm-atollic-eabi/include">
 						<flag value="BUILTIN|READONLY"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_CRYPTO">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
 					</entry>
 					<entry kind="macro" name="__ACCUM_EPSILON__" value="0x1P-15K">
 						<flag value="BUILTIN|READONLY"/>
@@ -1088,6 +1094,24 @@
 				<language id="org.eclipse.cdt.core.g++">
 					<entry kind="includePath" name="E:/Program Files (x86)/TrueSTUDIO for ARM 8.0.0/ARMTools/arm-atollic-eabi/include/c++/6.3.1">
 						<flag value="BUILTIN|READONLY"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_SIMD32">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FP">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_FMA">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_NEON__">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_NEON">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
+					</entry>
+					<entry kind="includePath" name="/${ProjName}/#undef __ARM_NEON_FP">
+						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
 					</entry>
 					<entry kind="includePath" name="E:/Program Files (x86)/TrueSTUDIO for ARM 8.0.0/ARMTools/arm-atollic-eabi/include/c++/6.3.1/arm-atollic-eabi/armv7-m">
 						<flag value="BUILTIN|READONLY"/>
