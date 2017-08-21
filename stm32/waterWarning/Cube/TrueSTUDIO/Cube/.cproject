@@ -46,8 +46,7 @@
 									<listOptionValue builtIn="false" value="../../../Middlewares/Third_Party/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS"/>
 									<listOptionValue builtIn="false" value="../../../Drivers/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="&quot;F:\xieF\code\stm32\HardwareLib&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\A\xf\Code\GitHub\mcu_code\stm32\HardwareLib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\xieF\code\mcu_code\HardwareLib&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))"/>
@@ -253,7 +252,7 @@
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="Cube"/>
+			<resource resourceType="PROJECT" workspacePath="/Cube"/>
 		</configuration>
 		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/Cube"/>
