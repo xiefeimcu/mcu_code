@@ -50,7 +50,7 @@
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
 #include "crc.h"
-#include "rtc.h"
+#include "rtc.h"//RTC ×¼±¸»»³É "pcf8563"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
