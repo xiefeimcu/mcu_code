@@ -56,7 +56,7 @@ void AddDRPZ(unsigned int page,unsigned int bytes)
 }
 
 void UpdateDRPZ(void)
-{ 
+`{ 
   unsigned char i=0;
 
   if(0==DRPZ.sp)
@@ -787,6 +787,7 @@ void MessageHandlers(unsigned char *p)
     #endif
     return;
   }
+  
   pRM->End = p[pRM->TextLeng+24];
   
   Com.Status.Flag.ComEvent = RESET;   //通信事件复位
@@ -1076,7 +1077,7 @@ unsigned int WriteMessageTextDRPZ(unsigned char *p,unsigned int  AddNbyte)
   }
   
   p[AddNbyte++] = ' '; 
-  p[AddNbyte++] = 'T';                                  //观测时间标识符                               
+  p[AddNbyte++] = 'T';                        //观测时间标识符                               
   p[AddNbyte++] = 'T';    
   p[AddNbyte++] = ' ';  
   p[AddNbyte++] = HEXASCII[a[0] / 10];        //年 十进制转换为ASCⅡ

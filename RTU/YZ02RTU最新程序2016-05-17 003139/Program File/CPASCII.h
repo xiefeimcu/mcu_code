@@ -120,12 +120,12 @@ typedef struct
   //long int Analog3;
   //long int Analog4;
   long int RS485;
-  unsigned int PT;//降水量累计值
+  unsigned int PT;  //降水量累计值
   unsigned int PN05;//5 分钟时段降水量
   unsigned int PN10;
   unsigned int PN30;
-  unsigned int PJ;//当前降水量
-  unsigned char AFN;            //功能码
+  unsigned int PJ;  //当前降水量
+  unsigned char AFN;//功能码
   
   TT RainTT;
   TT ATT;
