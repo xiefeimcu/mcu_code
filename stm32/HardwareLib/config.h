@@ -42,7 +42,10 @@ typedef struct{
 }comBaudRate_t;
 
 typedef struct {
-	uint8_t centreStationAddr;
+	uint8_t remoteStationAddr;//中心站地址
+	uint8_t localStationAddr; //RTU站地址
+	uint8_t passwordH;
+	uint8_t passwordL;
 
 }upDataArg_t;
 
