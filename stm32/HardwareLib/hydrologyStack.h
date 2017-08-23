@@ -90,16 +90,20 @@ typedef struct{
 
 /*报文正文*/
 typedef struct {
+	/*流水号*/
 	uint8_t serialNumH;
 	uint8_t serialNumL;
-
+	/*发报时间*/
 	sendTime_t sendTime;
-
+	/*地址标识符*/
+	/*遥测站地址*/
 	uint8_t RtuStationAddr[5];//遥测站地址
 
-
+	/*遥测站分类码*/
 	uint8_t RtuType;
 
+	/*观测时间标识符*/
+	/*观测时间*/
 	sendTime_t measureTime;
 
 	element_t element[MAX_ELEMENT_IN_MESSAGE];//最大六个要素
