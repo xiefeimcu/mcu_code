@@ -8,7 +8,12 @@
 #ifndef HYDROLOGYSTACK_H_
 #define HYDROLOGYSTACK_H_
 
+
+
 #include "stm32f1xx_hal.h"
+
+/**************************协议配置**************************************/
+#define MAX_ELEMENT_IN_MESSAGE  6
 /**************************控制字符定义**************************************/
 #define CT_SOH_ASCLL   0x01
 #define CT_SOH_HEX_BCD 0x7EE
@@ -62,6 +67,10 @@
 #define FUN_CODE_DQPZ        0XE2            //自定义功能码 读取自定义配置
 
 
+/**************************协议配置**************************************/
+#define MESSAGE_TYPE_UP  0
+#define MESSAGE_TYPE_DOW 8
+
 /*单个上报要素结构*/
 typedef struct
 {
@@ -86,10 +95,14 @@ typedef struct {
 
 	sendTime_t sendTime;
 
+	uint8_t RtuStationAddr[5];//遥测站地址
+
+
 	uint8_t RtuType;
 
 	sendTime_t measureTime;
 
+	element_t element[MAX_ELEMENT_IN_MESSAGE];//最大六个要素
 
 }messageMainBody_t;
 
@@ -113,7 +126,7 @@ typedef struct{
 
 	messageMainBody_t * messageMainBody;
 
-	uint8_t messageStopChar;//报文启始符
+	uint8_t messageStopChar;//报文结束符
 	uint16_t crc;
 }message_t;
 
