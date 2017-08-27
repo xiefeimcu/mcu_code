@@ -9,6 +9,7 @@
 #define CONFIG_H_
 
 #include "stm32f1xx_hal.h"
+#include "math.h"
 
 /*
  * ¶Ë¿ÚÓ³Éä¹ØÏµ

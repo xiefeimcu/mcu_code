@@ -158,7 +158,6 @@ void MX_FREERTOS_Init(void) {
 	/* definition and creation of defaultTask */
 	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
 	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
 	/* definition and creation of sensorSample */
 	osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 512);
 	sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
