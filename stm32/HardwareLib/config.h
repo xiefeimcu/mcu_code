@@ -9,11 +9,10 @@
 #define CONFIG_H_
 
 #include "stm32f1xx_hal.h"
-<<<<<<< HEAD
 #include "hydrologyStack.h"
-=======
+
 #include "math.h"
->>>>>>> 6869d77fa6be2c5721975e5fdbfaa26c2f196f8b
+
 
 /*
  * ¶Ë¿ÚÓ³Éä¹ØÏµ
