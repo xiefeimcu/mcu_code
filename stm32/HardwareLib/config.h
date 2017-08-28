@@ -9,6 +9,7 @@
 #define CONFIG_H_
 
 #include "stm32f1xx_hal.h"
+#include "hydrologyStack.h"
 
 /*
  * 端口映射关系
@@ -42,11 +43,10 @@ typedef struct{
 }comBaudRate_t;
 
 typedef struct {
-	uint8_t remoteStationAddr;//中心站地址
-	uint8_t localStationAddr; //RTU站地址
+	uint8_t centreStationAddr; //中心站地址
+	uint8_t RtuStationAddr[5]; //RTU站地址
 	uint8_t passwordH;
 	uint8_t passwordL;
-
 }upDataArg_t;
 
 typedef struct{
