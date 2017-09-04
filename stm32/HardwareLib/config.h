@@ -10,7 +10,6 @@
 
 #include "stm32f1xx_hal.h"
 #include "hydrologyStack.h"
-
 #include "math.h"
 
 
@@ -47,9 +46,9 @@ typedef struct{
 
 typedef struct {
 	uint8_t centreStationAddr; //中心站地址
-	uint8_t RtuStationAddr[5]; //RTU站地址
-	uint8_t passwordH;
-	uint8_t passwordL;
+	uint32_t RtuStationAddr; //RTU站地址
+	uint16_t password;
+	uint8_t  rtu_type;
 }upDataArg_t;
 
 typedef struct{

@@ -8,6 +8,8 @@
 #include "config.h"
 #include "stm32f1xx_hal.h"
 
+rtuParameter_t rtuParameter;
+
 uint8_t load_config(void){
 
 }

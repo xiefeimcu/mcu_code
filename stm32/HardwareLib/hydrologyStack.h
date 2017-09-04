@@ -66,6 +66,9 @@
 #define FUN_CODE_XGPZ        0XE1        //自定义功能码 修改自定义配置
 #define FUN_CODE_DQPZ        0XE2        //自定义功能码 读取自定义配置
 
+/**************************要素标识符**************************************/
+#define ELEMENT_IDENT_NONE 0x00
+
 
 /**************************协议配置**************************************/
 #define MESSAGE_TYPE_UP  0
@@ -86,6 +89,7 @@ typedef struct{
 	uint8_t dayBCD;
 	uint8_t hoursBCD;
 	uint8_t minuteBCD;
+	uint8_t secondBCD;
 }sendTime_t;
 
 /*报文正文*/
@@ -96,6 +100,7 @@ typedef struct {
 	/*发报时间*/
 	sendTime_t sendTime;
 	/*地址标识符*/
+	uint8_t identifierAddr;
 	/*遥测站地址*/
 	uint8_t RtuStationAddr[5];//遥测站地址
 	/*遥测站分类码*/
@@ -110,10 +115,10 @@ typedef struct {
 
 /*报文*/
 typedef struct{
-	uint8_t frameStartCharH;//帧启始符
-	uint8_t frameStartCharL;
+	uint8_t frameStartChar;//帧启始符
 
 	uint8_t centreStationAddr;//中心站地址
+
 	uint8_t RtuStationAddr[5];//遥测站地址
 
 	uint8_t pswH;//密码
@@ -121,8 +126,8 @@ typedef struct{
 
 	uint8_t funCode;//功能码
 
-	uint8_t identifierAndLenH :4;//上下行标识符
-	uint8_t identifierAndLenL :12;//报文长度
+	uint8_t identifierAndLenH; //上下行标识符
+	uint8_t identifierAndLenL; //报文长度
 
 	uint8_t messageStartChar;//报文启始符
 
