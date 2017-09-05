@@ -110,7 +110,7 @@ void init_msg_prg(message_t *message ,messageMainBody_t *messageSubject){
 	message->messageStopChar = CT_ETX;
 }
 
-void send_messag(){
+void send_messag(void){
 
 }
 
