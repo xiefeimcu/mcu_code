@@ -110,6 +110,13 @@ void init_msg_prg(message_t *message ,messageMainBody_t *messageSubject){
 	message->messageStopChar = CT_ETX;
 }
 
+void convert_message_ascall(message_t *message,uint8_t *txBuf){
+	uint8_t i=0;
+
+	message->
+
+}
+
 void send_messag(){
 
 }
