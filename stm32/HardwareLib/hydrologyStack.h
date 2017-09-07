@@ -8,8 +8,6 @@
 #ifndef HYDROLOGYSTACK_H_
 #define HYDROLOGYSTACK_H_
 
-
-
 #include "stm32f1xx_hal.h"
 
 /**************************–≠“È≈‰÷√**************************************/
