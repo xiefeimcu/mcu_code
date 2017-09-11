@@ -51,33 +51,111 @@ void convert_float_to_ascll(float num, uint8_t *p , uint8_t dataType){
 }
 
 /*
- * 均时报
+ * 生成报文正文的公共部分
  * */
-void creat_timeAverage_message(messageInf_t *message,uint8_t *buf){
-	uint8_t i = 0;
-
+uint8_t* creat_public_message(messageInf_t *message,uint8_t *buf){
+	uint8_t i;
 	/*
 	 * 流水号处理
-	 * */
+	 */
 	message->serialNum++;
 	sprintf(buf, "%4d", essage->serialNum);
 	buf += 4;
 
 	/*
 	 * 发报时间处理
-	 * */
+	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
 	sprintf(buf, "%2d", message->elementInf.date.Year);
+	buf += 2;
 	sprintf(buf, "%2d", message->elementInf.date.Month);
+	buf += 2;
 	sprintf(buf, "%2d", message->elementInf.date.Date);
+	buf += 2;
 	sprintf(buf, "%2d", message->elementInf.time.Hours);
+	buf += 2;
 	sprintf(buf, "%2d", message->elementInf.time.Minutes);
-	buf += 10;
+	buf += 2;
 
 	/*
-	 *
-	 * */
+	 * 地址标识符
+	 */
+	buf++ = 'S';
+	buf++ = 'T';
+
+	/*
+	 * 测站地址
+	 */
+	for(i=0;i<sizeof(message->RtuStationAddr);i++){
+		sprintf(buf,"%2d",message->RtuStationAddr[0]);
+		buf+=2;
+	}
+
+	/*
+	 * 遥测站分类码
+	 */
+	sprintf(buf, "%2d", rtuParameter.upDataArg.rtu_type);
+	buf += 2;
+
+	/*
+	 * 观测时间标识符
+	 */
+	buf++ ='T';
+	buf++ ='T';
+
+	return buf;
+}
+
+/*
+ * 均时报
+ * */
+void creat_timeAverage_message(messageInf_t *message,uint8_t *buf){
+	uint8_t i = 0;
+
+	/*
+	 * 增加公共部分
+	 */
+	buf=creat_public_message(message,buf);
+
+
+	/*
+	 *观测时间
+	 */
+	sprintf(buf,"%2d",message->elementInf.date.Year);
+	buf += 2;
+	sprintf(buf,"%2d",message->elementInf.date.Month);
+	buf += 2;
+	sprintf(buf,"%2d",message->elementInf.date.Date);
+	buf += 2;
+	sprintf(buf,"%2d",message->elementInf.time.Hours);
+	buf += 2;
+	sprintf(buf,"%2d",message->elementInf.time.Minutes);
+	buf += 2;
+
+	/*
+	 * 均时报间隔
+	 */
+	buf++ ='D';
+	buf++ ='R';
+	buf++ ='D';
+	if(rtuParameter.upDataArg.timeAverageInterval <60){//分钟
+
+		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval);
+		buf +=2;
+	}
+	else if(rtuParameter.upDataArg.timeAverageInterval>=1440){//天
+		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 1440 );
+		buf +=2;
+	}
+	else{//小时
+		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 60 );
+		buf +=2;
+	}
+
+	/*
+	 *  要素
+	 */
 
 }
 
