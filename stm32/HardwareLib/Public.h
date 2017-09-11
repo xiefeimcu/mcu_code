@@ -72,6 +72,8 @@ typedef union
     unsigned char a3;
   }bit;
 }float_n;
+
+void convert_byte_to_ascll(uitn8_t byte,uint8_t *asc1,uint8_t *asc2);
  
 extern const unsigned char HEXASCII[16];
 

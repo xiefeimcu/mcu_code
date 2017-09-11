@@ -706,3 +706,31 @@ void Setbyte4(unsigned char *pa,unsigned char add,long value)
   pa[add++] = s32.bit32.nLow.bit16.nHigh;
   pa[add] = s32.bit32.nLow.bit16.nLow;
 }
+/*******************************************************************************
+函数名称：convert_byte_to_ascall
+函数介绍：把byte转成两个字节的ascall
+输入参数：
+
+输出参数:
+返回值  ：
+*******************************************************************************/
+
+void convert_byte_to_ascall(uitn8_t byte,uint8_t *asc1,uint8_t *asc2){
+	uint8_t hByte = byte >> 16;
+	uint8_t lByte = byte - (byte >> 16);
+
+	if(hByte >= 10){
+		*asc1 = hByte + 'a' - 10;//a-f
+	}
+	else{
+		*asc1 = hByte + '0';
+ 	}
+
+	if(lByte >= 10){
+		*asc2 = lByte + 'a' - 10;
+	}
+	else{
+		*asc2 = lByte + '0';
+ 	}
+}
+

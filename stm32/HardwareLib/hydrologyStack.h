@@ -72,13 +72,21 @@
 #define MESSAGE_TYPE_UP  0
 #define MESSAGE_TYPE_DOW 8
 
-/*单个上报要素结构*/
+#define N(a,b,c) (c = a << 7 | b)
+
+/*要素结构*/
 typedef struct
 {
   unsigned char *elementIdentifier;   //要素标识符
-  long int value;                     //要素数据值
-  unsigned char dataType;             //数据类型 BCD码 N(x,y)
+  float value;                        //要素数据值
+  uint8_t dataType;
 }element_t;
+
+typedef struct{
+	element_t element[MAX_ELEMENT_IN_MESSAGE];
+	RTC_TimeTypeDef time;
+	RTC_DateTypeDef date;
+}elementInf_t;
 
 /*时间变量*/
 typedef struct{
@@ -90,29 +98,9 @@ typedef struct{
 	uint8_t secondBCD;
 }sendTime_t;
 
-/*报文正文*/
-typedef struct {
-	/*流水号*/
-	uint8_t serialNumH;
-	uint8_t serialNumL;
-	/*发报时间*/
-	sendTime_t sendTime;
-	/*地址标识符*/
-	uint8_t identifierAddr;
-	/*遥测站地址*/
-	uint8_t RtuStationAddr[5];//遥测站地址
-	/*遥测站分类码*/
-	uint8_t RtuType;
-	/*观测时间标识符*/
-	/*观测时间*/
-	sendTime_t measureTime;
-
-	element_t element[MAX_ELEMENT_IN_MESSAGE];//最大六个要素
-
-}messageMainBody_t;
-
-/*报文*/
+/*报文参数*/
 typedef struct{
+	uint16_t serialNum;
 	uint8_t frameStartChar;//帧启始符
 
 	uint8_t centreStationAddr;//中心站地址
@@ -122,19 +110,9 @@ typedef struct{
 	uint8_t pswH;//密码
 	uint8_t pswL;
 
-	uint8_t funCode;//功能码
-
-	uint8_t identifierAndLenH; //上下行标识符
-	uint8_t identifierAndLenL; //报文长度
-
-	uint8_t messageStartChar;//报文启始符
-
-	messageMainBody_t * messageMainBody;
-
-	uint8_t messageStopChar;//报文结束符
-	uint16_t crc;
-}message_t;
+	elementInf_t elementInf;
 
 
+}messageInf_t;
 
 #endif /* HYDROLOGYSTACK_H_ */
