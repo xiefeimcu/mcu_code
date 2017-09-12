@@ -10,6 +10,8 @@
 
 #include "stm32f1xx_hal.h"
 
+#include "include.h"
+
 /**************************协议配置**************************************/
 #define MAX_ELEMENT_IN_MESSAGE  6
 /**************************控制字符定义**************************************/
@@ -72,7 +74,9 @@
 #define MESSAGE_TYPE_UP  0
 #define MESSAGE_TYPE_DOW 8
 
-#define N(a,b,c) (c = a << 7 | b)
+#define N(a,b,c) (c = a << 4 | b)
+#define GET_HIGH_4BIT(a) (a >> 4)
+#define GET_LOW_4BIT(a)  (a & 0x0F)
 
 /*要素结构*/
 typedef struct
@@ -111,8 +115,16 @@ typedef struct{
 	uint8_t pswL;
 
 	elementInf_t elementInf;
-
-
 }messageInf_t;
+
+typedef struct{
+
+}
+
+typedef struct{
+	float batteryVoltage;
+}rtuStateInf_t;
+
+extern rtuStateInf_t rtuStateInf;
 
 #endif /* HYDROLOGYSTACK_H_ */

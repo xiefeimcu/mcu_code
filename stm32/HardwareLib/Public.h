@@ -13,6 +13,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "stm32f1xx_hal.h"
 
 #define         uchar           unsigned char
 #define         uint            unsigned int
@@ -73,7 +74,7 @@ typedef union
   }bit;
 }float_n;
 
-void convert_byte_to_ascll(uitn8_t byte,uint8_t *asc1,uint8_t *asc2);
+void convert_byte_to_ascll(uint8_t byte,uint8_t *asc1,uint8_t *asc2);
  
 extern const unsigned char HEXASCII[16];
 

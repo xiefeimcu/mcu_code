@@ -46,20 +46,19 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+
 #include "stm32f1xx_hal.h"
+#include "main.h"
 #include "cmsis_os.h"
 #include "crc.h"
 #include "rtc.h"//RTC ×¼±¸»»³É "pcf8563"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "include.h"
 
 /* USER CODE BEGIN Includes */
-#include "modbus.h"
-#include "gui.h"
-#include "lcd_12864.h"
-#include "AT24C04.h"
+#include "include.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/

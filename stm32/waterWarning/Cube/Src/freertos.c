@@ -72,7 +72,7 @@ osThreadId ldleHandle;
 
 /* USER CODE BEGIN Variables */
 uint8_t uarto_rx_buf[32];
-
+sysState_t sysStateInf;
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/

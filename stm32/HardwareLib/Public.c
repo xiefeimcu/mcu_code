@@ -715,7 +715,7 @@ void Setbyte4(unsigned char *pa,unsigned char add,long value)
 ·µ»ØÖµ  £º
 *******************************************************************************/
 
-void convert_byte_to_ascall(uitn8_t byte,uint8_t *asc1,uint8_t *asc2){
+void convert_byte_to_ascall(uint8_t byte,uint8_t *asc1,uint8_t *asc2){
 	uint8_t hByte = byte >> 16;
 	uint8_t lByte = byte - (byte >> 16);
 
