@@ -88,8 +88,8 @@ static char* creat_public_message(messageInf_t *message,char *buf){
 	/*
 	 * 测站地址
 	 */
-	for(i=0;i<sizeof(message->RtuStationAddr);i++){
-		sprintf(buf,"%2d",message->RtuStationAddr[0]);
+	for(i=0;i<sizeof(rtuParameter.upDataArg.RtuStationAddr);i++){
+		sprintf(buf,"%2d",rtuParameter.upDataArg.RtuStationAddr[i]);
 		buf+=2;
 	}
 
@@ -151,7 +151,10 @@ static char* creat_element_message(messageInf_t *message, char *buf) {
 /*
  * 均时报
  * */
-void creat_timeAverage_message(messageInf_t *message,char *buf){
+static void creat_timeAverage_message(messageInf_t *message,char *buf){
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
+
 	/*
 	 * 增加公共部分
 	 */
@@ -183,7 +186,9 @@ void creat_timeAverage_message(messageInf_t *message,char *buf){
 /*
  * 维持报
  * */
-void creat_keep_message(messageInf_t *message, char *buf) {
+static uint8_t creat_keep_message(messageInf_t *message, char *buf) {
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
 
 	/*
 	 * 流水号处理
@@ -209,12 +214,17 @@ void creat_keep_message(messageInf_t *message, char *buf) {
 	buf += 2;
 	sprintf(buf, "%2d", message->elementInf.time.Seconds);
 	buf += 2;
+
+	return (uint8_t)(buf - len);
 }
 
 /*
  * 定时报
  * */
-void creat_timing_mesage(messageInf_t *message,char *buf){
+static uint8_t creat_timing_mesage(messageInf_t *message,char *buf){
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
+
 	/*
 	 * 增加公共部分
 	 */
@@ -249,26 +259,25 @@ void creat_timing_mesage(messageInf_t *message,char *buf){
 	*buf++ = 'T';
 	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
 	buf += 5;
+
+	return (buf - len);
 }
 /*
  * 小时报
  * */
-void creat_hour_mesage(messageInf_t *message,char *buf){
+static uint8_t creat_hour_mesage(messageInf_t *message,char *buf){
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
+
 	/*
 	 * 增加公共部分
 	 */
 	buf=creat_public_message(message,buf);
-}
-/*
- * 加报
- * */
-void creat_extra_mesage(messageInf_t *message,uint8_t *buf){
-	/*增加公共部分*/
-	buf=creat_public_message(message,buf);
 
 	/*
-	 * 触发要素
+	 * 要素: 1h内每5min时段降水量、降水量累计值、1h内每5min时段间隔相对水位
 	 */
+	buf=creat_element_message(message,buf);
 
 	/*
 	 * 添加电压信息
@@ -277,11 +286,154 @@ void creat_extra_mesage(messageInf_t *message,uint8_t *buf){
 	*buf++ = 'T';
 	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
 	buf += 5;
+
+	return (uitn8_t)(buf - len);
+}
+/*
+ * 加报
+ * */
+static uint8_t creat_extra_mesage(messageInf_t *message,char *buf){
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
+
+	/*增加公共部分*/
+	buf=creat_public_message(message,buf);
+
+	/*
+	 * 触发要素
+	 */
+	buf = creat_element_message(message,buf);
+
+	/*
+	 * 添加电压信息
+	 */
+	*buf++ = 'V';
+	*buf++ = 'T';
+	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
+	buf += 5;
+
+	return (uint8_t)(buf - len);
 }
 /*
  * 人工报
  * */
-void creat_manMade_message(messageInf_t *message,uint8_t *buf){
+static uitn8_t creat_manMade_message(messageInf_t *message, char *buf) {
+	/*得到启始地址*/
+	uint8_t len=(uint8_t)buf;
+
+	message->serialNum++;
+	sprintf(buf, "%4d", message->serialNum);
+	buf += 4;
+
+	/*
+	 * 发报时间处理
+	 */
+	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
+	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
+	sprintf(buf, "%2d", message->elementInf.date.Year);
+	buf += 2;
+	sprintf(buf, "%2d", message->elementInf.date.Month);
+	buf += 2;
+	sprintf(buf, "%2d", message->elementInf.date.Date);
+	buf += 2;
+	sprintf(buf, "%2d", message->elementInf.time.Hours);
+	buf += 2;
+	sprintf(buf, "%2d", message->elementInf.time.Minutes);
+	buf += 2;
+	sprintf(buf, "%2d", message->elementInf.time.Seconds);
+	buf += 2;
+
+	/*
+	 * 人工置数标识符，人工置数。
+	 */
+	//TODO 暂时不填。
+
+	returen (uint8_t)(buf - len);
+}
+
+/*
+ * 调用此函数生成水文数据帧
+ * 参数funCode表明帧的类型
+ *
+ * */
+
+void creat_msg(messageInf_t *message, uint8_t *txBuf,uint8_t funCode){
+	uint8_t len=0;
+
+	char *buf =(char*)txBuf;
+
+	 /* 帧启始符*/
+	*buf++ =CT_SOH_ASCLL;
+
+	/*
+	 * 中心站地址
+	 */
+	sprintf(buf,"%2d",rtuParameter.upDataArg.centreStationAddr);
+	buf+=2;
+
+	/*
+	 * 测站地址
+	 */
+	for(i=0;i<sizeof(rtuParameter.upDataArg.RtuStationAddr);i++){
+		sprintf(buf,"%2d",rtuParameter.upDataArg.RtuStationAddr[i]);
+		buf+=2;
+	}
+
+	/*
+	 *密码
+	 */
+	sprintf(buf,"%4d",rtuParameter.upDataArg.passWord);
+	buf+=4;
+
+	/*
+	 * 功能码
+	 */
+	sprintf(buf,"%2d",funCode);
+	buf+=2;
+
+	/*
+	 * 上下行标识符
+	 */
+	*buf++ = MESSAGE_TYPE_UP;
+
+
+	switch(funCode){
+	/*均时段*/
+	case FUN_CODE_JYSD:
+		len = creat_timeAverage_message(message,buf + 4);
+		*buf++ =
+		sprintf(buf,"%3d",len);
+		buf += (3 + len);
+
+	break;
+
+	/*小时报*/
+	case FUN_CODE_XSB:
+
+	break;
+
+	/*定时报*/
+	case FUN_CODE_DSB:
+
+	break;
+
+	/*链路维持报*/
+	case FUN_CODE_LLWC:
+
+	break;
+
+	/*加报*/
+	case FUN_CODE_JBB:
+
+	break;
+
+	/*人工置数报*/
+	case FUN_CODE_RGZS:
+
+	break;
+
+	default :break;
+	}
 
 }
 

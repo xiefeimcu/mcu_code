@@ -105,21 +105,8 @@ typedef struct{
 /*报文参数*/
 typedef struct{
 	uint16_t serialNum;
-	uint8_t frameStartChar;//帧启始符
-
-	uint8_t centreStationAddr;//中心站地址
-
-	uint8_t RtuStationAddr[5];//遥测站地址
-
-	uint8_t pswH;//密码
-	uint8_t pswL;
-
 	elementInf_t elementInf;
 }messageInf_t;
-
-typedef struct{
-
-}
 
 typedef struct{
 	float batteryVoltage;

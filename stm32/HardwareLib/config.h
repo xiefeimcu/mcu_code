@@ -46,7 +46,7 @@ typedef struct{
 
 typedef struct {
 	uint8_t  centreStationAddr; //中心站地址
-	uint32_t RtuStationAddr; //RTU站地址
+	uint8_t RtuStationAddr[5]; //RTU站地址
 	uint16_t passWord;
 	uint8_t  rtuType;
 	uint16_t  timeAverageInterval;
