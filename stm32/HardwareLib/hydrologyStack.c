@@ -5,6 +5,55 @@
  *      Author: xiefei
  */
 #include "include.h"
+
+uint16_t getLen_of_txBuf(void){
+	return (txDataBuf.dataIdx + 1);
+}
+
+uint8_t *get_addr_txBuf(void){
+	return (uint8_t*)(txDataBuf.dataBuf);
+}
+
+void clear_txBuf(void){
+	memset(txDataBuf.dataBuf,0,TX_BUF_LEN);
+	txDataBuf.dataIdx = 0;
+}
+
+void clear_tail(uint16_t len){
+	txDataBuf.dataIdx -= len;
+}
+
+void push_char_to_txBuf(uint8_t ch){
+	txDataBuf.dataBuf[txDataBuf.dataIdx] = ch;
+	txDataBuf.dataIdx++;
+}
+
+void push_integer_to_txBuf(uint32_t num , uint8_t dataType){
+	uint8_t str[]={"%ad"};
+
+	str[1] = GET_HIGH_4BIT(dataType) + '0';
+
+	sprintf((char*)(txDataBuf.dataBuf  + txDataBuf.dataIdx),(const char*)str,num);
+	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
+}
+
+void push_float_to_txBuf(float num,uint8_t dataType){
+	uint8_t str[]={"%a.bf"};
+
+	 str[1] = GET_HIGH_4BIT(dataType) + '0';
+	 str[3] = GET_LOW_4BIT(dataType) +  '0';
+	sprintf((char*)(txDataBuf.dataBuf  + txDataBuf.dataIdx),(const char *)str,num);
+	txDataBuf.dataIdx += (GET_HIGH_4BIT(dataType) +  GET_LOW_4BIT(dataType) + 1);
+}
+
+void push_data_to_txBuf(uint8_t *srcData,uint16_t len){
+	uint8_t i;
+
+	for(i=0;i<len;i++){
+		txDataBuf.dataBuf[txDataBuf.dataIdx] = srcData[i];
+		txDataBuf.dataIdx++;
+	}
+}
 /*
  * 清除报文中的要素
  * idx：需要清除的要素的小标，为负数则全部清零；
@@ -52,303 +101,272 @@ int8_t add_element(messageInf_t *message,  uint8_t *str, float value,uint8_t dat
 /*
  * 生成报文正文的公共部分到发送buf
  * */
-static char* creat_public_message(messageInf_t *message,char *buf){
+static void creat_public_message(messageInf_t *message){
 	uint8_t i;
 	/*
 	 * 流水号处理
 	 */
-	message->serialNum++;
-	sprintf(buf, "%4d", message->serialNum);
-	buf += 4;
+	push_integer_to_txBuf(message->serialNum++);
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
-	sprintf(buf, "%2d", message->elementInf.date.Year);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Month);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Date);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Hours);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Minutes);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Seconds);
-	buf += 2;
+	push_integer_to_txBuf(message->elementInf.date.Year,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Month,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Date,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Hours,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Minutes,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Seconds,N(2,0));
 
 	/*
 	 * 地址标识符
 	 */
-	*buf++ = 'S';
-	*buf++ = 'T';
+	push_char_to_txBuf('S');
+	push_char_to_txBuf('T');
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 测站地址
 	 */
 	for(i=0;i<sizeof(rtuParameter.upDataArg.RtuStationAddr);i++){
-		sprintf(buf,"%2d",rtuParameter.upDataArg.RtuStationAddr[i]);
-		buf+=2;
+		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],N(2,0));
 	}
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 遥测站分类码
 	 */
-	sprintf(buf, "%2d", rtuParameter.upDataArg.rtuType);
-	buf += 2;
+	push_integer_to_txBuf(rtuParameter.upDataArg.rtuType,N(2,0));
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 观测时间标识符
 	 */
-	*buf++ ='T';
-	*buf++ ='T';
+	push_char_to_txBuf('T');
+	push_char_to_txBuf('T');
+	push_char_to_txBuf(' ');
 
 	/*
 	 *观测时间
 	 */
-	sprintf(buf,"%2d",message->elementInf.date.Year);
-	buf += 2;
-	sprintf(buf,"%2d",message->elementInf.date.Month);
-	buf += 2;
-	sprintf(buf,"%2d",message->elementInf.date.Date);
-	buf += 2;
-	sprintf(buf,"%2d",message->elementInf.time.Hours);
-	buf += 2;
-	sprintf(buf,"%2d",message->elementInf.time.Minutes);
-	buf += 2;
+	push_integer_to_txBuf( message->elementInf.date.Year,N(2,0));
+	push_integer_to_txBuf( message->elementInf.date.Month,N(2,0));
+	push_integer_to_txBuf( message->elementInf.date.Date,N(2,0));
+	push_integer_to_txBuf( message->elementInf.time.Hours,N(2,0));
+	push_integer_to_txBuf( message->elementInf.time.Minutes,N(2,0));
+	push_char_to_txBuf(' ');
 
-	return buf;
 }
 
 /*
  * 添加要素到发送buf
  */
-static char* creat_element_message(messageInf_t *message, char *buf) {
+static void creat_element_message(messageInf_t *message) {
 	uint8_t i=0;
-	uint8_t str[] = {"%3.4f"};
-
 	while (message->elementInf.element[i].dataType != ELEMENT_IDENT_NONE) {
 		/*复制标识符信息*/
-		while (*(message->elementInf.element[i].elementIdentifier)++) {
-			*buf++ = *(message->elementInf.element[i].elementIdentifier);
-		}
+		push_data_to_txBuf(message->elementInf.element[i].elementIdentifier,
+				sizeof(message->elementInf.element[i].elementIdentifier - 1));
+		push_char_to_txBuf(' ');
 
 		/*
 		 * 处理数据
 		 */
-		str[1] = GET_HIGH_4BIT(message->elementInf.element[i].dataType) + '0';//转成字符
-		str[3] = GET_LOW_4BIT(message->elementInf.element[i].dataType) + '0';
-		sprintf(buf, (const char*) str, (message->elementInf.element[i].value));
-		buf += (str[1] + str[3] + 1 - '0' - '0');//计算总共占用的长度
-
-		i++;
+		push_float_to_txBuf(message->elementInf.element[i].value,
+				message->elementInf.element[i].dataType);
+		push_char_to_txBuf(' ');
 	}
-	return buf;
 }
 
 /*
  * 均时报
  * */
-static void creat_timeAverage_message(messageInf_t *message,char *buf){
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
-
+static uint16_t creat_timeAverage_message(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 	/*
 	 * 增加公共部分
 	 */
-	buf=creat_public_message(message,buf);
+	creat_public_message(message);
 
 	/*
 	 * 时间步长
 	 */
-	*buf++ ='D';
-	*buf++ ='R';
-	*buf++ ='D';
-	if(rtuParameter.upDataArg.timeAverageInterval <60){        //分钟
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval);
+	push_char_to_txBuf('D');
+	push_char_to_txBuf('R');
+
+	if (rtuParameter.upDataArg.timeAverageInterval < 60) {        //分钟
+		push_char_to_txBuf('N');
+		push_char_to_txBuf(' ');
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval);
+	} else if (rtuParameter.upDataArg.timeAverageInterval >= 1440) { //天
+		push_char_to_txBuf('D');
+		push_char_to_txBuf(' ');
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440 );
+
+	} else {
+		push_char_to_txBuf('H');
+		push_char_to_txBuf(' ');
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60);
 	}
-	else if(rtuParameter.upDataArg.timeAverageInterval>=1440){ //天
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 1440 );
-	}
-	else{                                                      //小时
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 60 );
-	}
-	buf +=2;
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 要素标识符、数据
 	 */
-	buf=creat_element_message(message,buf);
+	creat_element_message(message);
+
+	return getLen_of_txBuf() - lenBefor;
 }
 
 /*
  * 维持报
  * */
-static uint8_t creat_keep_message(messageInf_t *message, char *buf) {
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
+static uint16_t creat_keep_message(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 
 	/*
 	 * 流水号处理
 	 */
-	message->serialNum++;
-	sprintf(buf, "%4d", message->serialNum);
-	buf += 4;
+	push_integer_to_txBuf(message->serialNum++);
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
-	sprintf(buf, "%2d", message->elementInf.date.Year);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Month);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Date);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Hours);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Minutes);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Seconds);
-	buf += 2;
+	push_integer_to_txBuf(message->elementInf.date.Year,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Month,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Date,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Hours,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Minutes,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Seconds,N(2,0));
+	push_char_to_txBuf(' ');
 
-	return (uint8_t)(buf - len);
+	return getLen_of_txBuf() - lenBefor;
 }
 
 /*
  * 定时报
  * */
-static uint8_t creat_timing_mesage(messageInf_t *message,char *buf){
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
+static uint16_t creat_timing_mesage(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 
 	/*
 	 * 增加公共部分
 	 */
-	buf=creat_public_message(message,buf);
+	creat_public_message(message);
 
 	/*
 	 * 均时报间隔
 	 */
-	*buf++ ='D';
-	*buf++ ='R';
-	*buf++ ='D';
-	if(rtuParameter.upDataArg.timeAverageInterval <60){        //分钟
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval);
-	}
-	else if(rtuParameter.upDataArg.timeAverageInterval>=1440){ //天
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 1440 );
-	}
-	else{                                                      //小时
-		sprintf(buf,"%2d",rtuParameter.upDataArg.timeAverageInterval / 60 );
-	}
-	buf +=2;
+	push_char_to_txBuf('D');
+	push_char_to_txBuf('R');
 
-	/*
-	 * 要素标识符、数据
-	 */
-	buf=creat_element_message(message,buf);
 
-	/*
-	 * 添加电压信息
-	 */
-	*buf++ = 'V';
-	*buf++ = 'T';
-	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
-	buf += 5;
+	if (rtuParameter.upDataArg.timeAverageInterval < 60) {        //分钟
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval,N(2,0));
+		push_char_to_txBuf('N');
+		push_char_to_txBuf(' ');
+	} else if (rtuParameter.upDataArg.timeAverageInterval >= 1440) { //天
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440,N(2,0));
+		push_char_to_txBuf('D');
+		push_char_to_txBuf(' ');
+	} else {                                                      //小时
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2,0));
+		push_char_to_txBuf('H');
+		push_char_to_txBuf(' ');
+	}
 
-	return (buf - len);
+	/*要素标识符、数据*/
+	creat_element_message(message);
+	push_char_to_txBuf(' ');
+
+	/*添加电压信息*/
+	push_char_to_txBuf('V');
+	push_char_to_txBuf('T');
+	push_char_to_txBuf(' ');
+	push_float_to_txBuf(rtuStateInf.batteryVoltage, N(2, 2));
+	push_char_to_txBuf(' ');
+	return getLen_of_txBuf() - lenBefor;
 }
 /*
  * 小时报
  * */
-static uint8_t creat_hour_mesage(messageInf_t *message,char *buf){
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
+static uint16_t creat_hour_mesage(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 
-	/*
-	 * 增加公共部分
-	 */
-	buf=creat_public_message(message,buf);
+	/*增加公共部分*/
+	creat_public_message(message);
 
-	/*
-	 * 要素: 1h内每5min时段降水量、降水量累计值、1h内每5min时段间隔相对水位
-	 */
-	buf=creat_element_message(message,buf);
+	/*要素: 1h内每5min时段降水量、降水量累计值、1h内每5min时段间隔相对水位*/
+	creat_element_message(message);
 
 	/*
 	 * 添加电压信息
 	 */
-	*buf++ = 'V';
-	*buf++ = 'T';
-	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
-	buf += 5;
+	push_char_to_txBuf('V');
+	push_char_to_txBuf('T');
+	push_char_to_txBuf(' ');
+	push_float_to_txBuf(rtuStateInf.batteryVoltage,N(2, 2));
+	push_char_to_txBuf(' ');
 
-	return (uitn8_t)(buf - len);
+	return getLen_of_txBuf() - lenBefor;
 }
+
 /*
  * 加报
  * */
-static uint8_t creat_extra_mesage(messageInf_t *message,char *buf){
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
+static uint16_t creat_extra_mesage(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 
 	/*增加公共部分*/
-	buf=creat_public_message(message,buf);
+	creat_public_message(message);
 
-	/*
-	 * 触发要素
-	 */
-	buf = creat_element_message(message,buf);
+	/* 触发要素 */
+	creat_element_message(message);
 
 	/*
 	 * 添加电压信息
 	 */
-	*buf++ = 'V';
-	*buf++ = 'T';
-	sprintf(buf,"%2.2f",rtuStateInf.batteryVoltage);
-	buf += 5;
+	push_char_to_txBuf('V');
+	push_char_to_txBuf('T');
+	push_char_to_txBuf(' ');
+	push_float_to_txBuf(rtuStateInf.batteryVoltage, N(2,2));
+	push_char_to_txBuf(' ');
 
-	return (uint8_t)(buf - len);
+	return getLen_of_txBuf() - lenBefor;
 }
+
+
 /*
  * 人工报
  * */
-static uitn8_t creat_manMade_message(messageInf_t *message, char *buf) {
-	/*得到启始地址*/
-	uint8_t len=(uint8_t)buf;
+static uint16_t creat_manMade_message(messageInf_t *message) {
+	uint16_t lenBefor = getLen_of_txBuf();
 
-	message->serialNum++;
-	sprintf(buf, "%4d", message->serialNum);
-	buf += 4;
+	push_integer_to_txBuf(message->serialNum++,N(2,0));
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
-	sprintf(buf, "%2d", message->elementInf.date.Year);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Month);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.date.Date);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Hours);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Minutes);
-	buf += 2;
-	sprintf(buf, "%2d", message->elementInf.time.Seconds);
-	buf += 2;
+	push_integer_to_txBuf(message->elementInf.date.Year,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Month,N(2,0));
+	push_integer_to_txBuf(message->elementInf.date.Date,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Hours,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Minutes,N(2,0));
+	push_integer_to_txBuf(message->elementInf.time.Seconds,N(2,0));
+	push_char_to_txBuf(' ');
 
 	/*
 	 * 人工置数标识符，人工置数。
 	 */
-	//TODO 暂时不填。
-
-	returen (uint8_t)(buf - len);
+	//TODO 等待补充
+	return getLen_of_txBuf() - lenBefor;
 }
 
 /*
@@ -356,198 +374,155 @@ static uitn8_t creat_manMade_message(messageInf_t *message, char *buf) {
  * 参数funCode表明帧的类型
  *
  * */
+void creat_msg(messageInf_t *message, uint8_t *txBuf, uint8_t funCode) {
+	uint8_t i = 0;
+	uint16_t len=0;
 
-void creat_msg(messageInf_t *message, uint8_t *txBuf,uint8_t funCode){
-	uint8_t len=0;
+	/* 帧启始符*/
+	push_char_to_txBuf(CT_SOH_ASCLL);
 
-	char *buf =(char*)txBuf;
-
-	 /* 帧启始符*/
-	*buf++ =CT_SOH_ASCLL;
-
-	/*
-	 * 中心站地址
-	 */
-	sprintf(buf,"%2d",rtuParameter.upDataArg.centreStationAddr);
-	buf+=2;
+	/*中心站地址*/
+	push_integer_to_txBuf(rtuParameter.upDataArg.centreStationAddr,N(2,0));
 
 	/*
 	 * 测站地址
 	 */
-	for(i=0;i<sizeof(rtuParameter.upDataArg.RtuStationAddr);i++){
-		sprintf(buf,"%2d",rtuParameter.upDataArg.RtuStationAddr[i]);
-		buf+=2;
+	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
+		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],N(2,0));
 	}
 
+	/*密码*/
+	push_integer_to_txBuf(rtuParameter.upDataArg.passWord,N(4,0));
+
+	/*功能码*/
+	push_integer_to_txBuf(funCode,N(2,0));
+
+	/*上下行标识符*/
+	push_char_to_txBuf(MESSAGE_TYPE_UP);
+
+	switch (funCode) {
 	/*
-	 *密码
+	 * 均时段
 	 */
-	sprintf(buf,"%4d",rtuParameter.upDataArg.passWord);
-	buf+=4;
-
-	/*
-	 * 功能码
-	 */
-	sprintf(buf,"%2d",funCode);
-	buf+=2;
-
-	/*
-	 * 上下行标识符
-	 */
-	*buf++ = MESSAGE_TYPE_UP;
-
-
-	switch(funCode){
-	/*均时段*/
 	case FUN_CODE_JYSD:
-		len = creat_timeAverage_message(message,buf + 4);
-		*buf++ =
-		sprintf(buf,"%3d",len);
-		buf += (3 + len);
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_timeAverage_message(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	/*小时报*/
+		/*添加正文*/
+		creat_timeAverage_message(message);
+		break;
+
+		/*
+		 * 小时报
+		 * */
 	case FUN_CODE_XSB:
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_hour_mesage(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	/*定时报*/
+		/*添加正文*/
+		creat_hour_mesage(message);
+		break;
+
+		/*
+		 * 定时报
+		 * */
 	case FUN_CODE_DSB:
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_timing_mesage(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	/*链路维持报*/
+		/*添加正文*/
+		creat_timing_mesage(message);
+		break;
+
+		/*
+		 * 链路维持报
+		 */
 	case FUN_CODE_LLWC:
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_keep_message(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	/*加报*/
+		/*添加正文*/
+		creat_keep_message(message);
+		break;
+
+		/*
+		 * 加报
+		 */
 	case FUN_CODE_JBB:
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_extra_mesage(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	/*人工置数报*/
+		/*添加正文*/
+		creat_extra_mesage(message);
+		break;
+
+		/*
+		 * 人工置数报
+		 */
 	case FUN_CODE_RGZS:
+		/*
+		 * 先计得到正文长度
+		 * 添加长度标识
+		 */
+		len = creat_manMade_message(message);
+		clear_tail(len);
+		push_integer_to_txBuf(len, N(3, 0));
 
-	break;
+		/*报文启始符*/
+		push_char_to_txBuf(CT_STX);
 
-	default :break;
+		/*添加正文*/
+		creat_manMade_message(message);
+		break;
+
+	default:
+		break;
 	}
 
-}
+	/*报文结束符*/
+	push_char_to_txBuf(CT_ETX);
 
-
-/*
-
- * 生成报文正文
- *
-void create_message_subject(messageMainBody_t * messageSubject) {
-	RTC_TimeTypeDef time;
-	RTC_DateTypeDef date;
-
-	流水号
-	messageSubject->serialNumH = (messageSerialNum & 0xFF00) >> 8;
-	messageSubject->serialNumH = (messageSerialNum & 0x00FF);
-	messageSerialNum++;
-
-	发报时间
-	HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BCD);
-	HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BCD);
-	messageSubject->sendTime.yearBCD = date.Year;    //YY
-	messageSubject->sendTime.minuteBCD = date.Month; //MM
-	messageSubject->sendTime.dayBCD = date.Date;     //DD
-	messageSubject->sendTime.hoursBCD = time.Hours;   //HH
-	messageSubject->sendTime.minuteBCD = time.Minutes;   //mm
-	messageSubject->sendTime.secondBCD = time.Seconds;   //ss
-
-	地址标识符 TODO 标识符是多少？
-	messageSubject->identifierAddr = 0;
-	遥测站地址
-	messageSubject->RtuStationAddr[0] = 0;
-	messageSubject->RtuStationAddr[1] = (rtuParameter.upDataArg.RtuStationAddr & 0xFF000000) >> 24;
-	messageSubject->RtuStationAddr[2] = (rtuParameter.upDataArg.RtuStationAddr & 0x00FF0000) >> 16;
-	messageSubject->RtuStationAddr[3] = (rtuParameter.upDataArg.RtuStationAddr & 0x0000FF00) >> 8;
-	messageSubject->RtuStationAddr[5] = (rtuParameter.upDataArg.RtuStationAddr & 0x000000FF);
-
-	遥测站分类码
-	messageSubject->RtuType = rtuParameter.upDataArg.rtu_type;
-	清除要素
-	clear_element_from_message(messageSubject);
-}
-
-
-
-
-
- * 上电后调用，初始化报文中的常量
- *
-void init_msg_prg(messageInf_t *message ,messageMainBody_t *messageSubject){
-	message->frameStartChar = CT_SOH_ASCLL;
-	message->centreStationAddr = rtuParameter.upDataArg.centreStationAddr;
-
-	message->RtuStationAddr[0]= 0;
-	message->RtuStationAddr[1]= (rtuParameter.upDataArg.RtuStationAddr & 0xFF000000)>>24;
-	message->RtuStationAddr[2]= (rtuParameter.upDataArg.RtuStationAddr & 0x00FF0000)>>16;
-	message->RtuStationAddr[3]= (rtuParameter.upDataArg.RtuStationAddr & 0x0000FF00)>>8;
-	message->RtuStationAddr[4]= (rtuParameter.upDataArg.RtuStationAddr & 0x000000FF);
-
-	message->pswH= (rtuParameter.upDataArg.password & 0xff00)>>8;
-	message->pswL= (rtuParameter.upDataArg.password & 0x00ff);
-
-	message->identifierAndLen = (messageInf_tYPE_DOW << 15);
-	message->identifierAndLen |= sizeof (messageMainBody_t);
-
-	message->messageStartChar = CT_STX;
-	message->messageMainBody = messageSubject;
-	message->messageStopChar = CT_ETX;
-}
-
- *将报文转成ascll，并放入发送缓冲区。
- *
-void convert_message_ascll(messageInf_t *message,uint8_t *txBuf){
-	uint8_t i=0;
-
-	txBuf[i++] = message->frameStartChar;//不需要转换
-
-	convert_byte_to_ascll(message->centreStationAddr,(txBuf + i)++,(txBuf + i)++);
-
-	convert_byte_to_ascll(message->RtuStationAddr[0],(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->RtuStationAddr[1],(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->RtuStationAddr[2],(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->RtuStationAddr[3],(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->RtuStationAddr[4],(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->pswH ,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->pswL ,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->funCode,(txBuf + i)++,(txBuf + i)++);
-
-	convert_byte_to_ascll(message->identifierAndLen >> 8,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll((uint8_t)(message->identifierAndLen),(txBuf + i)++,(txBuf + i)++);
-	txBuf[i++] =message ->messageStartChar;//不需要转换
-	***************报文正文部分**********************
-	convert_byte_to_ascll(message->messageMainBody->serialNumH,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->serialNumL,(txBuf + i)++,(txBuf + i)++);
-
-	convert_byte_to_ascll(message->messageMainBody->sendTime.yearBCD,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->sendTime.monthBCD,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->sendTime.dayBCD,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->sendTime.hoursBCD,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->sendTime.minuteBCD,(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll(message->messageMainBody->sendTime.secondBCD,(txBuf + i)++,(txBuf + i)++);
-	txBuf[i++]='S';
-	txBuf[i++]='T';
-
-	txBuf[i++]=' ';
-	convert_byte_to_ascll(message->messageMainBody->identifierAddr,(txBuf + i)++,(txBuf + i)++);
-	***************报文正文部分END**********************
-
-	txBuf[i++] =message ->messageStopChar;//不需要转换
-	convert_byte_to_ascll((message->crc >> 8),(txBuf + i)++,(txBuf + i)++);
-	convert_byte_to_ascll((uint8_t)(message->crc),(txBuf + i)++,(txBuf + i)++);
-}
-
-void send_messag(void){
+	/*求校验*/
+	push_integer_to_txBuf(CRC16(get_addr_txBuf(),getLen_of_txBuf()) ,N(4,0));
 
 }
-
-*/

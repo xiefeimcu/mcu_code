@@ -14,6 +14,7 @@
 
 /**************************协议配置**************************************/
 #define MAX_ELEMENT_IN_MESSAGE  6
+#define TX_BUF_LEN 255
 /**************************控制字符定义**************************************/
 #define CT_SOH_ASCLL   0x01
 #define CT_SOH_HEX_BCD 0x7EE
@@ -74,7 +75,7 @@
 #define MESSAGE_TYPE_UP  0
 #define MESSAGE_TYPE_DOW 8
 
-#define N(a,b,c) (c = a << 4 | b)
+#define N(a,b) (uint8_t)( a << 4 | b)
 #define GET_HIGH_4BIT(a) (a >> 4)
 #define GET_LOW_4BIT(a)  (a & 0x0F)
 
@@ -112,6 +113,27 @@ typedef struct{
 	float batteryVoltage;
 }rtuStateInf_t;
 
+typedef struct{
+	uint8_t dataBuf[TX_BUF_LEN];
+	uint16_t dataIdx;
+}txBuf_t;
+
+extern txBuf_t txDataBuf;
+
+uint16_t getLen_of_txBuf();
+
+void clear_txBuf();
+void clear_tail(uint16_t len);
+
+void push_byte_to_txBuf(uint8_t num);
+void push_short_to_txBuf(uint16_t num);
+void push_int_to_txBuf(uint32_t num);
+void push_float_to_txBuf(float num,uint8_t dataType);
+
+void push_data_to_txBuf(uint8_t *srcData,uint16_t len);
+
 extern rtuStateInf_t rtuStateInf;
+
+void creat_msg(messageInf_t *message, uint8_t *txBuf, uint8_t funCode);
 
 #endif /* HYDROLOGYSTACK_H_ */

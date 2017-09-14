@@ -10,9 +10,7 @@
 
 rtuParameter_t rtuParameter;
 
-uint8_t load_config(void){
 
-}
 
 uint8_t upData_config(){
 	/*
@@ -29,5 +27,7 @@ uint8_t upData_config(){
 
 /*reStartMcu?*/
 }
+
+
 
 
