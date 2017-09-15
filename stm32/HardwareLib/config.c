@@ -10,7 +10,10 @@
 
 rtuParameter_t rtuParameter;
 
+int8_t load_config(){
 
+
+}
 
 uint8_t upData_config(){
 	/*

@@ -6,6 +6,9 @@
  */
 #include "include.h"
 
+txBuf_t txDataBuf;
+rtuStateInf_t rtuStateInf;
+
 uint16_t getLen_of_txBuf(void){
 	return (txDataBuf.dataIdx + 1);
 }
@@ -106,7 +109,7 @@ static void creat_public_message(messageInf_t *message){
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum++);
+	push_integer_to_txBuf(message->serialNum++,N(4,0));
 
 	/*
 	 * 发报时间处理
@@ -199,16 +202,16 @@ static uint16_t creat_timeAverage_message(messageInf_t *message) {
 	if (rtuParameter.upDataArg.timeAverageInterval < 60) {        //分钟
 		push_char_to_txBuf('N');
 		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval);
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval,N(2,0));
 	} else if (rtuParameter.upDataArg.timeAverageInterval >= 1440) { //天
 		push_char_to_txBuf('D');
 		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440 );
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440 ,N(2,0));
 
 	} else {
 		push_char_to_txBuf('H');
 		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60);
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2,0));
 	}
 	push_char_to_txBuf(' ');
 
@@ -229,7 +232,7 @@ static uint16_t creat_keep_message(messageInf_t *message) {
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum++);
+	push_integer_to_txBuf(message->serialNum++,N(4,0));
 	push_char_to_txBuf(' ');
 
 	/*

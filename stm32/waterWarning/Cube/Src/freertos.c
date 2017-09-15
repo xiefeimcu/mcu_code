@@ -72,7 +72,7 @@ osThreadId ldleHandle;
 
 /* USER CODE BEGIN Variables */
 uint8_t uarto_rx_buf[32];
-sysState_t sysStateInf;
+
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/
@@ -233,7 +233,7 @@ void process_comm(void const * argument) {
 	/* Infinite loop */
 	for (;;) {
 		TOGGLE_LED1();
-		osDelay(500);
+		osDelay(1000);
 	}
 	/* USER CODE END process_comm */
 }
@@ -243,8 +243,6 @@ void sys_ldle(void const * argument) {
 	/* USER CODE BEGIN sys_ldle */
 	/* Infinite loop */
 	for (;;) {
-
-
 		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		osDelay(1);
 	}
