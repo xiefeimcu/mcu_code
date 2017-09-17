@@ -6,9 +6,6 @@
  */
 #include "include.h"
 
-txBuf_t txDataBuf;
-rtuStateInf_t rtuStateInf;
-
 uint16_t getLen_of_txBuf(void){
 	return (txDataBuf.dataIdx + 1);
 }
@@ -97,7 +94,6 @@ int8_t add_element(messageInf_t *message,  uint8_t *str, float value,uint8_t dat
 		message->elementInf.element[i].value = value;
 		message->elementInf.element[i].dataType = dataType;
 	}
-
 	return 0;
 }
 
@@ -527,5 +523,4 @@ void creat_msg(messageInf_t *message, uint8_t *txBuf, uint8_t funCode) {
 
 	/*ว๓ะฃั้*/
 	push_integer_to_txBuf(CRC16(get_addr_txBuf(),getLen_of_txBuf()) ,N(4,0));
-
 }

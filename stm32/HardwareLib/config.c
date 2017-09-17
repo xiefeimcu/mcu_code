@@ -7,12 +7,18 @@
 #include "usart.h"
 #include "config.h"
 #include "stm32f1xx_hal.h"
+#include "AT24C04.h"
+
+#define READ_NVM(SrcBuf,len,addr) Read_NByte_Randomaddress(SrcBuf,len,addr)
+#define WRITE_NVM(addr,SrcBuf,len)
 
 rtuParameter_t rtuParameter;
 
-int8_t load_config(){
-
-
+int8_t load_config(void){
+	if (READ_NVM((uint8_t*)(&rtuParameter),sizeof(rtuParameter),0x02))
+		return 0;
+	else
+		return -1;
 }
 
 uint8_t upData_config(){
@@ -29,6 +35,7 @@ uint8_t upData_config(){
 	 */
 
 /*reStartMcu?*/
+
 }
 
 
