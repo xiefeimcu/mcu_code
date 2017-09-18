@@ -168,24 +168,29 @@ static void creat_element_message(messageInf_t *message) {
 	uint8_t i=0;
 	uint8_t j=0;
 
-	while (message->elementInf.element[i].dataType != ELEMENT_IDENT_NONE) {
+	for(i=0;i<MAX_ELEMENT_IN_MESSAGE;i++){
+		if(message->elementInf.element[i].dataType != ELEMENT_IDENT_NONE){
 
-		/*复制标识符信息*/
-		while(message->elementInf.element[i].elementIdentifier[j]){
-			push_char_to_txBuf(message->elementInf.element[i].elementIdentifier[j]);
-			j++;
+			/*
+			 * 复制标识符信息
+			 */
+			while(message->elementInf.element[i].elementIdentifier[j]){
+				push_char_to_txBuf(message->elementInf.element[i].elementIdentifier[j]);
+				j++;
+			}
+			push_char_to_txBuf(' ');
+
+			/*
+			 * 处理数据
+			 */
+			push_float_to_txBuf(message->elementInf.element[i].value,message->elementInf.element[i].dataType);
+			push_char_to_txBuf(' ');
 		}
-		push_char_to_txBuf(' ');
-
-		/*
-		 * 处理数据
-		 */
-		push_float_to_txBuf(message->elementInf.element[i].value,
-				message->elementInf.element[i].dataType);
-		push_char_to_txBuf(' ');
-
-		i++;
+		else{
+			break;
+		}
 	}
+
 }
 
 /*
