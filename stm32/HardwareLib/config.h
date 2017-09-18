@@ -60,4 +60,6 @@ typedef struct{
 
 extern rtuParameter_t rtuParameter;
 
+void load_config_Default(void);
+
 #endif /* CONFIG_H_ */

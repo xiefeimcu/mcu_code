@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
 FREERTOS.IPParameters=Tasks01,configTOTAL_HEAP_SIZE,FootprintOK
-FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;sensorSample,1,512,sensor_sample,Default,NULL,Dynamic,NULL,NULL;keyAndUi,-1,1024,interaction,Default,NULL,Dynamic,NULL,NULL;communication,2,512,process_comm,Default,NULL,Dynamic,NULL,NULL;ldle,-3,128,sys_ldle,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;sensorSample,1,1024,sensor_sample,Default,NULL,Dynamic,NULL,NULL;keyAndUi,-1,1024,interaction,Default,NULL,Dynamic,NULL,NULL;communication,2,512,process_comm,Default,NULL,Dynamic,NULL,NULL;ldle,-3,128,sys_ldle,Default,NULL,Dynamic,NULL,NULL
 FREERTOS.configTOTAL_HEAP_SIZE=20480
 File.Version=6
 KeepUserPlacement=false

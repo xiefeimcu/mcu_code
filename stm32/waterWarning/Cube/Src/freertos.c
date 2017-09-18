@@ -61,6 +61,8 @@
 #include "gui.h"
 #include "string.h"
 #include "AT24C04.h"
+#include "hydrologyStack.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -159,7 +161,7 @@ void MX_FREERTOS_Init(void) {
 	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
 	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 	/* definition and creation of sensorSample */
-	osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 512);
+	osThreadDef(sensorSample, sensor_sample, osPriorityAboveNormal, 0, 1024);
 	sensorSampleHandle = osThreadCreate(osThread(sensorSample), NULL);
 
 	/* definition and creation of keyAndUi */
@@ -217,10 +219,7 @@ void interaction(void const * argument) {
 	for (;;) {
 		portENTER_CRITICAL();
 		gui_main_windows();
-
-		if (AT24C04TEST(255)) {
-			TOGGLE_LED2();
-		}
+		TOGGLE_LED2();
 		portEXIT_CRITICAL();
 		osDelay(1000);
 	}
@@ -230,9 +229,21 @@ void interaction(void const * argument) {
 /* process_comm function */
 void process_comm(void const * argument) {
 	/* USER CODE BEGIN process_comm */
+	load_config_Default();
+	clear_element_from_message(&messageHandle,-1);
+
+	add_element(&messageHandle,"AA",3.14,N(1,2));
+	add_element(&messageHandle,"BB",3.15,N(1,2));
+	add_element(&messageHandle,"CC",3.16,N(1,2));
+	add_element(&messageHandle,"DD",3.17,N(1,2));
+	add_element(&messageHandle,"EE",3.18,N(1,2));
+	messageHandle.rtu_state.batteryVoltage=12.33;
+
+	creat_msg(&messageHandle,FUN_CODE_JYSD);
 	/* Infinite loop */
 	for (;;) {
 		TOGGLE_LED1();
+		HAL_UART_Transmit(&RS2322_UART_HANDLE,get_addr_txBuf(),getLen_of_txBuf(),10);
 		osDelay(1000);
 	}
 	/* USER CODE END process_comm */

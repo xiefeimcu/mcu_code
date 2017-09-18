@@ -71,8 +71,8 @@
 
 
 /**************************协议配置**************************************/
-#define MESSAGE_TYPE_UP  0
-#define MESSAGE_TYPE_DOW 8
+#define MESSAGE_TYPE_UP  '0'
+#define MESSAGE_TYPE_DOW '8'
 
 #define N(a,b) (uint8_t)( a << 4 | b)
 #define GET_HIGH_4BIT(a) (a >> 4)
@@ -81,7 +81,7 @@
 /*要素结构*/
 typedef struct
 {
-  unsigned char *elementIdentifier;   //要素标识符
+  uint8_t* elementIdentifier;        //要素标识符
   float value;                        //要素数据值
   uint8_t dataType;
 }element_t;
@@ -102,15 +102,17 @@ typedef struct{
 	uint8_t secondBCD;
 }sendTime_t;
 
+typedef struct{
+	float batteryVoltage;
+}rtuStateInf_t;
+
+
 /*报文参数*/
 typedef struct{
 	uint16_t serialNum;
 	elementInf_t elementInf;
+	rtuStateInf_t rtu_state;
 }messageInf_t;
-
-typedef struct{
-	float batteryVoltage;
-}rtuStateInf_t;
 
 typedef struct{
 	uint8_t dataBuf[TX_BUF_LEN];
@@ -118,21 +120,22 @@ typedef struct{
 }txBuf_t;
 
 extern txBuf_t txDataBuf;
+extern messageInf_t messageHandle;
 
 uint16_t getLen_of_txBuf();
 
 void clear_txBuf();
 void clear_tail(uint16_t len);
-
 void push_byte_to_txBuf(uint8_t num);
 void push_short_to_txBuf(uint16_t num);
 void push_int_to_txBuf(uint32_t num);
 void push_float_to_txBuf(float num,uint8_t dataType);
-
 void push_data_to_txBuf(uint8_t *srcData,uint16_t len);
+uint8_t *get_addr_txBuf(void);
+uint16_t getLen_of_txBuf(void);
+void clear_element_from_message(messageInf_t *message,int8_t idx);
 
-extern rtuStateInf_t rtuStateInf;
-
-void creat_msg(messageInf_t *message, uint8_t *txBuf, uint8_t funCode);
+int8_t add_element(messageInf_t *message,const char* str, float value,uint8_t dataType);
+void creat_msg(messageInf_t *message,  uint8_t funCode);
 
 #endif /* HYDROLOGYSTACK_H_ */
