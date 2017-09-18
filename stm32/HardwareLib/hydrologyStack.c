@@ -6,6 +6,9 @@
  */
 #include "include.h"
 
+txBuf_t       txDataBuf;
+messageInf_t  messageHandle;
+
 uint16_t getLen_of_txBuf(void){
 	return (txDataBuf.dataIdx + 1);
 }
@@ -29,9 +32,9 @@ void push_char_to_txBuf(uint8_t ch){
 }
 
 void push_integer_to_txBuf(uint32_t num , uint8_t dataType){
-	uint8_t str[]={"%ad"};
+	uint8_t str[]={"%0ald"};
 
-	str[1] = GET_HIGH_4BIT(dataType) + '0';
+	str[2] = GET_HIGH_4BIT(dataType) + '0';
 
 	sprintf((char*)(txDataBuf.dataBuf  + txDataBuf.dataIdx),(const char*)str,num);
 	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
@@ -40,8 +43,8 @@ void push_integer_to_txBuf(uint32_t num , uint8_t dataType){
 void push_float_to_txBuf(float num,uint8_t dataType){
 	uint8_t str[]={"%a.bf"};
 
-	 str[1] = GET_HIGH_4BIT(dataType) + '0';
-	 str[3] = GET_LOW_4BIT(dataType) +  '0';
+	str[1] = GET_HIGH_4BIT(dataType) + '0';
+	str[3] = GET_LOW_4BIT(dataType) +  '0';
 	sprintf((char*)(txDataBuf.dataBuf  + txDataBuf.dataIdx),(const char *)str,num);
 	txDataBuf.dataIdx += (GET_HIGH_4BIT(dataType) +  GET_LOW_4BIT(dataType) + 1);
 }
@@ -75,22 +78,21 @@ void clear_element_from_message(messageInf_t *message,int8_t idx){
 	}
 }
 
-int8_t add_element(messageInf_t *message,  uint8_t *str, float value,uint8_t dataType) {
+int8_t add_element(messageInf_t *message,const char* str, float value,uint8_t dataType) {
 	uint8_t i = 0;
 
 	/*获取当前时间作为观测时间*/
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BCD);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BCD);
 
-	while ((message->elementInf.element[i].dataType == ELEMENT_IDENT_NONE)
-			&& (i < MAX_ELEMENT_IN_MESSAGE)) {
+	while ((message->elementInf.element[i].dataType != ELEMENT_IDENT_NONE) && (i < MAX_ELEMENT_IN_MESSAGE)) {
 		i++;
 	}
 
-	if (i == MAX_ELEMENT_IN_MESSAGE - 1) { //要素满了
+	if (i > MAX_ELEMENT_IN_MESSAGE -1 ) { //要素满了
 		return -1;
 	} else {
-		message->elementInf.element[i].elementIdentifier = str; //要素标识符是一个字符串常量
+		message->elementInf.element[i].elementIdentifier = (uint8_t*)str; //要素标识符是一个字符串常量
 		message->elementInf.element[i].value = value;
 		message->elementInf.element[i].dataType = dataType;
 	}
@@ -137,7 +139,7 @@ static void creat_public_message(messageInf_t *message){
 	/*
 	 * 遥测站分类码
 	 */
-	push_integer_to_txBuf(rtuParameter.upDataArg.rtuType,N(2,0));
+	push_char_to_txBuf(rtuParameter.upDataArg.rtuType);
 	push_char_to_txBuf(' ');
 
 	/*
@@ -164,10 +166,15 @@ static void creat_public_message(messageInf_t *message){
  */
 static void creat_element_message(messageInf_t *message) {
 	uint8_t i=0;
+	uint8_t j=0;
+
 	while (message->elementInf.element[i].dataType != ELEMENT_IDENT_NONE) {
+
 		/*复制标识符信息*/
-		push_data_to_txBuf(message->elementInf.element[i].elementIdentifier,
-				sizeof(message->elementInf.element[i].elementIdentifier - 1));
+		while(message->elementInf.element[i].elementIdentifier[j]){
+			push_char_to_txBuf(message->elementInf.element[i].elementIdentifier[j]);
+			j++;
+		}
 		push_char_to_txBuf(' ');
 
 		/*
@@ -176,6 +183,8 @@ static void creat_element_message(messageInf_t *message) {
 		push_float_to_txBuf(message->elementInf.element[i].value,
 				message->elementInf.element[i].dataType);
 		push_char_to_txBuf(' ');
+
+		i++;
 	}
 }
 
@@ -287,7 +296,7 @@ static uint16_t creat_timing_mesage(messageInf_t *message) {
 	push_char_to_txBuf('V');
 	push_char_to_txBuf('T');
 	push_char_to_txBuf(' ');
-	push_float_to_txBuf(rtuStateInf.batteryVoltage, N(2, 2));
+	push_float_to_txBuf(message->rtu_state.batteryVoltage, N(2, 2));
 	push_char_to_txBuf(' ');
 	return getLen_of_txBuf() - lenBefor;
 }
@@ -309,7 +318,7 @@ static uint16_t creat_hour_mesage(messageInf_t *message) {
 	push_char_to_txBuf('V');
 	push_char_to_txBuf('T');
 	push_char_to_txBuf(' ');
-	push_float_to_txBuf(rtuStateInf.batteryVoltage,N(2, 2));
+	push_float_to_txBuf(message->rtu_state.batteryVoltage,N(2, 2));
 	push_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
@@ -333,7 +342,7 @@ static uint16_t creat_extra_mesage(messageInf_t *message) {
 	push_char_to_txBuf('V');
 	push_char_to_txBuf('T');
 	push_char_to_txBuf(' ');
-	push_float_to_txBuf(rtuStateInf.batteryVoltage, N(2,2));
+	push_float_to_txBuf(message->rtu_state.batteryVoltage, N(2,2));
 	push_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
@@ -373,9 +382,11 @@ static uint16_t creat_manMade_message(messageInf_t *message) {
  * 参数funCode表明帧的类型
  *
  * */
-void creat_msg(messageInf_t *message, uint8_t *txBuf, uint8_t funCode) {
+void creat_msg(messageInf_t *message,  uint8_t funCode) {
 	uint8_t i = 0;
 	uint16_t len=0;
+
+	clear_txBuf();
 
 	/* 帧启始符*/
 	push_char_to_txBuf(CT_SOH_ASCLL);
