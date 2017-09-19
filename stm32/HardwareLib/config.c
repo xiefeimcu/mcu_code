@@ -14,14 +14,49 @@
 
 rtuParameter_t rtuParameter;
 
+uint32_t convert_baudRate(uint8_t idx){
+
+	switch(idx){
+
+	case BAUD_2400:
+		return 2400;
+
+	case BAUD_4800:
+		return 4800;
+
+	case BAUD_9600:
+		return 9600;
+
+	case BAUD_14400:
+		return 14400;
+
+	case BAUD_19200:
+		return 19200;
+
+	case BAUD_57600:
+		return 57600;
+
+	case BAUD_115200:
+		return 115200;
+
+	default:break;
+	}
+
+	return 9600;
+}
+
 void upData_config(){
 	/*
 	 * 执行相关设置
 	 */
-	change_uart_baudrate(&RS2321_UART_HANDLE,rtuParameter.comBaudRate.baudRateRs2321);
-	change_uart_baudrate(&RS2322_UART_HANDLE,rtuParameter.comBaudRate.baudRateRs2322);
-	change_uart_baudrate(&RS4851_UART_HANDLE,rtuParameter.comBaudRate.baudRateRs4851);
-	change_uart_baudrate(&RS4852_UART_HANDLE,rtuParameter.comBaudRate.baudRateRs4852);
+	change_uart_baudrate(&RS2321_UART_HANDLE,
+			convert_baudRate(rtuParameter.comBaudRate.baudRateRs2321));
+	change_uart_baudrate(&RS2322_UART_HANDLE,
+			convert_baudRate(rtuParameter.comBaudRate.baudRateRs2322));
+	change_uart_baudrate(&RS4851_UART_HANDLE,
+			convert_baudRate(rtuParameter.comBaudRate.baudRateRs4851));
+	change_uart_baudrate(&RS4852_UART_HANDLE,
+			convert_baudRate(rtuParameter.comBaudRate.baudRateRs4852));
 
 	/*
 	 * 写入EEPROM
@@ -49,7 +84,7 @@ void load_config_Default(void){
 	rtuParameter.upDataArg.rtuType = RTU_TYPE_SK; //水库
 	rtuParameter.upDataArg.timeAverageInterval=5; //5分钟
 
-	//upData_config();
+	upData_config();
 }
 /*
  *return 0 success

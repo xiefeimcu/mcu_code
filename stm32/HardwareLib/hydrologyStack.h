@@ -68,8 +68,6 @@
 
 /**************************要素标识符**************************************/
 #define ELEMENT_IDENT_NONE 0x00
-
-
 /**************************协议配置**************************************/
 #define MESSAGE_TYPE_UP  '0'
 #define MESSAGE_TYPE_DOW '8'
@@ -78,11 +76,38 @@
 #define GET_HIGH_4BIT(a) (a >> 4)
 #define GET_LOW_4BIT(a)  (a & 0x0F)
 
+typedef enum{
+	FIVE_MINUTE_WATER_DATA,
+	/*
+	 * TODO此处添加其他水文指标
+	 */
+}hydrologyDataType_t;
+/*
+ * 雨量数位信息
+ */
+typedef struct{
+	uint8_t  rainfallPer12Minute[12];
+	uint16_t rainfallTotal;
+}rainfall_t;
+
+typedef struct{
+	uint8_t  waterLevelPer12Minute[12];
+	uint16_t waterLevelTotal;
+}waterLevel_t;
+
+typedef struct{
+	waterLevel_t waterLevel;
+	rainfall_t   rainfall;
+	uint8_t      timeIdx;
+}hydrologyInf_t;
+
+extern hydrologyInf_t hydrologyInf;
+
 /*要素结构*/
 typedef struct
 {
   uint8_t* elementIdentifier;        //要素标识符
-  float value;                        //要素数据值
+  float value;                       //要素数据值
   uint8_t dataType;
 }element_t;
 
@@ -126,11 +151,12 @@ uint16_t getLen_of_txBuf();
 
 void clear_txBuf();
 void clear_tail(uint16_t len);
-void push_byte_to_txBuf(uint8_t num);
-void push_short_to_txBuf(uint16_t num);
-void push_int_to_txBuf(uint32_t num);
+void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexaDec);
 void push_float_to_txBuf(float num,uint8_t dataType);
 void push_data_to_txBuf(uint8_t *srcData,uint16_t len);
+
+void add_hydrologyInf(hydrologyDataType_t dataType,uint16_t rainFall,uint16_t waterLevel);
+
 uint8_t *get_addr_txBuf(void);
 uint16_t getLen_of_txBuf(void);
 void clear_element_from_message(messageInf_t *message,int8_t idx);

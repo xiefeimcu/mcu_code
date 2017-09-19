@@ -74,28 +74,26 @@ void MX_RTC_Init(void)
 
     /**Initialize RTC and set the Time and Date 
     */
-  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x32F2){
-  sTime.Hours = 0x1;
-  sTime.Minutes = 0x54;
-  sTime.Seconds = 0x0;
+	if (HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x32F2) {
+		sTime.Hours = 0x14;
+		sTime.Minutes = 0x10;
+		sTime.Seconds = 0x00;
 
-  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
+		if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK) {
+			_Error_Handler(__FILE__, __LINE__);
+		}
 
-  DateToUpdate.WeekDay = RTC_WEEKDAY_MONDAY;
-  DateToUpdate.Month = RTC_MONTH_AUGUST;
-  DateToUpdate.Date = 0x14;
-  DateToUpdate.Year = 0x17;
+		DateToUpdate.WeekDay = RTC_WEEKDAY_TUESDAY;
+		DateToUpdate.Month = RTC_MONTH_SEPTEMBER;
+		DateToUpdate.Date = 0x19;
+		DateToUpdate.Year = 0x17;
 
-  if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
+		if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK) {
+			_Error_Handler(__FILE__, __LINE__);
+		}
 
-    HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR1,0x32F2);
-  }
+		HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x32F2);
+	}
 
 }
 
