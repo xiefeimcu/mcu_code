@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : RTC.c
+  * File Name          : ADC.c
   * Description        : This file provides code for the configuration
-  *                      of the RTC instances.
+  *                      of the ADC instances.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -48,96 +48,98 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "rtc.h"
+#include "adc.h"
+
+#include "gpio.h"
 
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
-RTC_HandleTypeDef hrtc;
+ADC_HandleTypeDef hadc1;
 
-/* RTC init function */
-void MX_RTC_Init(void)
+/* ADC1 init function */
+void MX_ADC1_Init(void)
 {
-  RTC_TimeTypeDef sTime;
-  RTC_DateTypeDef DateToUpdate;
+  ADC_ChannelConfTypeDef sConfig;
 
-    /**Initialize RTC Only 
+    /**Common config 
     */
-  hrtc.Instance = RTC;
-  hrtc.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
-  hrtc.Init.OutPut = RTC_OUTPUTSOURCE_NONE;
-  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  hadc1.Instance = ADC1;
+  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-    /**Initialize RTC and set the Time and Date 
+    /**Configure Regular Channel 
     */
-  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x32F2){
-  sTime.Hours = 0x1;
-  sTime.Minutes = 0x54;
-  sTime.Seconds = 0x0;
-
-  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
-  }
-
-  DateToUpdate.WeekDay = RTC_WEEKDAY_MONDAY;
-  DateToUpdate.Month = RTC_MONTH_AUGUST;
-  DateToUpdate.Date = 0x14;
-  DateToUpdate.Year = 0x17;
-
-  if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-    HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR1,0x32F2);
   }
 
 }
 
-void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
+void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 {
 
-  if(rtcHandle->Instance==RTC)
+  GPIO_InitTypeDef GPIO_InitStruct;
+  if(adcHandle->Instance==ADC1)
   {
-  /* USER CODE BEGIN RTC_MspInit 0 */
+  /* USER CODE BEGIN ADC1_MspInit 0 */
 
-  /* USER CODE END RTC_MspInit 0 */
-    HAL_PWR_EnableBkUpAccess();
-    /* Enable BKP CLK enable for backup registers */
-    __HAL_RCC_BKP_CLK_ENABLE();
+  /* USER CODE END ADC1_MspInit 0 */
     /* Peripheral clock enable */
-    __HAL_RCC_RTC_ENABLE();
+    __HAL_RCC_ADC1_CLK_ENABLE();
+  
+    /**ADC1 GPIO Configuration    
+    PA0-WKUP     ------> ADC1_IN0
+    PA1     ------> ADC1_IN1 
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    /* RTC interrupt Init */
-    HAL_NVIC_SetPriority(RTC_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(RTC_IRQn);
-  /* USER CODE BEGIN RTC_MspInit 1 */
+    /* ADC1 interrupt Init */
+    HAL_NVIC_SetPriority(ADC1_2_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
+  /* USER CODE BEGIN ADC1_MspInit 1 */
 
-  /* USER CODE END RTC_MspInit 1 */
+  /* USER CODE END ADC1_MspInit 1 */
   }
 }
 
-void HAL_RTC_MspDeInit(RTC_HandleTypeDef* rtcHandle)
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 {
 
-  if(rtcHandle->Instance==RTC)
+  if(adcHandle->Instance==ADC1)
   {
-  /* USER CODE BEGIN RTC_MspDeInit 0 */
+  /* USER CODE BEGIN ADC1_MspDeInit 0 */
 
-  /* USER CODE END RTC_MspDeInit 0 */
+  /* USER CODE END ADC1_MspDeInit 0 */
     /* Peripheral clock disable */
-    __HAL_RCC_RTC_DISABLE();
+    __HAL_RCC_ADC1_CLK_DISABLE();
+  
+    /**ADC1 GPIO Configuration    
+    PA0-WKUP     ------> ADC1_IN0
+    PA1     ------> ADC1_IN1 
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
 
-    /* RTC interrupt Deinit */
-    HAL_NVIC_DisableIRQ(RTC_IRQn);
-  /* USER CODE BEGIN RTC_MspDeInit 1 */
+    /* ADC1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
+  /* USER CODE BEGIN ADC1_MspDeInit 1 */
 
-  /* USER CODE END RTC_MspDeInit 1 */
+  /* USER CODE END ADC1_MspDeInit 1 */
   }
 } 
 

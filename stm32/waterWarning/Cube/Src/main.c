@@ -46,16 +46,15 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-
-#include "stm32f1xx_hal.h"
 #include "main.h"
+#include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
+#include "adc.h"
 #include "crc.h"
-#include "rtc.h"//RTC ×¼±¸»»³É "pcf8563"
+#include "rtc.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "include.h"
 
 /* USER CODE BEGIN Includes */
 #include "include.h"
@@ -113,6 +112,7 @@ int main(void)
   MX_RTC_Init();
   MX_UART4_Init();
   MX_TIM1_Init();
+  MX_ADC1_Init();
 
   /* USER CODE BEGIN 2 */
 
@@ -122,7 +122,7 @@ int main(void)
   MX_FREERTOS_Init();
 
   /* Start scheduler */
- osKernelStart();
+  osKernelStart();
   
   /* We should never get here as control is now taken by the scheduler */
 
@@ -157,7 +157,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -177,8 +177,9 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_ADC;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

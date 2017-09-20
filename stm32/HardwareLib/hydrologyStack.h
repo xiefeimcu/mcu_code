@@ -69,6 +69,9 @@
 /**************************要素标识符**************************************/
 #define ELEMENT_IDENT_NONE 0x00
 /**************************协议配置**************************************/
+#define COUNT_OF_12MINUTE_IN_HOUR 12
+#define CHEX 1
+#define CDEC 0
 #define MESSAGE_TYPE_UP  '0'
 #define MESSAGE_TYPE_DOW '8'
 
@@ -91,8 +94,7 @@ typedef struct{
 }rainfall_t;
 
 typedef struct{
-	uint8_t  waterLevelPer12Minute[12];
-	uint16_t waterLevelTotal;
+	uint16_t  waterLevelPer12Minute[12];
 }waterLevel_t;
 
 typedef struct{
@@ -100,8 +102,6 @@ typedef struct{
 	rainfall_t   rainfall;
 	uint8_t      timeIdx;
 }hydrologyInf_t;
-
-extern hydrologyInf_t hydrologyInf;
 
 /*要素结构*/
 typedef struct
@@ -128,7 +128,7 @@ typedef struct{
 }sendTime_t;
 
 typedef struct{
-	float batteryVoltage;
+	uint8_t batteryVoltage;
 }rtuStateInf_t;
 
 
@@ -146,6 +146,7 @@ typedef struct{
 
 extern txBuf_t txDataBuf;
 extern messageInf_t messageHandle;
+extern hydrologyInf_t hydrologyInf;
 
 uint16_t getLen_of_txBuf();
 
@@ -154,8 +155,8 @@ void clear_tail(uint16_t len);
 void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexaDec);
 void push_float_to_txBuf(float num,uint8_t dataType);
 void push_data_to_txBuf(uint8_t *srcData,uint16_t len);
-
-void add_hydrologyInf(hydrologyDataType_t dataType,uint16_t rainFall,uint16_t waterLevel);
+void add_sim_waterInf_data(hydrologyInf_t *hydrologyData);
+void add_waterInf_data(hydrologyInf_t *hydrologyData,uint8_t rainFall, uint16_t waterLevel);
 
 uint8_t *get_addr_txBuf(void);
 uint16_t getLen_of_txBuf(void);
