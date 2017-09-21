@@ -54,6 +54,7 @@ void DebugMon_Handler(void);
 void SysTick_Handler(void);
 void RTC_IRQHandler(void);
 void ADC1_2_IRQHandler(void);
+void EXTI9_5_IRQHandler(void);
 void TIM4_IRQHandler(void);
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);

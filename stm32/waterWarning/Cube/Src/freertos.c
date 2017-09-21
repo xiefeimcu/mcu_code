@@ -64,6 +64,7 @@
 #include "hydrologyStack.h"
 #include "usart.h"
 #include "adc.h"
+#include "hyetal.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -202,6 +203,8 @@ void StartDefaultTask(void const * argument)
 /* sensor_sample function */
 void sensor_sample(void const * argument)
 {
+	uint8_t testStr[]={"rainFall:        \r\n"};
+
   /* USER CODE BEGIN sensor_sample */
 	dev_modbus_handle_t hmodbus;
 
@@ -212,17 +215,11 @@ void sensor_sample(void const * argument)
 	/* Infinite loop */
 	for (;;) {
 		TOGGLE_LED1();
-		HAL_ADC_Start_IT(&hadc1);
-		modbus_read_request(&hmodbus);
 		xSemaphoreTake(senseGetDataSemaphore, portMAX_DELAY );
+		sprintf((char*)testStr + 9,"%08ld",getRainFall(&rainGauge));
+		HAL_UART_Transmit(&RS2322_UART_HANDLE,testStr,sizeof(testStr),10);
 
-		/*
-		 * ADC有有数据了
-		 */
-		//if(HAL_ADC_GetState(&hadc1) == HAL_ADC_STATE_REG_EOC){
-			messageHandle.rtu_state.batteryVoltage=(uint8_t) HAL_ADC_GetValue(&hadc1);
-	//	}
-		osDelay(500);
+		//osDelay(1000);
 	}
   /* USER CODE END sensor_sample */
 }
@@ -251,18 +248,12 @@ void process_comm(void const * argument)
 	load_config_Default();
 	clear_element_from_message(&messageHandle,-1);
 
-//	add_element(&messageHandle,"AA",1234.5678,N(4,3));
-//	add_element(&messageHandle,"BB",-1234.5678,N(4,3));
-//	add_element(&messageHandle,"CC",999977.123,N(6,3));
-//	add_element(&messageHandle,"DD",-999977.17,N(6,3));
-
 	add_sim_waterInf_data(&hydrologyInf);
-
 
 	/* Infinite loop */
 	for (;;) {
-		creat_msg(&messageHandle,FUN_CODE_XSB);
-		HAL_UART_Transmit(&RS2322_UART_HANDLE,get_addr_txBuf(),getLen_of_txBuf(),10);
+//		creat_msg(&messageHandle,FUN_CODE_XSB);
+//		HAL_UART_Transmit(&RS2322_UART_HANDLE,get_addr_txBuf(),getLen_of_txBuf(),10);
 		osDelay(1000);
 	}
   /* USER CODE END process_comm */
@@ -294,9 +285,34 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 
 }
+/*
+ * 雨量计的中断
+ */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	UBaseType_t uxSavedInterruptStatus;
+	static  BaseType_t xHigherPriorityTaskWoken;
+
+	portSET_INTERRUPT_MASK_FROM_ISR();
+	if(GPIO_Pin == GPIO_PIN_6){
+		 call_from_rain_signal(&rainGauge);
+		 xSemaphoreGiveFromISR( senseGetDataSemaphore, &xHigherPriorityTaskWoken );
+
+	}
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
+}
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
+	UBaseType_t uxSavedInterruptStatus;
+	portSET_INTERRUPT_MASK_FROM_ISR();
 
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
+}
+
+void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
+	UBaseType_t uxSavedInterruptStatus;
+	portSET_INTERRUPT_MASK_FROM_ISR();
+
+	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {

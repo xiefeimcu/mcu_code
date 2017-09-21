@@ -52,7 +52,9 @@ void clear_hydrologyInf(hydrologyInf_t *hydrologyData) {
 
 	memset(hydrologyData->waterLevel.waterLevelPer12Minute, 0,COUNT_OF_12MINUTE_IN_HOUR);
 }
-
+/*
+ * 每隔5分钟调用一次
+ */
 void add_waterInf_data(hydrologyInf_t *hydrologyData,uint8_t rainFall, uint16_t waterLevel) {
 	if (hydrologyData->timeIdx >= COUNT_OF_12MINUTE_IN_HOUR) {
 		clear_hydrologyInf(hydrologyData);

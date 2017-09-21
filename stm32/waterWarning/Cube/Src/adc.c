@@ -50,9 +50,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
 
-#include "gpio.h"
-
 /* USER CODE BEGIN 0 */
+uint32_t adcOriginalData[CHANNEL_ADC];
 
 /* USER CODE END 0 */
 
@@ -81,7 +80,7 @@ void MX_ADC1_Init(void)
     */
   sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_7CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -92,7 +91,6 @@ void MX_ADC1_Init(void)
 void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 {
 
-  GPIO_InitTypeDef GPIO_InitStruct;
   if(adcHandle->Instance==ADC1)
   {
   /* USER CODE BEGIN ADC1_MspInit 0 */
@@ -100,20 +98,12 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   /* USER CODE END ADC1_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_ADC1_CLK_ENABLE();
-  
-    /**ADC1 GPIO Configuration    
-    PA0-WKUP     ------> ADC1_IN0
-    PA1     ------> ADC1_IN1 
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* ADC1 interrupt Init */
     HAL_NVIC_SetPriority(ADC1_2_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
   /* USER CODE BEGIN ADC1_MspInit 1 */
-
+    HAL_ADCEx_Calibration_Start(&hadc1);
   /* USER CODE END ADC1_MspInit 1 */
   }
 }
@@ -128,16 +118,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
   /* USER CODE END ADC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_ADC1_CLK_DISABLE();
-  
-    /**ADC1 GPIO Configuration    
-    PA0-WKUP     ------> ADC1_IN0
-    PA1     ------> ADC1_IN1 
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1);
 
     /* ADC1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(ADC1_2_IRQn);
   /* USER CODE BEGIN ADC1_MspDeInit 1 */
+    HAL_ADCEx_Calibration_Start(&hadc1);
 
   /* USER CODE END ADC1_MspDeInit 1 */
   }
