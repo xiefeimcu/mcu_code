@@ -18,6 +18,14 @@ void clearRainFall(rainGauge_t *rainGauge){
 	rainGauge->isRaining = 0;
 }
 
+void RFL_moveTimeWindow(waterInfHourElement_t *waterInfHourElement){
+	uint8_t i;
+
+	for(i=0;i<MINI_ELEMENT_COUNT - 1;i++){
+		waterInfHourElement->rainFall[i + 1] = waterInfHourElement->rainFall[i];
+	}
+}
+
 /*
  * 雨量计翻转一次调用一次
  */

@@ -11,11 +11,21 @@
 #include "stm32f1xx.h"
 
 #define RAIN_GAUGE_RATIO 0.5f
+#define MINI_ELEMENT_COUNT 12
 
 typedef struct {
 	uint8_t  isRaining;
 	uint16_t rainFallCount;
 }rainGauge_t;
+
+typedef struct{
+	uint8_t  elementOfMini[MINI_ELEMENT_COUNT];
+}hourElement_t;
+
+typedef struct{
+	hourElement_t rainFall;
+	hourElement_t waterLavel;
+}waterInfHourElement_t;
 
 extern rainGauge_t rainGauge;
 
