@@ -52,10 +52,15 @@ typedef struct {
 	uint16_t  timeAverageInterval;
 }upDataArg_t;
 
+typedef struct {
+	uint8_t rainGaugePsc;
+}rainGaugeParamater_t;
+
 typedef struct{
 	sysConfig_t    sysConfig;
 	comBaudRate_t  comBaudRate;
 	upDataArg_t    upDataArg;
+	rainGaugeParamater_t rainGaugeParamater;
 }rtuParameter_t;
 
 extern rtuParameter_t rtuParameter;

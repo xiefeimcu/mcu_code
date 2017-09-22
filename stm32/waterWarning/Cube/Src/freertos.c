@@ -216,7 +216,7 @@ void sensor_sample(void const * argument)
 	for (;;) {
 		TOGGLE_LED1();
 		xSemaphoreTake(senseGetDataSemaphore, portMAX_DELAY );
-		sprintf((char*)testStr + 9,"%08ld",getRainFall(&rainGauge));
+		sprintf((char*)testStr + 9,"%08ld",get_rainFall(&waterInf,1));
 		HAL_UART_Transmit(&RS2322_UART_HANDLE,testStr,sizeof(testStr),10);
 
 		//osDelay(1000);
@@ -294,7 +294,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	portSET_INTERRUPT_MASK_FROM_ISR();
 	if(GPIO_Pin == GPIO_PIN_6){
-		 call_from_rain_signal(&rainGauge);
+		trigger_rain_signal(&waterInf);
 		 xSemaphoreGiveFromISR( senseGetDataSemaphore, &xHigherPriorityTaskWoken );
 
 	}
@@ -311,7 +311,6 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
 	UBaseType_t uxSavedInterruptStatus;
 	portSET_INTERRUPT_MASK_FROM_ISR();
-
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
 
@@ -330,8 +329,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	} else if (huart->Instance == UART5) {
 
 	}
-	TOGGLE_LED2()
-	;
+	TOGGLE_LED2();
 	portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedInterruptStatus);
 }
 

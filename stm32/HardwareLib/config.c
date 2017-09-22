@@ -84,6 +84,10 @@ void load_config_Default(void){
 	rtuParameter.upDataArg.rtuType = RTU_TYPE_SK; //水库
 	rtuParameter.upDataArg.timeAverageInterval=5; //5分钟
 
+
+	 /*雨量计分频系数*/
+	rtuParameter.rainGaugeParamater.rainGaugePsc=2;
+
 	upData_config();
 }
 /*
