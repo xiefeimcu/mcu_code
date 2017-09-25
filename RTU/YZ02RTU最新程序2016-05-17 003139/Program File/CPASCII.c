@@ -628,7 +628,7 @@ unsigned int WriteMessageConfig(unsigned char *p,unsigned int  AddNbyte)
   element.value = ReadUInt8(EEPROM.RainFBL); 
   AddNbyte = WriteMessageVariable(p,AddNbyte,&element);
   
-  element.keyword = "26";               //雨量加报时段
+  element.keyword = "26";               //雨量加报时段 TODO XF 和标准不符
   element.DType = 0X20;
   element.value = ReadUInt8(EEPROM.RainJBSD); 
   AddNbyte = WriteMessageVariable(p,AddNbyte,&element);

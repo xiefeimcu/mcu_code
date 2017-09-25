@@ -50,6 +50,20 @@ typedef struct {
 	uint16_t passWord;
 	uint8_t  rtuType;
 	uint16_t  timeAverageInterval;
+
+	uint8_t timingMsgInterval;//定时报间隔
+	uint8_t appendMsgInterval;//加报间隔
+	uint8_t rainFallDayStartTime;//间水量日起始时间
+	uint16_t sampleTime;
+	uint8_t waterLevelSaveInterval;
+
+	uint8_t rainGaugeRatio;//雨量计分辨率
+	uint8_t waterLevelRatio;//水位分辨率
+
+	uint8_t rainFallAppendThreshold;//雨量加报阀值
+	float   waterLevalBaseValue;//水位基值
+	float   waterLevalAmendBaseValue;//水位修正基值
+
 }upDataArg_t;
 
 typedef struct {

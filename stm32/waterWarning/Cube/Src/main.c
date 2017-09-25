@@ -81,7 +81,6 @@ void MX_FREERTOS_Init(void);
 
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 	
   /* USER CODE END 1 */
@@ -146,8 +145,9 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
 
-    /**Initializes the CPU, AHB and APB busses clocks 
-    */
+  /*
+   * Initializes the CPU, AHB and APB busses clocks
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
