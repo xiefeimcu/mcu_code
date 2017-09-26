@@ -203,8 +203,6 @@ void StartDefaultTask(void const * argument)
 /* sensor_sample function */
 void sensor_sample(void const * argument)
 {
-	uint8_t testStr[]={"rainFall:        \r\n"};
-
   /* USER CODE BEGIN sensor_sample */
 	dev_modbus_handle_t hmodbus;
 
@@ -216,8 +214,8 @@ void sensor_sample(void const * argument)
 	for (;;) {
 		TOGGLE_LED1();
 		xSemaphoreTake(senseGetDataSemaphore, portMAX_DELAY );
-		sprintf((char*)testStr + 9,"%08ld",get_rainFall(&waterInf,1));
-		HAL_UART_Transmit(&RS2322_UART_HANDLE,testStr,sizeof(testStr),10);
+		//sprintf((char*)testStr + 9,"%08ld",get_rainFall(&waterInf,1));
+		//HAL_UART_Transmit(&RS2322_UART_HANDLE,testStr,sizeof(testStr),10);
 
 		//osDelay(1000);
 	}

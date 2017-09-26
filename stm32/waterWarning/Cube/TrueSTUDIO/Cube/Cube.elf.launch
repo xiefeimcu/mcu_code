@@ -4,7 +4,7 @@
 <stringAttribute key="com.atollic.hardwaredebug.jlink_common.cpu_core" value="Cortex-M"/>
 <stringAttribute key="com.atollic.hardwaredebug.jlink_common.device" value="STM32F103VC"/>
 <stringAttribute key="com.atollic.hardwaredebug.jlink_common.endian" value="little"/>
-<stringAttribute key="com.atollic.hardwaredebug.jlink_common.init_speed" value="1000"/>
+<stringAttribute key="com.atollic.hardwaredebug.jlink_common.init_speed" value="4000"/>
 <booleanAttribute key="com.atollic.hardwaredebug.jlink_common.jlink_check_serial_number" value="false"/>
 <stringAttribute key="com.atollic.hardwaredebug.jlink_common.jlink_script_path" value="E:\Program Files (x86)\TrueSTUDIO for ARM 8.0.0\Servers\J-Link_gdbserver\JLink.exe"/>
 <booleanAttribute key="com.atollic.hardwaredebug.jlink_common.jlink_script_used" value="false"/>

@@ -330,8 +330,7 @@ static uint16_t creat_timeAverage_message(messageInf_t *message) {
 	} else {
 		push_char_to_txBuf('H');
 		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,
-				N(2, 0),CDEC);
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2, 0),CDEC);
 	}
 	push_char_to_txBuf(' ');
 
@@ -630,4 +629,8 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 
 	/*ว๓ะฃั้*/
 	push_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX);
+}
+
+uint8_t analysis_msg(uint8_t *rxBuf , uint8_t len){
+
 }
