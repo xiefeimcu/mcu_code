@@ -34,16 +34,18 @@ void push_char_to_txBuf(uint8_t ch) {
 	txDataBuf.dataIdx++;
 }
 
-void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexaDec) {
-	if(isHexaDec){
+void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexOrDec) {
+	if(isHexOrDec){
 		sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%0*lx",
 				GET_HIGH_4BIT(dataType), num);
+		txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
 	}else{
 		sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%0*ld",
 				GET_HIGH_4BIT(dataType), num);
+		txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
 	}
 
-	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
+
 }
 
 void clear_hydrologyInf(hydrologyInf_t *hydrologyData) {
@@ -142,6 +144,69 @@ void clear_element_from_message(messageInf_t *message, int8_t idx) {
 	}
 }
 
+void add_start_code(uint8_t hexOfAscll){
+
+}
+
+void add_station_addr(uint8_t hexOfAscll){
+
+}
+
+void add_paswd(uint8_t hexOfAscll){
+
+}
+
+void add_fun_code(uint8_t hexOfAscll){
+
+}
+
+void add_up_down_identifier(uint8_t hexOfAscll){
+
+}
+
+void add_msg_len(uint8_t hexOfAscll){
+
+}
+
+void add_serial_num(uint16_t num,uint8_t hexOfAscll){
+
+}
+
+void add_send_msg_time(uint8_t hexOfAscll){
+
+}
+
+void add_addr_identifier(uint8_t hexOfAscll){
+
+}
+
+void add_rtu_addr(uint8_t hexOfAscll){
+
+}
+
+void add_rtu_type_code (uint8_t hexOfAscll){
+
+}
+
+
+void add_watch_time_identifier(uint8_t hexOfAscll){
+
+}
+
+void add_watch_time(uint8_t hexOfAscll){
+
+}
+
+void add_msg_end_identifier(uint8_t hexOfAscll){
+
+}
+
+void add_crc(uint8_t hexOfAscll){
+
+}
+
+
+
 int8_t add_element(messageInf_t *message, const char* str, float value,
 		uint8_t dataType) {
 	uint8_t i = 0;
@@ -173,19 +238,19 @@ static void creat_public_message(messageInf_t *message) {
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum, N(4, 0),CHEX);
+	push_integer_to_txBuf(message->serialNum, N(4, 0),CHEX_ASCII);
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC);
+	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 地址标识符
@@ -199,7 +264,7 @@ static void creat_public_message(messageInf_t *message) {
 	 */
 	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
 		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
-				N(2, 0),CDEC);
+				N(2, 0),CDEC_ASCII);
 	}
 	push_char_to_txBuf(' ');
 
@@ -219,11 +284,11 @@ static void creat_public_message(messageInf_t *message) {
 	/*
 	 *观测时间
 	 */
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC);
+	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
 	push_char_to_txBuf(' ');
 
 }
@@ -274,7 +339,7 @@ static void creat_hour_element(hydrologyInf_t *hydrologyData){
 	push_char_to_txBuf('P');
 	push_char_to_txBuf(' ');
 	for(i=0;i < COUNT_OF_12MINUTE_IN_HOUR;i++){
-		push_integer_to_txBuf(hydrologyData->rainfall.rainfallPer12Minute[i],N(2,0),CHEX);
+		push_integer_to_txBuf(hydrologyData->rainfall.rainfallPer12Minute[i],N(2,0),CHEX_ASCII);
 	}
 	push_char_to_txBuf(' ');
 
@@ -295,7 +360,7 @@ static void creat_hour_element(hydrologyInf_t *hydrologyData){
 	push_char_to_txBuf(' ');
 
 	for(i=0;i<COUNT_OF_12MINUTE_IN_HOUR;i++){
-		push_integer_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i],N(4,0),CHEX);
+		push_integer_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i],N(4,0),CHEX_ASCII);
 	}
 	push_char_to_txBuf(' ');
 }
@@ -320,17 +385,17 @@ static uint16_t creat_timeAverage_message(messageInf_t *message) {
 		push_char_to_txBuf('N');
 		push_char_to_txBuf(' ');
 		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval,
-				N(2, 0),CDEC);
+				N(2, 0),CDEC_ASCII);
 	} else if (rtuParameter.upDataArg.timeAverageInterval >= 1440) { //天
 		push_char_to_txBuf('D');
 		push_char_to_txBuf(' ');
 		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440,
-				N(2, 0),CDEC);
+				N(2, 0),CDEC_ASCII);
 
 	} else {
 		push_char_to_txBuf('H');
 		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2, 0),CDEC);
+		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2, 0),CDEC_ASCII);
 	}
 	push_char_to_txBuf(' ');
 
@@ -351,7 +416,7 @@ static uint16_t creat_keep_message(messageInf_t *message) {
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum, N(4, 0),CDEC);
+	push_integer_to_txBuf(message->serialNum, N(4, 0),CDEC_ASCII);
 	push_char_to_txBuf(' ');
 
 	/*
@@ -359,12 +424,12 @@ static uint16_t creat_keep_message(messageInf_t *message) {
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC);
+	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
 	push_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
@@ -444,19 +509,19 @@ static uint16_t creat_extra_mesage(messageInf_t *message) {
 static uint16_t creat_manMade_message(messageInf_t *message) {
 	uint16_t lenBefor = getLen_of_txBuf();
 
-	push_integer_to_txBuf(message->serialNum, N(2, 0),CDEC);
+	push_integer_to_txBuf(message->serialNum, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC);
+	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
 	push_char_to_txBuf(' ');
 
 	/*
@@ -486,21 +551,21 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 	push_char_to_txBuf(CT_SOH_ASCLL);
 
 	/*中心站地址*/
-	push_integer_to_txBuf(rtuParameter.upDataArg.centreStationAddr, N(2, 0),CDEC);
+	push_integer_to_txBuf(rtuParameter.upDataArg.centreStationAddr, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 测站地址
 	 */
 	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
 		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
-				N(2, 0),CDEC);
+				N(2, 0),CDEC_ASCII);
 	}
 
 	/*密码*/
-	push_integer_to_txBuf(rtuParameter.upDataArg.passWord, N(4, 0),CDEC);
+	push_integer_to_txBuf(rtuParameter.upDataArg.passWord, N(4, 0),CDEC_ASCII);
 
 	/*功能码*/
-	push_integer_to_txBuf(funCode, N(2, 0),CHEX);
+	push_integer_to_txBuf(funCode, N(2, 0),CHEX_ASCII);
 
 	/*上下行标识符*/
 	push_char_to_txBuf(MESSAGE_TYPE_UP);
@@ -516,7 +581,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_timeAverage_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX);
+		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -535,7 +600,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_hour_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX);
+		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -554,7 +619,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_timing_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX);
+		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -573,7 +638,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_keep_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX);
+		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -592,7 +657,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_extra_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX);
+		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -611,7 +676,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_manMade_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3,0),CDEC);
+		push_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
 
 		/*报文启始符*/
 		push_char_to_txBuf(CT_STX);
@@ -628,7 +693,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 	push_char_to_txBuf(CT_ETX);
 
 	/*求校验*/
-	push_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX);
+	push_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX_ASCII);
 }
 
 uint8_t analysis_msg(uint8_t *rxBuf , uint8_t len){

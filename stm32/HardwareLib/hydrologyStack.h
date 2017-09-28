@@ -70,8 +70,9 @@
 #define ELEMENT_IDENT_NONE 0x00
 /**************************–≠“È≈‰÷√**************************************/
 #define COUNT_OF_12MINUTE_IN_HOUR 12
-#define CHEX 1
-#define CDEC 0
+#define CHEX_ASCII 1
+#define CDEC_ASCII 0
+#define HEX_BYTE
 #define MESSAGE_TYPE_UP  '0'
 #define MESSAGE_TYPE_DOW '8'
 
