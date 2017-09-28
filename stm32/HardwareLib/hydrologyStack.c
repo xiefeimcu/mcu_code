@@ -29,12 +29,53 @@ void clear_tail(uint16_t len) {
 
 }
 
-void push_char_to_txBuf(uint8_t ch) {
+void push_ascll_char_to_txBuf(uint8_t ch) {
 	txDataBuf.dataBuf[txDataBuf.dataIdx] = ch;
 	txDataBuf.dataIdx++;
 }
 
-void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexOrDec) {
+void push_hex_integer_to_txBuf(uint32_t num, uint8_t byteCount){
+	uint8_t i;
+
+	typedef union {
+		uint32_t num;
+		uint8_t  byte[4];
+	}unionData;
+
+	unionData data;
+
+	data.num = num;
+
+	for(i=0;i<byteCount;i++){
+		txDataBuf.dataBuf[txDataBuf.dataIdx] = data.byte[i];
+		txDataBuf.dataIdx++;
+	}
+}
+
+void push_hex_float_to_txBuf(float num, uint8_t byteCount){
+	uint8_t i;
+
+	typedef union {
+		float num;
+		uint8_t  byte[4];
+	}unionData;
+
+	unionData data;
+
+	data.num = num;
+
+	for(i=0;i<byteCount;i++){
+		txDataBuf.dataBuf[txDataBuf.dataIdx] = data.byte[i];
+		txDataBuf.dataIdx++;
+	}
+}
+
+
+void push_hex_char_to_txBuf(){
+
+}
+
+void push_ascll_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexOrDec) {
 	if(isHexOrDec){
 		sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%0*lx",
 				GET_HIGH_4BIT(dataType), num);
@@ -44,8 +85,6 @@ void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexOrDec) {
 				GET_HIGH_4BIT(dataType), num);
 		txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
 	}
-
-
 }
 
 void clear_hydrologyInf(hydrologyInf_t *hydrologyData) {
@@ -88,13 +127,13 @@ uint32_t power(float x, uint16_t y) {
 	return (uint32_t) (powerCode[y] * (float) x);
 }
 
-void push_float_to_txBuf(float num, uint8_t dataType) {
+void push_ascll_float_to_txBuf(float num, uint8_t dataType) {
 	uint32_t intArea;
 	float decimalArea;
 	uint32_t intDecimal;
 
 	if (num < 0) {
-		push_char_to_txBuf('-');
+		push_ascll_char_to_txBuf('-');
 		num = -1 * num;
 	}
 
@@ -107,7 +146,7 @@ void push_float_to_txBuf(float num, uint8_t dataType) {
 
 	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
 
-	push_char_to_txBuf('.');
+	push_ascll_char_to_txBuf('.');
 
 	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%*ld",
 			GET_LOW_4BIT(dataType), intDecimal);
@@ -116,7 +155,7 @@ void push_float_to_txBuf(float num, uint8_t dataType) {
 
 }
 
-void push_data_to_txBuf(uint8_t *srcData, uint16_t len) {
+void push_ascll_data_to_txBuf(uint8_t *srcData, uint16_t len) {
 	uint8_t i;
 
 	for (i = 0; i < len; i++) {
@@ -144,65 +183,131 @@ void clear_element_from_message(messageInf_t *message, int8_t idx) {
 	}
 }
 
-void add_start_code(uint8_t hexOfAscll){
-
+void add_start_code(){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
+		push_hex_integer_to_txBuf(CT_SOH_HEX_BCD,sizeof(CT_SOH_HEX_BCD));
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+		push_ascll_char_to_txBuf(CT_SOH_ASCLL);
+	}
 }
 
-void add_station_addr(uint8_t hexOfAscll){
+void add_station_addr(uint8_t *addr){
+	uint8_t i;
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
+		for(i=0; i<5; i++){
+			push_hex_integer_to_txBuf(addr[i],sizeof(addr[i]));
+		}
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+		for(i=0; i<5; i++){
+			push_ascll_integer_to_txBuf(addr[i],N(1,0),CDEC_ASCII);
+		}
+	}
 }
 
-void add_paswd(uint8_t hexOfAscll){
-
+void add_paswd(uint16_t psw){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
+		push_hex_integer_to_txBuf(psw,sizeof(psw));
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+		push_ascll_integer_to_txBuf(psw,N(4,0),CDEC_ASCII);
+	}
 }
 
-void add_fun_code(uint8_t hexOfAscll){
+void add_fun_code(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_up_down_identifier(uint8_t hexOfAscll){
+void add_up_down_identifier(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_msg_len(uint8_t hexOfAscll){
+void add_msg_len(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_serial_num(uint16_t num,uint8_t hexOfAscll){
+void add_serial_num(uint16_t num){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_send_msg_time(uint8_t hexOfAscll){
+void add_send_msg_time(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_addr_identifier(uint8_t hexOfAscll){
+void add_addr_identifier(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_rtu_addr(uint8_t hexOfAscll){
+void add_rtu_addr(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_rtu_type_code (uint8_t hexOfAscll){
+void add_rtu_type_code (void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
 
-void add_watch_time_identifier(uint8_t hexOfAscll){
+void add_watch_time_identifier(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_watch_time(uint8_t hexOfAscll){
+void add_watch_time(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_msg_end_identifier(uint8_t hexOfAscll){
+void add_msg_end_identifier(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
-void add_crc(uint8_t hexOfAscll){
+void add_crc(void){
+	if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX){
 
+	}else if(MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII){
+
+	}
 }
 
 
@@ -238,58 +343,58 @@ static void creat_public_message(messageInf_t *message) {
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum, N(4, 0),CHEX_ASCII);
+	push_ascll_ascll_integer_to_txBuf(message->serialNum, N(4, 0),CHEX_ASCII);
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 地址标识符
 	 */
-	push_char_to_txBuf('S');
-	push_char_to_txBuf('T');
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('S');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 测站地址
 	 */
 	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
-		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
 				N(2, 0),CDEC_ASCII);
 	}
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 遥测站分类码
 	 */
-	push_char_to_txBuf(rtuParameter.upDataArg.rtuType);
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(rtuParameter.upDataArg.rtuType);
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 观测时间标识符
 	 */
-	push_char_to_txBuf('T');
-	push_char_to_txBuf('T');
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 *观测时间
 	 */
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
-	push_char_to_txBuf(' ');
+	push_ascll_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_ascll_char_to_txBuf(' ');
 
 }
 
@@ -308,18 +413,18 @@ static void creat_element(messageInf_t *message) {
 			 */
 			j = 0;
 			while (message->elementInf.element[i].elementIdentifier[j]) {
-				push_char_to_txBuf(
+				push_ascll_char_to_txBuf(
 						message->elementInf.element[i].elementIdentifier[j]);
 				j++;
 			}
-			push_char_to_txBuf(' ');
+			push_ascll_char_to_txBuf(' ');
 
 			/*
 			 * 处理数据
 			 */
-			push_float_to_txBuf(message->elementInf.element[i].value,
+			push_ascll_float_to_txBuf(message->elementInf.element[i].value,
 					message->elementInf.element[i].dataType);
-			push_char_to_txBuf(' ');
+			push_ascll_char_to_txBuf(' ');
 		} else {
 			break;
 		}
@@ -334,14 +439,14 @@ static void creat_hour_element(hydrologyInf_t *hydrologyData){
 	/*
 	 * 1h 内 间隔5 分钟 的降水量
 	 */
-	push_char_to_txBuf('D');
-	push_char_to_txBuf('R');
-	push_char_to_txBuf('P');
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('D');
+	push_ascll_char_to_txBuf('R');
+	push_ascll_char_to_txBuf('P');
+	push_ascll_char_to_txBuf(' ');
 	for(i=0;i < COUNT_OF_12MINUTE_IN_HOUR;i++){
-		push_integer_to_txBuf(hydrologyData->rainfall.rainfallPer12Minute[i],N(2,0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(hydrologyData->rainfall.rainfallPer12Minute[i],N(2,0),CHEX_ASCII);
 	}
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 *  1h降水累计值 TODO 之前的RTU没加这个 还没搞清楚
@@ -353,16 +458,16 @@ static void creat_hour_element(hydrologyInf_t *hydrologyData){
      * 据中不含小数点； FFFFH表示非法数据 )； 对于河道、
      * 闸坝（泵） 站分别表示河道水位、 闸（站）上水位
 	 */
-	push_char_to_txBuf('D');
-	push_char_to_txBuf('R');
-	push_char_to_txBuf('Z');
-	push_char_to_txBuf('1');
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('D');
+	push_ascll_char_to_txBuf('R');
+	push_ascll_char_to_txBuf('Z');
+	push_ascll_char_to_txBuf('1');
+	push_ascll_char_to_txBuf(' ');
 
 	for(i=0;i<COUNT_OF_12MINUTE_IN_HOUR;i++){
-		push_integer_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i],N(4,0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i],N(4,0),CHEX_ASCII);
 	}
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(' ');
 }
 
 /*
@@ -378,26 +483,26 @@ static uint16_t creat_timeAverage_message(messageInf_t *message) {
 	/*
 	 * 时间步长
 	 */
-	push_char_to_txBuf('D');
-	push_char_to_txBuf('R');
+	push_ascll_char_to_txBuf('D');
+	push_ascll_char_to_txBuf('R');
 
 	if (rtuParameter.upDataArg.timeAverageInterval < 60) {        //分钟
-		push_char_to_txBuf('N');
-		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval,
+		push_ascll_char_to_txBuf('N');
+		push_ascll_char_to_txBuf(' ');
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval,
 				N(2, 0),CDEC_ASCII);
 	} else if (rtuParameter.upDataArg.timeAverageInterval >= 1440) { //天
-		push_char_to_txBuf('D');
-		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440,
+		push_ascll_char_to_txBuf('D');
+		push_ascll_char_to_txBuf(' ');
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 1440,
 				N(2, 0),CDEC_ASCII);
 
 	} else {
-		push_char_to_txBuf('H');
-		push_char_to_txBuf(' ');
-		push_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2, 0),CDEC_ASCII);
+		push_ascll_char_to_txBuf('H');
+		push_ascll_char_to_txBuf(' ');
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.timeAverageInterval / 60,N(2, 0),CDEC_ASCII);
 	}
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 要素标识符、数据
@@ -416,21 +521,21 @@ static uint16_t creat_keep_message(messageInf_t *message) {
 	/*
 	 * 流水号处理
 	 */
-	push_integer_to_txBuf(message->serialNum, N(4, 0),CDEC_ASCII);
-	push_char_to_txBuf(' ');
+	push_ascll_integer_to_txBuf(message->serialNum, N(4, 0),CDEC_ASCII);
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
-	push_char_to_txBuf(' ');
+	push_ascll_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
+	push_ascll_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
 }
@@ -446,14 +551,14 @@ static uint16_t creat_timing_mesage(messageInf_t *message) {
 
 	/*要素标识符、数据*/
 	creat_element(message);
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf(' ');
 
 	/*添加电压信息*/
-	push_char_to_txBuf('V');
-	push_char_to_txBuf('T');
-	push_char_to_txBuf(' ');
-	push_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('V');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf(' ');
+	push_ascll_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
+	push_ascll_char_to_txBuf(' ');
 	return getLen_of_txBuf() - lenBefor;
 }
 /*
@@ -470,11 +575,11 @@ static uint16_t creat_hour_mesage(messageInf_t *message) {
 	/*
 	 * 添加电压信息
 	 */
-	push_char_to_txBuf('V');
-	push_char_to_txBuf('T');
-	push_char_to_txBuf(' ');
-	push_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('V');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf(' ');
+	push_ascll_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
+	push_ascll_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
 }
@@ -494,11 +599,11 @@ static uint16_t creat_extra_mesage(messageInf_t *message) {
 	/*
 	 * 添加电压信息
 	 */
-	push_char_to_txBuf('V');
-	push_char_to_txBuf('T');
-	push_char_to_txBuf(' ');
-	push_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
-	push_char_to_txBuf(' ');
+	push_ascll_char_to_txBuf('V');
+	push_ascll_char_to_txBuf('T');
+	push_ascll_char_to_txBuf(' ');
+	push_ascll_float_to_txBuf((float)(message->rtu_state.batteryVoltage /10.0f), N(2, 2));
+	push_ascll_char_to_txBuf(' ');
 
 	return getLen_of_txBuf() - lenBefor;
 }
@@ -509,20 +614,20 @@ static uint16_t creat_extra_mesage(messageInf_t *message) {
 static uint16_t creat_manMade_message(messageInf_t *message) {
 	uint16_t lenBefor = getLen_of_txBuf();
 
-	push_integer_to_txBuf(message->serialNum, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->serialNum, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 发报时间处理
 	 */
 	HAL_RTC_GetTime(&hrtc, &(message->elementInf.time), RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &(message->elementInf.date), RTC_FORMAT_BIN);
-	push_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
-	push_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
-	push_char_to_txBuf(' ');
+	push_ascll_integer_to_txBuf(message->elementInf.date.Year, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Month, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.date.Date, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Hours, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Minutes, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(message->elementInf.time.Seconds, N(2, 0),CDEC_ASCII);
+	push_ascll_char_to_txBuf(' ');
 
 	/*
 	 * 人工置数标识符，人工置数。
@@ -548,27 +653,27 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 	clear_txBuf();
 
 	/* 帧启始符*/
-	push_char_to_txBuf(CT_SOH_ASCLL);
+	push_ascll_char_to_txBuf(CT_SOH_ASCLL);
 
 	/*中心站地址*/
-	push_integer_to_txBuf(rtuParameter.upDataArg.centreStationAddr, N(2, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(rtuParameter.upDataArg.centreStationAddr, N(2, 0),CDEC_ASCII);
 
 	/*
 	 * 测站地址
 	 */
 	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
-		push_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
 				N(2, 0),CDEC_ASCII);
 	}
 
 	/*密码*/
-	push_integer_to_txBuf(rtuParameter.upDataArg.passWord, N(4, 0),CDEC_ASCII);
+	push_ascll_integer_to_txBuf(rtuParameter.upDataArg.passWord, N(4, 0),CDEC_ASCII);
 
 	/*功能码*/
-	push_integer_to_txBuf(funCode, N(2, 0),CHEX_ASCII);
+	push_ascll_integer_to_txBuf(funCode, N(2, 0),CHEX_ASCII);
 
 	/*上下行标识符*/
-	push_char_to_txBuf(MESSAGE_TYPE_UP);
+	push_ascll_char_to_txBuf(MESSAGE_TYPE_UP);
 
 	switch (funCode) {
 	/*
@@ -581,10 +686,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_timeAverage_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_timeAverage_message(message);
@@ -600,10 +705,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_hour_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_hour_mesage(message);
@@ -619,10 +724,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_timing_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_timing_mesage(message);
@@ -638,10 +743,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_keep_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_keep_message(message);
@@ -657,10 +762,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_extra_mesage(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_extra_mesage(message);
@@ -676,10 +781,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		 */
 		len = creat_manMade_message(message);
 		clear_tail(len);
-		push_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
+		push_ascll_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
 
 		/*报文启始符*/
-		push_char_to_txBuf(CT_STX);
+		push_ascll_char_to_txBuf(CT_STX);
 
 		/*添加正文*/
 		creat_manMade_message(message);
@@ -690,10 +795,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 	}
 
 	/*报文结束符*/
-	push_char_to_txBuf(CT_ETX);
+	push_ascll_char_to_txBuf(CT_ETX);
 
 	/*求校验*/
-	push_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX_ASCII);
+	push_ascll_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX_ASCII);
 }
 
 uint8_t analysis_msg(uint8_t *rxBuf , uint8_t len){

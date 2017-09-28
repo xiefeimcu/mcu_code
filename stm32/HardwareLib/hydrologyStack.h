@@ -16,7 +16,7 @@
 #define TX_BUF_LEN 255
 /**************************控制字符定义**************************************/
 #define CT_SOH_ASCLL   0x01
-#define CT_SOH_HEX_BCD 0x7EE
+#define CT_SOH_HEX_BCD (uint16_t)0x7EE
 #define CT_STX         0x02
 #define CT_SYN         0x16
 #define CT_ETX         0x03
@@ -70,11 +70,19 @@
 #define ELEMENT_IDENT_NONE 0x00
 /**************************协议配置**************************************/
 #define COUNT_OF_12MINUTE_IN_HOUR 12
+
 #define CHEX_ASCII 1
 #define CDEC_ASCII 0
+
 #define HEX_BYTE
+
 #define MESSAGE_TYPE_UP  '0'
 #define MESSAGE_TYPE_DOW '8'
+
+#define MESSAGE_DATA_FORMAT_HEX   0
+#define MESSAGE_DATA_FORMAT_ASCII 1
+
+#define MESSAGE_DATA_FORMAT 0
 
 #define N(a,b) (uint8_t)( a << 4 | b)
 #define GET_HIGH_4BIT(a) (a >> 4)
@@ -153,9 +161,9 @@ uint16_t getLen_of_txBuf();
 
 void clear_txBuf();
 void clear_tail(uint16_t len);
-void push_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexaDec);
-void push_float_to_txBuf(float num,uint8_t dataType);
-void push_data_to_txBuf(uint8_t *srcData,uint16_t len);
+void push_ascll_integer_to_txBuf(uint32_t num, uint8_t dataType,uint8_t isHexaDec);
+void push_ascll_float_to_txBuf(float num,uint8_t dataType);
+void push_ascll_data_to_txBuf(uint8_t *srcData,uint16_t len);
 void add_sim_waterInf_data(hydrologyInf_t *hydrologyData);
 void add_waterInf_data(hydrologyInf_t *hydrologyData,uint8_t rainFall, uint16_t waterLevel);
 
