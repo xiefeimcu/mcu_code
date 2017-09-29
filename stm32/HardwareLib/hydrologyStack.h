@@ -76,13 +76,19 @@
 
 #define HEX_BYTE
 
-#define MESSAGE_TYPE_UP  '0'
-#define MESSAGE_TYPE_DOW '8'
+#define MESSAGE_TYPE_UP  0x00
+#define MESSAGE_TYPE_DOW 0x08
 
 #define MESSAGE_DATA_FORMAT_HEX   0
 #define MESSAGE_DATA_FORMAT_ASCII 1
 
 #define MESSAGE_DATA_FORMAT 0
+
+#define COMM_MODE_M1 0
+#define COMM_MODE_M2 1
+#define COMM_MODE_M3 2
+#define COMM_MODE_M4 3
+#define COMM_MODE    COMM_MODE_M1
 
 #define N(a,b) (uint8_t)( a << 4 | b)
 #define GET_HIGH_4BIT(a) (a >> 4)
