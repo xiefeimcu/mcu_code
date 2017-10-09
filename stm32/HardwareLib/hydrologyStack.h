@@ -12,7 +12,7 @@
 #include "include.h"
 
 /**************************协议配置**************************************/
-#define MAX_ELEMENT_IN_MESSAGE  6
+#define MAX_ELEMENT_IN_MESSAGE  8
 #define TX_BUF_LEN 255
 /**************************控制字符定义**************************************/
 #define CT_SOH_ASCLL   0x01
@@ -122,6 +122,7 @@ typedef struct{
 typedef struct
 {
   uint8_t* elementIdentifier;        //要素标识符
+  uint8_t elementIdentifierHex;
   float value;                       //要素数据值
   uint8_t dataType;
 }element_t;
@@ -143,7 +144,7 @@ typedef struct{
 }sendTime_t;
 
 typedef struct{
-	uint8_t batteryVoltage;
+	uint16_t batteryuint16_t;
 }rtuStateInf_t;
 
 
@@ -177,7 +178,7 @@ uint8_t *get_addr_txBuf(void);
 uint16_t getLen_of_txBuf(void);
 void clear_element_from_message(messageInf_t *message,int8_t idx);
 
-int8_t add_element(messageInf_t *message,const char* str, float value,uint8_t dataType);
+int8_t write_element(messageInf_t *message,const char* str, float value,uint8_t dataType);
 void creat_msg(messageInf_t *message,  uint8_t funCode);
 
 #endif /* HYDROLOGYSTACK_H_ */
