@@ -94,6 +94,144 @@
 #define GET_HIGH_4BIT(a) (a >> 4)
 #define GET_LOW_4BIT(a)  (a & 0x0F)
 
+#define IDENT_CODE_ST 0xF0
+
+/*要素标识符索引*/
+typedef enum {
+		TT,
+		ST,
+		RGZS,
+		PIC,
+		DRP,
+		DRZ1,
+		DRZ2,
+		DRZ3,
+		DRZ4,
+		DRZ5,
+		DRZ6,
+		DRZ7,
+		DRZ8,
+		DATA,
+		AC,
+		AI,
+		C,
+		DRxnn,
+		DT,
+		ED,
+		EJ,
+		FL,
+		GH,
+		GN,
+		GS,
+		GT,
+		GTP,
+		H,
+		HW,
+		M10,
+		M20,
+		M30,
+		M40,
+		M50,
+		M60,
+		M80,
+		M100,
+		MST,
+		NS,
+		P1,
+		P2,
+		P3,
+		P6,
+		P12,
+		PD,
+		PJ,
+		PN01,
+		PN05,
+		PN10,
+		PN30,
+		PR,
+		PT,
+		Q,
+		Q1,
+		Q2,
+		Q3,
+		Q4,
+		Q5,
+		Q6,
+		Q7,
+		Q8,
+		QA,
+		QZ,
+		SW,
+		UC,
+		UE,
+		US,
+		VA,
+		VJ,
+		VT,
+		Z,
+		ZB,
+		ZU,
+		Z1,
+		Z2,
+		Z3,
+		Z4,
+		Z5,
+		Z6,
+		Z7,
+		Z8,
+		SQ,
+		ZT,
+		pH,
+		DO,
+		COND,
+		TURB,
+		CODMN,
+		REDOX,
+		NH4N,
+		TP,
+		TN,
+		TOC,
+		CU,
+		ZN,
+		SE,
+		AS,
+		THG,
+		CD,
+		PB,
+		CHLA,
+		WP1,
+		WP2,
+		WP3,
+		WP4,
+		WP5,
+		WP6,
+		WP7,
+		WP8,
+		SYL1,
+		SYL2,
+		SYL3,
+		SYL4,
+		SYL5,
+		SYL6,
+		SYL7,
+		SYL8,
+		SBL1,
+		SBL2,
+		SBL3,
+		SBL4,
+		SBL5,
+		SBL6,
+		SBL7,
+		SBL8,
+		VTA,
+		VTB,
+		VTC,
+		VIA,
+		VIB,
+		VIC,
+}identifierCodeIdx_t;
+extern const char* identifierCode[];
+
 typedef enum{
 	FIVE_MINUTE_WATER_DATA,
 	/*
@@ -121,9 +259,9 @@ typedef struct{
 /*要素结构*/
 typedef struct
 {
-  uint8_t* elementIdentifier;        //要素标识符
+  identifierCodeIdx_t elementIdentifier;        //要素标识符
   uint8_t elementIdentifierHex;
-  float value;                       //要素数据值
+  uint32_t value;                       //要素数据值
   uint8_t dataType;
 }element_t;
 
@@ -144,7 +282,7 @@ typedef struct{
 }sendTime_t;
 
 typedef struct{
-	uint16_t batteryuint16_t;
+	uint16_t batteryVoltage;
 }rtuStateInf_t;
 
 
@@ -178,7 +316,7 @@ uint8_t *get_addr_txBuf(void);
 uint16_t getLen_of_txBuf(void);
 void clear_element_from_message(messageInf_t *message,int8_t idx);
 
-int8_t write_element(messageInf_t *message,const char* str, float value,uint8_t dataType);
-void creat_msg(messageInf_t *message,  uint8_t funCode);
+int8_t write_element(messageInf_t *message, identifierCodeIdx_t ident, float value , uint8_t dataType);
+void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t isLastMsg);
 
 #endif /* HYDROLOGYSTACK_H_ */
