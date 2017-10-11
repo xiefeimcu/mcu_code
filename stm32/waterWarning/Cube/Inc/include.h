@@ -1,5 +1,5 @@
-#ifndef _INCLUDE_H
-#define _INCLUDE_H
+#ifndef _INCLUDE_H_
+#define _INCLUDE_H_
 
 #include "stm32f1xx_hal.h"
 #include "main.h"
@@ -9,13 +9,10 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "include.h"
-
 #include "hydrologyStack.h"
 #include "Public.h"
 #include "string.h"
 #include "stdio.h"
-
 #include "config.h"
 
 #endif

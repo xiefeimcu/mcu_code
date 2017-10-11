@@ -46,15 +46,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "stm32f1xx_hal.h"
-#include "cmsis_os.h"
-#include "adc.h"
-#include "rtc.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
+
 
 /* USER CODE BEGIN Includes */
 #include "include.h"
@@ -77,6 +69,9 @@ void MX_FREERTOS_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+void DEBUG_INF(unsigned char *pdata,unsigned short len){
+	HAL_UART_Transmit(&RS2322_UART_HANDLE,pdata,len,3);
+}
 
 /* USER CODE END 0 */
 
@@ -110,9 +105,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_RTC_Init();
   MX_TIM1_Init();
-  MX_ADC1_Init();
+
   MX_UART4_Init();
-  MX_SPI2_Init();
 
   /* USER CODE BEGIN 2 */
 

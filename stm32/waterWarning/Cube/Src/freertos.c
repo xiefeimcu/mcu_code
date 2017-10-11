@@ -207,17 +207,24 @@ void sensor_sample(void const * argument)
 	dev_modbus_handle_t hmodbus;
 
 	senseGetDataSemaphore = xSemaphoreCreateBinary();
-
 	creat_dev_inf(&hmodbus, MODBUS_RTU_TEST);
 	HAL_UART_Receive_IT(&huart3, uarto_rx_buf, 0);
+
 	/* Infinite loop */
 	for (;;) {
 		TOGGLE_LED1();
-		xSemaphoreTake(senseGetDataSemaphore, portMAX_DELAY );
-		//sprintf((char*)testStr + 9,"%08ld",get_rainFall(&waterInf,1));
-		//HAL_UART_Transmit(&RS2322_UART_HANDLE,testStr,sizeof(testStr),10);
-
-		//osDelay(1000);
+		TEST_HYK_test_msg(&messageHandle);
+		osDelay(1000);
+	    TEST_HYK_keep_msg(&messageHandle);
+		osDelay(1000);
+		TEST_HYK_timing_msg(&messageHandle);
+		osDelay(1000);
+		TEST_HYK_hour_msg(&messageHandle);
+		osDelay(1000);
+		TEST_HYK_man_msg(&messageHandle);
+		osDelay(1000);
+		TEST_HYK_plus_msg(&messageHandle);
+		osDelay(1000);
 	}
   /* USER CODE END sensor_sample */
 }
