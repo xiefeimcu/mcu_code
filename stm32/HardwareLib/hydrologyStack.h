@@ -262,7 +262,7 @@ typedef struct
 {
   identifierCodeIdx_t elementIdentifier;        //要素标识符
   uint8_t elementIdentifierHex;
-  uint32_t value;                       //要素数据值
+  float value;                       //要素数据值
   uint8_t dataType;
 }element_t;
 

@@ -247,7 +247,7 @@ uint32_t power(float x, uint16_t y) {
 
 	return (uint32_t) (powerCode[y] * (float) x);
 }
-
+#include "stdlib.h"
 void push_ascll_float_to_txBuf(float num, uint8_t dataType) {
 	uint32_t intArea;
 	float decimalArea;
@@ -258,19 +258,17 @@ void push_ascll_float_to_txBuf(float num, uint8_t dataType) {
 		num = -1 * num;
 	}
 
-	intArea = (float) num;
-	decimalArea = num - (float) intArea;
+	intArea = (uint32_t) num;
+	decimalArea = num - intArea;
 	intDecimal = power(decimalArea, GET_LOW_4BIT(dataType));
 
-	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%*ld",GET_HIGH_4BIT(dataType), intArea);
-
+	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%ld", intArea);
 	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
 
 	push_one_byte_to_txBuf('.');
 
-	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%*ld",GET_LOW_4BIT(dataType), intDecimal);
+	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%ld", intDecimal);
 	txDataBuf.dataIdx += GET_LOW_4BIT(dataType);
-
 }
 
 void push_ascll_data_to_txBuf(uint8_t *srcData, uint16_t len) {
@@ -512,7 +510,7 @@ void add_identifier(identifierCodeIdx_t idx){
 	}
 }
 
-void add_element_data(uint32_t data,uint8_t dataType){
+void add_element_data(float data,uint8_t dataType){
 	uint8_t h;
 	uint8_t l;
 	if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX) {
@@ -523,7 +521,7 @@ void add_element_data(uint32_t data,uint8_t dataType){
 		push_integer_to_txBuf(data,N((l + h),0),CDEC_ASCII);
 
 	} else if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII) {
-		push_integer_to_txBuf(data,dataType,CDEC_ASCII);
+		push_ascll_float_to_txBuf(data,dataType);
 		push_one_byte_to_txBuf(' ');
 	}
 }
@@ -537,7 +535,6 @@ void add_element(messageInf_t *message) {
 		}
 		add_identifier(message->elementInf.element[i].elementIdentifier);
 		add_element_data(message->elementInf.element[i].value,message->elementInf.element[i].dataType);
-		message->elementInf.element[i].dataType = ELEMENT_IDENT_NONE;
 	}
 }
 
@@ -631,7 +628,7 @@ int8_t write_element(messageInf_t *message, identifierCodeIdx_t ident, float val
 		return -1;
 	} else {
 		message->elementInf.element[i].elementIdentifier = ident; //要素标识符是一个字符串常量
-		message->elementInf.element[i].value =  (uint32_t)(power(value,GET_LOW_4BIT(dataType)));
+		message->elementInf.element[i].value =  value;
 		message->elementInf.element[i].dataType = dataType;
 	}
 	return 0;
@@ -885,6 +882,8 @@ void TEST_HYK_test_msg(messageInf_t *message){
 	creat_msg(&messageHandle, FUN_CODE_CSB,1,1);
 	DEBUG_INF((uint8_t *)"\r\n\r\ntest:",9);
 	DEBUG_INF(get_txbuf_addr(),get_txbuf_len());
+	/*测试完成后清空要素*/
+	clear_element_from_message(message,-1);
 }
 
 /*
@@ -901,7 +900,6 @@ void TEST_HYK_keep_msg(messageInf_t *message){
  * 上行定时报
  * */
 void TEST_HYK_timing_msg(messageInf_t *message){
-	//clear_element_from_message(message,-1);
 	/*添加定时报的要素信息*/
 	write_element(&messageHandle,IDT_PJ,1.5,N(5,1));
 	write_element(&messageHandle,IDT_PT,1.5,N(6,1));
@@ -910,6 +908,8 @@ void TEST_HYK_timing_msg(messageInf_t *message){
 	creat_msg(&messageHandle, FUN_CODE_DSB,1,1);
 	DEBUG_INF((uint8_t *)"\r\n\r\ntiming:",11);
 	DEBUG_INF(get_txbuf_addr(),get_txbuf_len());
+	/*测试完成后清空要素*/
+	clear_element_from_message(message,-1);
 }
 
 /*
@@ -924,6 +924,8 @@ void TEST_HYK_hour_msg(messageInf_t *message){
 	creat_msg(&messageHandle, FUN_CODE_XSB,1,1);
 	DEBUG_INF((uint8_t *)"\r\n\r\nhour:",9);
 	DEBUG_INF(get_txbuf_addr(),get_txbuf_len());
+	/*测试完成后清空要素*/
+	clear_element_from_message(message,-1);
 }
 
 /*
@@ -948,6 +950,8 @@ void TEST_HYK_plus_msg(messageInf_t *message){
 	creat_msg(message, FUN_CODE_DSB,1,1);
 	DEBUG_INF((uint8_t *)"\r\n\r\nplus:",9);
 	DEBUG_INF(get_txbuf_addr(),get_txbuf_len());
+	/*测试完成后清空要素*/
+	clear_element_from_message(message,-1);
 }
 
 /*
