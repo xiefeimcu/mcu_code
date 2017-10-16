@@ -245,9 +245,24 @@ uint32_t power(float x, uint16_t y) {
 		return -1;
 	}
 
-	return (uint32_t) (powerCode[y] * (float) x);
+	return (uint32_t) ((float)powerCode[y] * x);
 }
-#include "stdlib.h"
+
+uint8_t get_DecNum_chars_count(uint32_t num){
+	uint8_t i;
+	const uint32_t code[] = { 0, 10, 100, 1000, 10000, 100000, 1000000,
+			10000000, 100000000, 1000000000,};
+
+	for(i=0;i<sizeof(code);i+=2){
+		if((num >= code[i]) && (num < code[i+1])){
+			return i + 1;
+		}
+	}
+	return 0;
+}
+
+
+
 void push_ascll_float_to_txBuf(float num, uint8_t dataType) {
 	uint32_t intArea;
 	float decimalArea;
@@ -259,16 +274,16 @@ void push_ascll_float_to_txBuf(float num, uint8_t dataType) {
 	}
 
 	intArea = (uint32_t) num;
-	decimalArea = num - intArea;
+	decimalArea = num - (float)intArea;
 	intDecimal = power(decimalArea, GET_LOW_4BIT(dataType));
 
 	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%ld", intArea);
-	txDataBuf.dataIdx += GET_HIGH_4BIT(dataType);
+	txDataBuf.dataIdx += get_DecNum_chars_count(intArea);
 
 	push_one_byte_to_txBuf('.');
 
 	sprintf((char*) (txDataBuf.dataBuf + txDataBuf.dataIdx), "%ld", intDecimal);
-	txDataBuf.dataIdx += GET_LOW_4BIT(dataType);
+	txDataBuf.dataIdx += get_DecNum_chars_count(intDecimal);
 }
 
 void push_ascll_data_to_txBuf(uint8_t *srcData, uint16_t len) {
@@ -443,7 +458,7 @@ void add_msg_end_identifier(uint8_t ch){
 	push_one_byte_to_txBuf(ch);
 }
 
-void add_voltage(uint16_t voltage){
+void add_voltage(float voltage){
 	if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX) {
 		push_one_byte_to_txBuf(0x38);
 		push_one_byte_to_txBuf(0x12);
@@ -452,7 +467,7 @@ void add_voltage(uint16_t voltage){
 		push_one_byte_to_txBuf('V');
 		push_one_byte_to_txBuf('T');
 		push_one_byte_to_txBuf(' ');
-		push_integer_to_txBuf((uint32_t) voltage,N(2,2),CDEC_ASCII);
+		push_ascll_float_to_txBuf(voltage,N(2,2));
 		push_one_byte_to_txBuf(' ');
 	}
 }
@@ -547,7 +562,7 @@ static void add_hour_msg_data(hydrologyInf_t *hydrologyData){
 	add_identifier(IDT_DRP);
 	/*1h 内 间隔5 分钟 的降水量*数据*/
 	for(i=0;i < COUNT_OF_12MINUTE_IN_HOUR;i++){
-		push_one_byte_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i]);
+		push_integer_to_txBuf(hydrologyData->waterLevel.waterLevelPer12Minute[i],N(2,0),HEXASCII);
 	}
 
 	if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII) {//ASCLL 模式下补空格
@@ -673,7 +688,6 @@ static uint16_t creat_timing_mesage(messageInf_t *message) {
 
 	/*要素标识符、数据*/
 	add_element(message);
-	push_one_byte_to_txBuf(' ');
 
 	/*添加电压信息*/
 	add_voltage(message->rtu_state.batteryVoltage);
@@ -875,8 +889,8 @@ void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t
  * */
 void TEST_HYK_test_msg(messageInf_t *message){
 	/*添加测试报的要素信息*/
-	write_element(&messageHandle,IDT_PJ,0.5,N(5,1));
-	write_element(&messageHandle,IDT_PT,0.5,N(6,1));
+	write_element(&messageHandle,IDT_PJ,1.5,N(5,1));
+	write_element(&messageHandle,IDT_PT,1.5,N(6,1));
 	write_element(&messageHandle,IDT_Z,0.301,N(7,3));
 	/*生成报文*/
 	creat_msg(&messageHandle, FUN_CODE_CSB,1,1);
