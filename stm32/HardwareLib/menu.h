@@ -24,6 +24,8 @@
 #define AdminPass               111111           //管理员密码
 #define UserPass                111111           //用户密码
 
+#define KEY_TIME_OUT 0
+
 /************* 菜单结构体定义 ********************/
 struct Menu
 {
@@ -35,13 +37,22 @@ struct Menu
   struct Menu *PreviousMenu;    //父级菜单
 };
 
+typedef enum {
+H_YEAR,
+H_MONTH,
+H_DAY,
+H_HOUR,
+H_MINUTE,
+H_SECOND,
+} timeType_t;
+
 /***************时间设置菜单结构体**********************/
 struct TimeSetMenu
 {
-  uint8_t type;
+  timeType_t type;
   uint8_t stringadd_x;
   uint8_t stringadd_y;
-  uint8_t *string;
+  const char *string;
   uint8_t disadd_x;
   uint8_t disadd_y;
   void (*Subs)(uint8_t x,uint8_t y,uint8_t z);
@@ -125,6 +136,9 @@ void SetTongDaoMin_3(void);
 void SetTongDaoMin_4(void);
 void SetHeight(void);
 void SysInfo(void);
+void SetDTKEY_UPower(void);
+void SetDTKEY_UPreheat(void);
+void SetCKEY_SETadd(void);
 
 #endif  /*#ifndef  _MENU_H*/
 

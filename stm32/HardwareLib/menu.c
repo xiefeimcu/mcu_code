@@ -19,6 +19,7 @@
 
 #include "menu.h"
 #include "key.h"
+#include "lcd_12864.h"
 
 extern const struct Menu MainMenu[8];
 extern const struct Menu ConfigMenu[7];
@@ -47,7 +48,7 @@ const struct Menu MainMenu[8]={            //主菜单
 
 const struct Menu ConfigMenu[7]={        //基本配置
 {7,4,"测站类型",SetRTUtype,NULL,(struct Menu*)MainMenu},
-{7,4,"中心地址",SetCenteradd,NULL,(struct Menu*)MainMenu},
+{7,4,"中心地址",SetCKEY_SETadd,NULL,(struct Menu*)MainMenu},
 {7,4,"测站地址",SetST,NULL,(struct Menu*)MainMenu},
 {7,4,"工作模式",SetWorkMode,NULL,(struct Menu*)MainMenu},
 {7,4,"定时报间隔",SetDSBJG,NULL,(struct Menu*)MainMenu},
@@ -132,12 +133,12 @@ const struct Menu CaiYangMenu[5]={	//采样设置
 
 
 const struct TimeSetMenu TimeSet[6]={   //时间设置
-{year,2,8,"年",5,8,settimetype},
-{month,2,24,"月",5,24,settimetype},
-{day,2,40,"日",5,40,settimetype},
-{hour,10,8,"时",13,8,settimetype},
-{minute,10,24,"分",13,24,settimetype},
-{second,10,40,"秒",13,40,settimetype}
+	{H_YEAR,2,8,"年",5,8,settimetype},
+	{H_MONTH,2,24,"月",5,24,settimetype},
+	{H_DAY,2,40,"日",5,40,settimetype},
+	{H_HOUR,10,8,"时",13,8,settimetype},
+	{H_MINUTE,10,24,"分",13,24,settimetype},
+	{H_SECOND,10,40,"秒",13,40,settimetype}
 };
 
 /*******************************************************************************
@@ -151,15 +152,16 @@ void SetMode(void)
 {
   Display.Status.Flag.Mon = RESET;
   Display.Status.Flag.Menu = SET;  //设置界面状态标志置位
-  ClearScreen;
+  lcd_clear_ddram();
   if(0!=PassWord())
   {
     SetMenu();
   }
-  System.Key = Null;
-  ClearScreen;
+
+  key_event_handle = Null;
+  lcd_clear_ddram();
   DisplayMon();      //显示监测界面
-  Display.Status.Flag.KeyOut = RESET;
+  KEY_TIME_OUT = RESET;
   Display.Status.Flag.SetMode = RESET;
 }
 
@@ -221,14 +223,14 @@ void SetMenu(void)
   uint8_t  RefreshMenu = 1;       //刷新菜单标志
   struct Menu *MenKEY_UPoint = (struct Menu*)MainMenu;
 
-  ClearScreen;
+  lcd_clear_ddram();
   while(1)
   {
     ShowMenu(MenKEY_UPoint,DisplayPoint,USER,UserChoose,RefreshMenu);         //显示目录
 
     WaitKey();     //等待按键按下
 
-      switch(System.Key)
+      switch(key_event_handle)
       {
         case KEY_UP:
                 USER = UserChoose;                      //保存前一次用户选择
@@ -238,13 +240,13 @@ void SetMenu(void)
                   UserChoose = MenKEY_UPoint[0].MenuCount - 1;           //用户选择指向最后一项
                   if(MenKEY_UPoint[0].MenuCount > 4)                     //菜单长度大于显示屏最大行数
                   {
-                    ClearScreen;                      //清屏
+                    lcd_clear_ddram();                      //清屏
                     RefreshMenu = 1;
                   }
                 }
                 else if(((UserChoose+1)%4)==0)          //向上翻页
                 {
-                  ClearScreen;
+                  lcd_clear_ddram();
                   RefreshMenu = 1;
                 }
                 break;
@@ -256,7 +258,7 @@ void SetMenu(void)
                   UserChoose = 0;                       //用户选择指向首项
                   if(MenKEY_UPoint[0].MenuCount > 4)
                   {
-                    ClearScreen;
+                    lcd_clear_ddram();
                     RefreshMenu = 1;
                   }
                 }
@@ -271,15 +273,15 @@ void SetMenu(void)
                 {
                   MenKEY_UPoint = MenKEY_UPoint[0].PreviousMenu;
                   UserChoose = user[--i]; //恢复上级菜单用户选择
-                  ClearScreen;
+                  lcd_clear_ddram();
                   RefreshMenu = 1;
                 }
                 break;
 
-        case Enter:                                             //进入下一级菜单或设置
+        case KEY_SET:                                             //进入下一级菜单或设置
                 if(MenKEY_UPoint[UserChoose].Subs != NULL)          //进入对应设置
                 {
-                  ClearScreen;
+                  lcd_clear_ddram();
                   (*MenKEY_UPoint[UserChoose].Subs)();
                 }
                 else if(MenKEY_UPoint[UserChoose].SubMenu != NULL)  //进入下一级菜单
@@ -289,20 +291,21 @@ void SetMenu(void)
                   UserChoose = 0;
                 }
                 RefreshMenu = 1;
-                ClearScreen;
+                lcd_clear_ddram();
                 break;
+        default :break;
       }
 
     DisplayPoint = UserChoose-UserChoose%4;     // 4 指屏幕显示最大行数
     if((UserChoose+USER)%8 == 7)                // 上下翻页时清屏
     {
-      ClearScreen;
+      lcd_clear_ddram();
       RefreshMenu = 1;
     }
-    if(Display.Status.Flag.KeyOut)              //等待按键超时 返回监测界面
+    if(KEY_TIME_OUT)              //等待按键超时 返回监测界面
     {
-      Display.Status.Flag.KeyOut = False;
-      ClearScreen;
+      KEY_TIME_OUT = False;
+      lcd_clear_ddram();
       return;
     }
   }
@@ -313,16 +316,16 @@ void WaitKey(void)
 {
   unsigned int i=0;
 
-  System.Key = Null;
-  while(!System.Key)
+  key_event_handle = Null;
+  while(!key_event_handle)
   {
     SysEventHandlers();         //系统事件处理
     UserEventHandlers();        //任务处理
     delayms(1);
     if(i++ > 20000)
     {
-      Display.Status.Flag.KeyOut = True;
-      System.Key = Null;
+      KEY_TIME_OUT = True;
+      key_event_handle = Null;
       return;
     }
   }
@@ -339,7 +342,7 @@ uint8_t PassWord(void)
   num.min = 0;
   x = SetNum(num,5,32);
 
-  if(Display.Status.Flag.KeyOut)
+  if(KEY_TIME_OUT)
       return 0;
   if(UserPass == x)
     return 2;
@@ -383,7 +386,7 @@ long int SetNum(setnum num,uint8_t H,uint8_t Ver)
 
     WaitKey();//等待按键按下
 
-    switch(System.Key)
+    switch(key_event_handle)
     {
       case KEY_UP:  if('+'==strnum[user])
                   strnum[user] = '-';
@@ -412,16 +415,17 @@ long int SetNum(setnum num,uint8_t H,uint8_t Ver)
                     user--;
                   break;
       case KEY_RETURN:   return num.value;
-      case Enter: num.value = String_TO_SInt32(strnum);
+      case KEY_SET: num.value = String_TO_SInt32(strnum);
                   Draw(H,Ver,16,16,0,Null);
                   if(num.value > num.max)
                     num.value = num.max;
                   else if(num.value < num.min)
                     num.value = num.min;
                   return num.value;
+      default :break;
     }
 
-    if(Display.Status.Flag.KeyOut)    //等待按键超时
+    if(KEY_TIME_OUT)    //等待按键超时
       return num.value;
   }
 }
@@ -452,7 +456,7 @@ uint8_t SetString(setstring s,uint8_t H,uint8_t Ver)
 
     WaitKey();//等待按键按下
 
-    switch(System.Key)
+    switch(key_event_handle)
     {
       case KEY_UP:  Draw(H,Ver,strlenght(s.str[s.user]),16,0,Null);
                 s.user++;
@@ -466,9 +470,9 @@ uint8_t SetString(setstring s,uint8_t H,uint8_t Ver)
                    s.user--;
                  break;
       case KEY_RETURN: return j;
-      case Enter:return s.user;
+      case KEY_SET:return s.user;
     }
-    if(Display.Status.Flag.KeyOut)
+    if(KEY_TIME_OUT)
       return j;
   }
 }
@@ -492,7 +496,7 @@ uint8_t SetYaoSu(uint8_t ys,uint8_t H,uint8_t Ver)
 
     WaitKey();//等待按键按下
 
-    switch(System.Key)
+    switch(key_event_handle)
     {
       case KEY_UP:  Draw(H,Ver,strlenght(YaoSuInfo[ys].NameStr),16,0,Null);
                 ys++;
@@ -506,9 +510,10 @@ uint8_t SetYaoSu(uint8_t ys,uint8_t H,uint8_t Ver)
                    ys--;
                  break;
       case KEY_RETURN: return i;
-      case Enter:return ys;
+      case KEY_SET:return ys;
+      default :break;
     }
-    if(Display.Status.Flag.KeyOut)
+    if(KEY_TIME_OUT)
       return i;
   }
 }
@@ -536,7 +541,7 @@ void SetRTUtype(void)
 
 }
 
-void SetCenteradd(void)
+void SetCKEY_SETadd(void)
 {
   setnum num={rtuParameter.upDataArg.centreStationAddr,0X30,0,""};
   num.max = 255;
@@ -545,7 +550,7 @@ void SetCenteradd(void)
   DisplayString(3,8,"中心站地址",0);
   H_LINE(2,49,12);
   rtuParameter.upDataArg.centreStationAddr = (unsigned char)SetNum(num,6,32);
-  WriteUInt8(rtuParameter.upDataArg.centreStationAddr,EEPROM.CenterAdd);//保存设置值
+  WriteUInt8(rtuParameter.upDataArg.centreStationAddr,EEPROM.CKEY_SETAdd);//保存设置值
 }
 
 void SetST(void)
@@ -572,7 +577,7 @@ void SetST(void)
 
     WaitKey();//等待按键按下
 
-      switch(System.Key)
+      switch(key_event_handle)
       {
         case KEY_UP: if(++strtemp[i]>'9')
                    strtemp[i] = '0';
@@ -588,7 +593,7 @@ void SetST(void)
                    else
                      i--;
                    break;
-        case Enter: RTU.ST[0] = strtemp[0]<<4;
+        case KEY_SET: RTU.ST[0] = strtemp[0]<<4;
                     RTU.ST[0] += strtemp[1]&0X0F;
                     RTU.ST[1] = strtemp[2]<<4;
                     RTU.ST[1] += strtemp[3]&0X0F;
@@ -601,8 +606,9 @@ void SetST(void)
                     Write_NByte(RTU.ST,5,EEPROM.ST);//保存数据
                     return;
          case KEY_RETURN:  return;
+         default :break;
       }
-      if(Display.Status.Flag.KeyOut)
+      if(KEY_TIME_OUT)
         return;
 
   }
@@ -903,15 +909,16 @@ void SetRainClear(void)
       DisplayString(5,30,"是  否",BITB+BITA);
 
     WaitKey();  //等待按键按下
-    switch(System.Key)
+    switch(key_event_handle)
     {
       case KEY_RIGHT:
       case KEY_LEFT: i = i==1?0:1;break;
-      case Enter: if(1==i)
+      case KEY_SET: if(1==i)
                     RainfallClear();
       case KEY_RETURN: return;
+      default :break;
     }
-    if(Display.Status.Flag.KeyOut)
+    if(KEY_TIME_OUT)
       return;
   }
 }
@@ -1190,19 +1197,20 @@ void SetResetFactory(void)
       DisplayString(5,30,"是  否",BITB+BITA);
 
     WaitKey();  //等待按键按下
-    switch(System.Key)
+    switch(key_event_handle)
     {
       case KEY_RIGHT:
       case KEY_LEFT: i = i==1?0:1;break;
-      case Enter: if(1==i)
+      case KEY_SET: if(1==i)
                   {
                     DefaultConfig();
                     RainfallClear();
                     WriteConfig();
                   }
       case KEY_RETURN: return;
+      default :break;
     }
-    if(Display.Status.Flag.KeyOut)
+    if(KEY_TIME_OUT)
       return;
   }
 }
@@ -1221,18 +1229,19 @@ void settimetype(uint8_t type,uint8_t H,uint8_t Ver)
   ReadTime(&System.Time);                       //更新当前时间
   switch(type)  //初始化设置项
   {
-    case year:  max = 99; min = 0; vale = System.Time.Year;
+    case H_YEAR:  max = 99; min = 0; vale = System.Time.H_YEAR;
           break;
-    case month:  max = 12; min = 1; vale = System.Time.Month;
+    case H_MONTH:  max = 12; min = 1; vale = System.Time.H_MONTH;
           break;
-    case day:  max = Timedaymax(System.Time); min = 1;vale = System.Time.Day;
+    case H_DAY:  max = TimeH_DAYmax(System.Time); min = 1;vale = System.Time.H_DAY;
           break;
-    case hour:  max = 23; min = 0; vale = System.Time.Hour;
+    case H_HOUR:  max = 23; min = 0; vale = System.Time.H_HOUR;
           break;
-    case minute:max = 59; min = 0; vale = System.Time.Minute;
+    case H_MINUTE:max = 59; min = 0; vale = System.Time.H_MINUTE;
           break;
-    case second:max = 59; min = 0; vale = System.Time.Second;
+    case H_SECOND:max = 59; min = 0; vale = System.Time.H_SECOND;
           break;
+    default :break;
 
   }
   valetemp = vale;    //待设置的值初始化为当前值
@@ -1257,9 +1266,9 @@ void settimetype(uint8_t type,uint8_t H,uint8_t Ver)
 
     WaitKey();     //等待按键按下
 
-      switch(System.Key)
+      switch(key_event_handle)
       {
-        case Enter:  PCF8563writeData(type,(((valetemp/10)<<4) + (valetemp%10)));   //设置时钟
+        case KEY_SET:  PCF8563writeData(type,(((valetemp/10)<<4) + (valetemp%10)));   //设置时钟
               DisplayNum(H,Ver,valetemp,0X20,Zero,"",0);    //显示设置后的值
               ReadTime(&System.Time);
               return ;
@@ -1298,8 +1307,9 @@ void settimetype(uint8_t type,uint8_t H,uint8_t Ver)
 
         case KEY_RIGHT:  if(++i > 2) i = 1;    //用户选择右移
               break;
+        default :break;
       }
-      if(Display.Status.Flag.KeyOut)       //等待按键超时
+      if(KEY_TIME_OUT)       //等待按键超时
         return;
   }
 }
@@ -1312,12 +1322,12 @@ void SetClock(void)
 
   ReadTime(&System.Time);                       //更新当前时间
 
-  DisplayNum(5,8,System.Time.Year,0X20,Zero,"",0);   //初始化显示待设置的时间
-  DisplayNum(5,24,System.Time.Month,0X20,Zero,"",0);
-  DisplayNum(5,40,System.Time.Day,0X20,Zero,"",0);
-  DisplayNum(13,8,System.Time.Hour,0X20,Zero,"",0);
-  DisplayNum(13,24,System.Time.Minute,0X20,Zero,"",0);
-  DisplayNum(13,40,System.Time.Second,0X20,Zero,"",0);
+  DisplayNum(5,8,System.Time.H_YEAR,0X20,Zero,"",0);   //初始化显示待设置的时间
+  DisplayNum(5,24,System.Time.H_MONTH,0X20,Zero,"",0);
+  DisplayNum(5,40,System.Time.H_DAY,0X20,Zero,"",0);
+  DisplayNum(13,8,System.Time.H_HOUR,0X20,Zero,"",0);
+  DisplayNum(13,24,System.Time.H_MINUTE,0X20,Zero,"",0);
+  DisplayNum(13,40,System.Time.H_SECOND,0X20,Zero,"",0);
 
   while(1)
   {
@@ -1335,9 +1345,9 @@ void SetClock(void)
 
     WaitKey();     //等待按键按下
 
-      switch(System.Key)
+      switch(key_event_handle)
       {         //确认输入 进入具体设置项
-        case Enter: (*TimeSet[UserChoose-1].Subs)(TimeSet[UserChoose-1].type,TimeSet[UserChoose-1].disadd_x,TimeSet[UserChoose-1].disadd_y);
+        case KEY_SET: (*TimeSet[UserChoose-1].Subs)(TimeSet[UserChoose-1].type,TimeSet[UserChoose-1].disadd_x,TimeSet[UserChoose-1].disadd_y);
               break;
         case KEY_RETURN: return;         //退出设置
         case KEY_DOWN:  if(++UserChoose > 6) UserChoose = 1;   break;   //用户选择递增
@@ -1353,10 +1363,11 @@ void SetClock(void)
                  UserChoose +=3;
               }
               break;
+        default :break;
       }
-      if(Display.Status.Flag.KeyOut)  //等待按键超时
+      if(KEY_TIME_OUT)  //等待按键超时
       {
-        ClearScreen;
+        lcd_clear_ddram();
         return;
       }
   }
@@ -1369,10 +1380,10 @@ void SetHeight(void)
   num.max = 50000;
   num.min = 0;
 
-  ClearScreen;
+  lcd_clear_ddram();
   DisplayString(4,8,"安装高度",0);
   H_LINE(2,49,12);
   Height = (unsigned int)SetNum(num,5,32);
   WriteUInt16(Height,EEPROM.AnZhuangGaoDu);//保存设置值
-  ClearScreen;
+  lcd_clear_ddram();
 }
