@@ -359,7 +359,7 @@ void creat_frame_public(uint8_t funCode){
 	add_rtu_addr();
 	add_paswd();
 	add_fun_code(funCode);
-	add_up_down_len_identifier()
+	add_up_down_len_identifier();
 }
 
 static void creat_time_avg_msg(messageInf_t *message){
@@ -424,8 +424,7 @@ static void creat_public_message(messageInf_t *message) {
 	 * 测站地址
 	 */
 	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
-		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],
-				N(2, 0),CDEC_ASCII);
+		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],N(2, 0),CDEC_ASCII);
 	}
 	push_one_byte_to_txBuf(' ');
 
@@ -819,10 +818,8 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		len = creat_extra_mesage(message);
 		clear_tail(len);
 		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
-
 		/*报文启始符*/
 		push_one_byte_to_txBuf(CT_STX);
-
 		/*添加正文*/
 		creat_extra_mesage(message);
 		break;
@@ -838,10 +835,8 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 		len = creat_manMade_message(message);
 		clear_tail(len);
 		push_ascll_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
-
 		/*报文启始符*/
 		push_one_byte_to_txBuf(CT_STX);
-
 		/*添加正文*/
 		creat_manMade_message(message);
 		break;
@@ -852,7 +847,6 @@ void creat_msg(messageInf_t *message, uint8_t funCode) {
 
 	/*报文结束符*/
 	push_one_byte_to_txBuf(CT_ETX);
-
 	/*求校验*/
 	push_ascll_integer_to_txBuf(CRC16(get_addr_txBuf(), getLen_of_txBuf()), N(4, 0),CHEX_ASCII);
 }

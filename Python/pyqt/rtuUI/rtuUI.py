@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'rtuUI.ui'
+#
+# Created by: PyQt5 UI code generator 5.9
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(987, 765)
+        self.tabWidget = QtWidgets.QTabWidget(Form)
+        self.tabWidget.setGeometry(QtCore.QRect(220, 20, 381, 731))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(11)
+        self.tabWidget.setFont(font)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.tabWidget.addTab(self.tab, "")
+        self.tab_3 = QtWidgets.QWidget()
+        self.tab_3.setObjectName("tab_3")
+        self.tabWidget.addTab(self.tab_3, "")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.tableWidget = QtWidgets.QTableWidget(self.tab_2)
+        self.tableWidget.setGeometry(QtCore.QRect(0, 10, 321, 691))
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(1)
+        self.tableWidget.setRowCount(4)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setVerticalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setVerticalHeaderItem(1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setVerticalHeaderItem(2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setVerticalHeaderItem(3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(1, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(2, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(3, 0, item)
+        self.tabWidget.addTab(self.tab_2, "")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(844, 692, 101, 51))
+        self.pushButton.setObjectName("pushButton")
+
+        self.retranslateUi(Form)
+        self.tabWidget.setCurrentIndex(2)
+        self.pushButton.clicked.connect(Form.slot1)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "系统参数"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("Form", "通信设置"))
+        item = self.tableWidget.verticalHeaderItem(0)
+        item.setText(_translate("Form", "中心站地址"))
+        item = self.tableWidget.verticalHeaderItem(1)
+        item.setText(_translate("Form", "测站地址"))
+        item = self.tableWidget.verticalHeaderItem(2)
+        item.setText(_translate("Form", "发报模式"))
+        item = self.tableWidget.verticalHeaderItem(3)
+        item.setText(_translate("Form", "测站类型"))
+        item = self.tableWidget.horizontalHeaderItem(0)
+        item.setText(_translate("Form", "值"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("Form", "1"))
+        item = self.tableWidget.item(1, 0)
+        item.setText(_translate("Form", "2"))
+        item = self.tableWidget.item(2, 0)
+        item.setText(_translate("Form", "2"))
+        item = self.tableWidget.item(3, 0)
+        item.setText(_translate("Form", "2"))
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Form", "发报设置"))
+        self.pushButton.setText(_translate("Form", "PushButton"))
+

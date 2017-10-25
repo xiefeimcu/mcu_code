@@ -56,7 +56,7 @@ void AddDRPZ(unsigned int page,unsigned int bytes)
 }
 
 void UpdateDRPZ(void)
-`{ 
+{ 
   unsigned char i=0;
 
   if(0==DRPZ.sp)
@@ -113,7 +113,7 @@ void ComSendMessage(void)
     Com.TxdCount = 0;                   //发送计数清零
     Com.TiTxdTime = 0;                  //发送超时计时清零
     
-    #if DEBUG>=1
+    #if DEBUG>=1 
     WriteLineStrUART1("发报失败");
     #endif
         
@@ -628,7 +628,7 @@ unsigned int WriteMessageConfig(unsigned char *p,unsigned int  AddNbyte)
   element.value = ReadUInt8(EEPROM.RainFBL); 
   AddNbyte = WriteMessageVariable(p,AddNbyte,&element);
   
-  element.keyword = "26";               //雨量加报时段 TODO XF 和标准不符
+  element.keyword = "26";               //雨量加报时段
   element.DType = 0X20;
   element.value = ReadUInt8(EEPROM.RainJBSD); 
   AddNbyte = WriteMessageVariable(p,AddNbyte,&element);
@@ -651,7 +651,7 @@ unsigned int WriteMessageConfig(unsigned char *p,unsigned int  AddNbyte)
   element.keyword = "30";               //水位加报变率
   element.DType = 0X53;
   element.value = ReadUInt16(EEPROM.WaterChaLiang); 
-  AddNbyte = WriteMessageVariable(p,AddNbyte,&element);
+  AddNbyte = 3(p,AddNbyte,&element);
   
   p[AddNbyte++] = ' ';
   
@@ -787,7 +787,6 @@ void MessageHandlers(unsigned char *p)
     #endif
     return;
   }
-  
   pRM->End = p[pRM->TextLeng+24];
   
   Com.Status.Flag.ComEvent = RESET;   //通信事件复位
@@ -1077,7 +1076,7 @@ unsigned int WriteMessageTextDRPZ(unsigned char *p,unsigned int  AddNbyte)
   }
   
   p[AddNbyte++] = ' '; 
-  p[AddNbyte++] = 'T';                        //观测时间标识符                               
+  p[AddNbyte++] = 'T';                                  //观测时间标识符                               
   p[AddNbyte++] = 'T';    
   p[AddNbyte++] = ' ';  
   p[AddNbyte++] = HEXASCII[a[0] / 10];        //年 十进制转换为ASCⅡ
