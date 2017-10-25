@@ -70,6 +70,8 @@ typedef enum {
 
 void log_err(sys_err_t err_code);
 
+void DEBUG_INF(unsigned char *pdata,unsigned short len);
+
 /* USER CODE END Private defines */
 
 void _Error_Handler(char *, int);

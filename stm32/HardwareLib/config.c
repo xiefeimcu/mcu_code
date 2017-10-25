@@ -74,11 +74,11 @@ void load_config_Default(void){
 	rtuParameter.sysConfig.lcdCloseTime=55;
 	rtuParameter.sysConfig.lcdcloseBkTime=35;
 	rtuParameter.sysConfig.mcuStopTime=60;
-	rtuParameter.upDataArg.RtuStationAddr[0]=1;
-	rtuParameter.upDataArg.RtuStationAddr[1]=1;
-	rtuParameter.upDataArg.RtuStationAddr[2]=1;
-	rtuParameter.upDataArg.RtuStationAddr[3]=1;
-	rtuParameter.upDataArg.RtuStationAddr[4]=1;
+	rtuParameter.upDataArg.RtuStationAddr[0]=0;
+	rtuParameter.upDataArg.RtuStationAddr[1]=12;
+	rtuParameter.upDataArg.RtuStationAddr[2]=34;
+	rtuParameter.upDataArg.RtuStationAddr[3]=12;
+	rtuParameter.upDataArg.RtuStationAddr[4]=34;
 	rtuParameter.upDataArg.centreStationAddr=0x01;
 	rtuParameter.upDataArg.passWord = 1234;
 	rtuParameter.upDataArg.rtuType = RTU_TYPE_SK; //Ë®¿â

@@ -95,10 +95,9 @@ void gui_main_windows(void){
 	lcd_clear_ddram();
 	get_date_into_string(time);
 
-	lcd_show_strings(0,0,time);
-	lcd_show_strings(2,0,(uint8_t *)"  系统正在运行");
-	lcd_show_strings(3,6,(uint8_t *)"设置");
-
+	lcd_show_strings(0,0,time,0);
+	lcd_show_strings(2,0,(uint8_t *)"  系统正在运行",0);
+	lcd_show_strings(3,6,(uint8_t *)"设置",0);
 }
 
 void gui_show_gram(void)   

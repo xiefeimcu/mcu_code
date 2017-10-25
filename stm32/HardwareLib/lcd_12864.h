@@ -42,7 +42,7 @@ void lcd_test_ban_dot(void);
 
 void lcd_clear_ddram(void);
 void lcd_clear_gdram(void);
-void lcd_show_strings(uint8_t  row, uint8_t  col,uint8_t  *s);
+void lcd_show_strings(uint8_t  row, uint8_t  col, uint8_t  *s,uint8_t bk);
 void lcd_show_gbs(uint8_t  row, uint8_t  col, uint8_t  *s);
 void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex);
 void lcd_set_pos(uint8_t  row, uint8_t  col);

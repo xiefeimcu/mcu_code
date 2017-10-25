@@ -207,10 +207,16 @@ void show_string(uint8_t  *s)
     }  
 }  
 
-void lcd_show_strings(uint8_t  row, uint8_t  col, uint8_t  *s)     //col is full char wide 
+void lcd_show_strings(uint8_t  row, uint8_t  col, uint8_t  *s,uint8_t bk)     //col is full char wide
 {  
     uint8_t   i = 0;  
-    lcd_set_pos(row, col);    
+    lcd_set_pos(row, col);
+    send_cmd(0x34);
+    HAL_Delay(50);
+    send_cmd(0x14);
+    HAL_Delay(50);
+    send_cmd(0x30);
+    HAL_Delay(50);
     while(s[i] != '\0')  
     {       
       send_data(s[i++]);        
@@ -298,7 +304,7 @@ void show_num(uint8_t  row, uint8_t  col, uint16_t num,uint8_t  DecOrHex)
     else if(DecOrHex == 16)
 		sprintf(buf,"%X",num);  
 	
-    lcd_show_strings(row,col,(uint8_t  *)(buf));
+    lcd_show_strings(row,col,(uint8_t  *)(buf),0);
 }
 
 void lcd_dis_use_char(uint8_t row, uint8_t col,uint8_t index)
