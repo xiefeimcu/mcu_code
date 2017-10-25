@@ -1,3 +1,5 @@
+
+#ifdef BUID_MENU
 /*
  * menu.c
  *
@@ -1387,3 +1389,5 @@ void SetHeight(void)
   WriteUInt16(Height,EEPROM.AnZhuangGaoDu);//±£¥Ê…Ë÷√÷µ
   lcd_clear_ddram();
 }
+
+#endif

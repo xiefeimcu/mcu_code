@@ -508,7 +508,7 @@ unsigned char AT24C04TEST(unsigned char testadd) {
 
 	if(WriteUInt16(x, testadd)){
 
-		lcd_show_strings(1,0,(uint8_t *)"wrok");
+		//lcd_show_strings(1,0,(uint8_t *)"wrok");
 	}
 
 	y = ReadUInt16(testadd);

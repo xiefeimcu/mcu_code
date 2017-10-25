@@ -236,9 +236,9 @@ void interaction(void const * argument)
 
 	lcd_init();
 	/* Infinite loop */
+	gui_main_windows();
 	for (;;) {
 		portENTER_CRITICAL();
-		gui_main_windows();
 		TOGGLE_LED2();
 		portEXIT_CRITICAL();
 		osDelay(1000);
