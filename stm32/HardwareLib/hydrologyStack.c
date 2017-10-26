@@ -472,27 +472,6 @@ void add_voltage(float voltage){
 	}
 }
 
-<<<<<<< HEAD
-static void get_public_message(messageInf_t *message) {
-	add_serial_num(message->serialNum);
-	add_now_time();
-	add_addr_identifier();
-}
-/*
- * 帧的公共部分
- */
-void creat_frame_public(uint8_t funCode){
-	add_start_code();
-	add_station_addr();
-	add_rtu_addr();
-	add_paswd();
-	add_fun_code(funCode);
-	add_up_down_len_identifier();
-}
-
-static void creat_time_avg_msg(messageInf_t *message){
-
-=======
 void add_time_step_identifier(void){
 	if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_HEX) {
 		push_one_byte_to_txBuf(0x04);
@@ -501,7 +480,6 @@ void add_time_step_identifier(void){
 		push_one_byte_to_txBuf('D');
 		push_one_byte_to_txBuf('R');
 	}
->>>>>>> aed0173251e0f26209e6967f87fa41a5a2d32d20
 }
 
 void add_time_step(void){
@@ -557,17 +535,10 @@ void add_element_data(float data,uint8_t dataType){
 		push_one_byte_to_txBuf((h << 3) | l );
 		push_integer_to_txBuf(data,N((l + h),0),CDEC_ASCII);
 
-<<<<<<< HEAD
-	/*
-	 * 测站地址
-	 */
-	for (i = 0; i < sizeof(rtuParameter.upDataArg.RtuStationAddr); i++) {
-		push_ascll_integer_to_txBuf(rtuParameter.upDataArg.RtuStationAddr[i],N(2, 0),CDEC_ASCII);
-=======
 	} else if (MESSAGE_DATA_FORMAT == MESSAGE_DATA_FORMAT_ASCII) {
 		push_ascll_float_to_txBuf(data,dataType);
 		push_one_byte_to_txBuf(' ');
->>>>>>> aed0173251e0f26209e6967f87fa41a5a2d32d20
+
 	}
 }
 
@@ -865,15 +836,10 @@ void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t
 	case FUN_CODE_JBB:
 		len = creat_extra_mesage(message);
 		clear_tail(len);
-<<<<<<< HEAD
-		push_ascll_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
-		/*报文启始符*/
-		push_one_byte_to_txBuf(CT_STX);
-=======
+
 		push_integer_to_txBuf(len, N(3, 0),CHEX_ASCII);
 		/*报文启始符*/
 		add_control_symbol(CT_STX);
->>>>>>> aed0173251e0f26209e6967f87fa41a5a2d32d20
 		/*添加正文*/
 		creat_extra_mesage(message);
 		break;
@@ -884,15 +850,12 @@ void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t
 	case FUN_CODE_RGZS:
 		len = creat_manMade_message(message);
 		clear_tail(len);
-<<<<<<< HEAD
-		push_ascll_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
-		/*报文启始符*/
-		push_one_byte_to_txBuf(CT_STX);
-=======
+
+
 		push_integer_to_txBuf(len, N(3,0),CDEC_ASCII);
 		/*报文启始符*/
 		add_control_symbol(CT_STX);
->>>>>>> aed0173251e0f26209e6967f87fa41a5a2d32d20
+
 		/*添加正文*/
 		creat_manMade_message(message);
 		break;
@@ -914,9 +877,7 @@ void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t
 	}
 
 	/*报文结束符*/
-<<<<<<< HEAD
-	push_one_byte_to_txBuf(CT_ETX);
-=======
+
 	if(isLastMsg){
 		add_msg_end_identifier(CT_ETX);
 	}
@@ -924,7 +885,6 @@ void creat_msg(messageInf_t *message, uint8_t funCode,uint16_t msgSerial,uint8_t
 		add_msg_end_identifier(CT_ETB);
 	}
 
->>>>>>> aed0173251e0f26209e6967f87fa41a5a2d32d20
 	/*求校验*/
 	add_crc();
 }
