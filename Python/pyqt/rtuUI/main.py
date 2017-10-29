@@ -8,14 +8,15 @@ import time
 from  PyQt5 import QtWidgets,QtGui,QtCore
 from rtuUI import Ui_Form
 import threading
+import urllib.request
 import serial.tools.list_ports
 
 rxBuf = []
-rtu_arg_data = []
-
 
 class myWindow(QtWidgets.QWidget,Ui_Form):
     ser = serial.Serial()
+
+    rtuArg = []
 
     def __init__(self):
         super(myWindow,self).__init__()
@@ -55,7 +56,11 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
         self.ser.bytesize = int(self.comboBox_4.currentText())
         self.ser.stopbits = int(self.comboBox_3.currentText())
         #self.ser.parity = self.comboBox_5.currentText()
-        self.ser.open()
+        try:
+           self.ser.open()
+        except IOError:
+            print("faild")
+            return
 
         if(self.ser.is_open):
             self.label.setText("打开成功")
@@ -67,6 +72,7 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
             return
 
     def close_port(self):
+        print(sys.path)
         if(self.ser.is_open == False):
             return
 
@@ -79,21 +85,47 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
         return num + 1
 
     def get_arg_data(self):
-        idx=0
-        rtu_arg_data.append(idx)
-        idx +=1
+        self.rtuArg.clear()
+        for idx in range(0 ,self.tableWidget_1.rowCount()) :
+            item = QtWidgets.QTableWidgetItem()
+            item = self.tableWidget_1.item(idx, 0)
+            self.rtuArg.append(int(item.text()))
 
-        rtu_arg_data.append(int(self.lineEdit_cenAdd.text()))
-        print(rtu_arg_data)
+        for idx in range(0 ,self.tableWidget_2.rowCount()) :
+            item = QtWidgets.QTableWidgetItem()
+            item = self.tableWidget_2.item(idx, 0)
+            self.rtuArg.append(int(item.text()))
 
+        for idx in range(0 ,self.tableWidget_3.rowCount()) :
+            item = QtWidgets.QTableWidgetItem()
+            item = self.tableWidget_3.item(idx, 0)
+            self.rtuArg.append(int(item.text()))
+
+        # print(self.rtuArg)
 
     def write_rtu(self):
+        idx = 0
         self.get_arg_data()
+
+        for p in self.rtuArg :
+            idx += 1
+            print(idx ,":")
+            print(p)
         return
 
     def read_rtu(self):
         print("read_rtu")
-        return
+        # python3.4 爬虫教程
+        # 一个简单的示例爬虫
+        # 林炳文Evankaka(博客：http://blog.csdn.net/evankaka/)
+
+        source_stram = urllib.request.urlopen("http://www.sina.com.cn/")
+        # save_path="D:\\baiDuYun\\百度云\\Code\\DotNet\\Download\\Python\\testPythonFiles\\instance_snatch_web\\snatch2.txt"
+        save_path = "D:\\snatch2.txt"
+        # save_path 's file unnecessary to be exist
+        f_obj = open(save_path, 'wb')
+        f_obj.write(source_stram.read())
+        print("snatch successfully.")
 
 if __name__ == '__main__':
     '''

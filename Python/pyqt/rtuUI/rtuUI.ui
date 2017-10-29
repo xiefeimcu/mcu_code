@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
+    <width>938</width>
     <height>841</height>
    </rect>
   </property>
@@ -16,13 +16,20 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>56</x>
-     <y>10</y>
-     <width>71</width>
-     <height>213</height>
+     <x>20</x>
+     <y>30</y>
+     <width>601</width>
+     <height>25</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>串口检测</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QComboBox" name="comboBox">
       <item>
@@ -137,15 +144,20 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBox_3">
+     <widget class="QComboBox" name="comboBox_5">
       <item>
        <property name="text">
-        <string>1</string>
+        <string>无</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>0</string>
+        <string>奇</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>偶</string>
        </property>
       </item>
      </widget>
@@ -175,29 +187,17 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBox_5">
+     <widget class="QComboBox" name="comboBox_3">
       <item>
        <property name="text">
-        <string>无</string>
+        <string>1</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>奇</string>
+        <string>0</string>
        </property>
       </item>
-      <item>
-       <property name="text">
-        <string>偶</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>串口检测</string>
-      </property>
      </widget>
     </item>
     <item>
@@ -214,15 +214,28 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+        <family>Candara</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>已关闭</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QTabWidget" name="tabWidget_3">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>0</y>
-     <width>591</width>
-     <height>591</height>
+     <x>640</x>
+     <y>30</y>
+     <width>261</width>
+     <height>791</height>
     </rect>
    </property>
    <property name="font">
@@ -232,19 +245,19 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
      <string>系统参数</string>
     </attribute>
-    <widget class="QTableWidget" name="tableWidget_8">
+    <widget class="QTableWidget" name="tableWidget_1">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>381</width>
-       <height>551</height>
+       <width>261</width>
+       <height>781</height>
       </rect>
      </property>
      <row>
@@ -269,17 +282,17 @@
      </column>
      <item row="0" column="0">
       <property name="text">
-       <string>9600</string>
+       <string>10</string>
       </property>
      </item>
      <item row="1" column="0">
       <property name="text">
-       <string>9600</string>
+       <string>5</string>
       </property>
      </item>
      <item row="2" column="0">
       <property name="text">
-       <string>9600</string>
+       <string>1</string>
       </property>
      </item>
     </widget>
@@ -288,13 +301,13 @@
     <attribute name="title">
      <string>通信设置</string>
     </attribute>
-    <widget class="QTableWidget" name="tableWidget_7">
+    <widget class="QTableWidget" name="tableWidget_2">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>381</width>
-       <height>551</height>
+       <width>251</width>
+       <height>781</height>
       </rect>
      </property>
      <row>
@@ -348,79 +361,69 @@
     <attribute name="title">
      <string>发报设置</string>
     </attribute>
-    <widget class="QComboBox" name="comboBox_RtuType">
+    <widget class="QTableWidget" name="tableWidget_3">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>0</x>
        <y>10</y>
-       <width>81</width>
-       <height>21</height>
+       <width>381</width>
+       <height>771</height>
       </rect>
      </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_cenAdd">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>49</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>12</y>
-       <width>61</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>测站类型</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>61</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>中心站地址</string>
-     </property>
+     <row>
+      <property name="text">
+       <string>中心站地址</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>测站地址</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>测站类型</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>密码</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string>值</string>
+      </property>
+     </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string>01</string>
+      </property>
+     </item>
+     <item row="1" column="0">
+      <property name="text">
+       <string>01010101</string>
+      </property>
+     </item>
+     <item row="2" column="0">
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item row="3" column="0">
+      <property name="text">
+       <string>1234</string>
+      </property>
+     </item>
     </widget>
    </widget>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>20</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>04b_21</family>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
   </widget>
   <widget class="QCheckBox" name="checkBox">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>670</y>
-     <width>101</width>
+     <x>20</x>
+     <y>80</y>
+     <width>91</width>
      <height>16</height>
     </rect>
    </property>
@@ -431,146 +434,29 @@
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>690</y>
-     <width>761</width>
-     <height>131</height>
+     <x>20</x>
+     <y>100</y>
+     <width>601</width>
+     <height>139</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="tableWidget">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>360</y>
-     <width>256</width>
-     <height>192</height>
-    </rect>
-   </property>
-   <row>
-    <property name="text">
-     <string>New Row</string>
-    </property>
-   </row>
-   <row>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </row>
-   <row>
-    <property name="text">
-     <string>3</string>
-    </property>
-   </row>
-   <column>
-    <property name="text">
-     <string>New Column</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>3</string>
-    </property>
-   </column>
-   <item row="0" column="0">
-    <property name="text">
-     <string>a</string>
-    </property>
-   </item>
-   <item row="0" column="1">
-    <property name="text">
-     <string>1</string>
-    </property>
-   </item>
-   <item row="0" column="2">
-    <property name="text">
-     <string>3</string>
-    </property>
-   </item>
-   <item row="1" column="0">
-    <property name="text">
-     <string>2</string>
-    </property>
-   </item>
-   <item row="1" column="1">
-    <property name="text">
-     <string>v</string>
-    </property>
-   </item>
-   <item row="1" column="2">
-    <property name="text">
-     <string>1</string>
-    </property>
-   </item>
-   <item row="2" column="0">
-    <property name="text">
-     <string>1</string>
-    </property>
-   </item>
-   <item row="2" column="1">
-    <property name="text">
-     <string>2</string>
-    </property>
-   </item>
-   <item row="2" column="2">
-    <property name="text">
-     <string>2</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>10</y>
-     <width>61</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Candara</family>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>已关闭</string>
    </property>
   </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>610</y>
-     <width>171</width>
-     <height>41</height>
+     <x>390</x>
+     <y>770</y>
+     <width>248</width>
+     <height>51</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="font">
-       <font>
-        <family>黑体</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>读取参数</string>
-      </property>
-     </widget>
-    </item>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
      <widget class="QPushButton" name="pushButton_5">
       <property name="font">
        <font>
         <family>黑体</family>
-        <pointsize>11</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
@@ -578,18 +464,32 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="font">
+       <font>
+        <family>黑体</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>读取参数</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <zorder>layoutWidget</zorder>
-  <zorder>tabWidget</zorder>
-  <zorder>label</zorder>
-  <zorder>label_2</zorder>
-  <zorder>label</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>tabWidget_3</zorder>
   <zorder>checkBox</zorder>
+  <zorder>textBrowser</zorder>
   <zorder>pushButton_4</zorder>
   <zorder>pushButton_5</zorder>
   <zorder>textBrowser</zorder>
-  <zorder>tableWidget</zorder>
+  <zorder>textBrowser</zorder>
+  <zorder>textBrowser</zorder>
+  <zorder>tabWidget_3</zorder>
  </widget>
  <resources/>
  <connections>
