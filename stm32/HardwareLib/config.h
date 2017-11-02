@@ -60,7 +60,7 @@ typedef struct {
 	uint8_t rainGaugeRatio;//雨量计分辨率
 	uint8_t waterLevelRatio;//水位分辨率
 
-	uint8_t rainFallAppendThreshold;//雨量加报阀值
+	uint8_t rainFallAppendThreshold;//雨量加你报阀值
 	float   waterLevalBaseValue;//水位基值
 	float   waterLevalAmendBaseValue;//水位修正基值
 

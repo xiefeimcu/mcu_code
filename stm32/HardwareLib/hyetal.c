@@ -9,6 +9,9 @@
 
 waterInf_t waterInf;
 
+/*
+ * 每5分钟调用一次
+ * */
 void move_waterInf_timeWindow(waterInf_t *waterInf) {
 	uint16_t i;
 	/*
