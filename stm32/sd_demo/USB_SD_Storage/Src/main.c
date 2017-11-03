@@ -48,18 +48,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_hal.h"
-#include "cmsis_os.h"
-#include "adc.h"
-#include "rtc.h"
+#include "fatfs.h"
 #include "sdio.h"
-#include "spi.h"
-#include "tim.h"
 #include "usart.h"
-#include "usb_device.h"
+#include "usb.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "include.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -71,7 +67,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -79,9 +74,6 @@ void MX_FREERTOS_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void DEBUG_INF(unsigned char *pdata,unsigned short len){
-	HAL_UART_Transmit(&RS2322_UART_HANDLE,pdata,len,3);
-}
 
 /* USER CODE END 0 */
 
@@ -89,8 +81,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t a[10]={'A'};
-	
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -110,44 +101,23 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-    MX_GPIO_Init();
+  MX_GPIO_Init();
+  MX_SDIO_SD_Init();
   MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-
-  MX_USART3_UART_Init();
-    MX_RTC_Init();
-//  MX_TIM1_Init();
-//  MX_ADC1_Init();
-  MX_UART4_Init();
-//  MX_SPI2_Init();
-//  MX_SDIO_SD_Init();
+  MX_USB_PCD_Init();
+  MX_FATFS_Init();
 
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
-  /* Call init function for freertos objects (in freertos.c) */
- // MX_FREERTOS_Init();
-
-  /* Start scheduler */
-//  osKernelStart();
-  
-  /* We should never get here as control is now taken by the scheduler */
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1){
-	  PWR_VCC_ON();
-	  PWR_SVCC_ON();
-	  PWR_NET_ON();
-	  HAL_UART_Transmit(&RS2322_UART_HANDLE,a,5,10);
-	  HAL_Delay(1000);
-
-<<<<<<< HEAD
-=======
+  while (1)
+  {
+  /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
->>>>>>> 2f1a5d8498858fd6e2cdf5e3e0b59cdadaaeb921
 
   }
   /* USER CODE END 3 */
@@ -165,10 +135,9 @@ void SystemClock_Config(void)
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -192,10 +161,7 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_ADC
-                              |RCC_PERIPHCLK_USB;
-  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
   PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -211,36 +177,12 @@ void SystemClock_Config(void)
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
   /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
 /* USER CODE BEGIN 4 */
-void log_err(sys_err_t err_code)
-{
-	
-}
+
 /* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM2 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-/* USER CODE BEGIN Callback 0 */
-
-/* USER CODE END Callback 0 */
-  if (htim->Instance == TIM2) {
-    HAL_IncTick();
-  }
-/* USER CODE BEGIN Callback 1 */
-
-/* USER CODE END Callback 1 */
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -251,11 +193,8 @@ void _Error_Handler(char * file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1) {
-		HAL_Delay(1000);
-		printf("hal lib err in file: %s at line:%d",file,line);
-		TOGGLE_LED1();
-		TOGGLE_LED2();
+  while(1) 
+  {
   }
   /* USER CODE END Error_Handler_Debug */ 
 }

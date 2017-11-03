@@ -14,6 +14,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "config.h"
+#include "hyetal.h"
 
 #endif
 
