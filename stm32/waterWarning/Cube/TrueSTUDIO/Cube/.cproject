@@ -47,7 +47,7 @@
 									<listOptionValue builtIn="false" value="../../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../../../Drivers/CMSIS/Include" />
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Cube/HardwareLib}&quot;" />
-								</option>
+								<listOptionValue builtIn="false" value="../../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc" /><listOptionValue builtIn="false" value="../../../Middlewares/ST/STM32_USB_Device_Library/Class/DFU/Inc" /></option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))" />
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))" />
@@ -170,7 +170,7 @@
 									<listOptionValue builtIn="false" value="../../../Middlewares/Third_Party/FreeRTOS/Source/include" />
 									<listOptionValue builtIn="false" value="../../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS" />
 									<listOptionValue builtIn="false" value="../../../Drivers/CMSIS/Include" />
-								</option>
+								<listOptionValue builtIn="false" value="../../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc" /><listOptionValue builtIn="false" value="../../../Middlewares/ST/STM32_USB_Device_Library/Class/DFU/Inc" /></option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))" />
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))" />

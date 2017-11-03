@@ -87,6 +87,7 @@ void interaction(void const * argument);
 void process_comm(void const * argument);
 void sys_ldle(void const * argument);
 
+extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
@@ -192,6 +193,8 @@ void MX_FREERTOS_Init(void) {
 /* StartDefaultTask function */
 void StartDefaultTask(void const * argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN StartDefaultTask */
 
@@ -212,18 +215,6 @@ void sensor_sample(void const * argument)
 
 	/* Infinite loop */
 	for (;;) {
-		TOGGLE_LED1();
-		TEST_HYK_test_msg(&messageHandle);
-		osDelay(1000);
-	    TEST_HYK_keep_msg(&messageHandle);
-		osDelay(1000);
-		TEST_HYK_timing_msg(&messageHandle);
-		osDelay(1000);
-		TEST_HYK_hour_msg(&messageHandle);
-		osDelay(1000);
-		TEST_HYK_man_msg(&messageHandle);
-		osDelay(1000);
-		TEST_HYK_plus_msg(&messageHandle);
 		osDelay(1000);
 	}
   /* USER CODE END sensor_sample */
@@ -236,12 +227,11 @@ void interaction(void const * argument)
 
 	lcd_init();
 	/* Infinite loop */
-	gui_main_windows();
+	PWR_VCC_ON();
 	for (;;) {
-		portENTER_CRITICAL();
-		TOGGLE_LED2();
-		portEXIT_CRITICAL();
-		osDelay(1000);
+
+		gui_main_windows();
+		osDelay(5000);
 	}
   /* USER CODE END interaction */
 }
@@ -260,6 +250,11 @@ void process_comm(void const * argument)
 //		creat_msg(&messageHandle,FUN_CODE_XSB);
 //		HAL_UART_Transmit(&RS2322_UART_HANDLE,get_addr_txBuf(),getLen_of_txBuf(),10);
 		osDelay(1000);
+		PWR_SVCC_ON();
+		//PWR_NET_ON();
+		osDelay(1000);
+		PWR_SVCC_OFF();
+		PWR_NET_OFF();
 	}
   /* USER CODE END process_comm */
 }

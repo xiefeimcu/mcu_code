@@ -14,6 +14,39 @@
 
 rtuParameter_t rtuParameter;
 
+void control_io(uint8_t idx,uint8_t state){
+	if(idx == 0){
+		if(state){
+			IO0_OUT_HIGH();
+		}else{
+			IO0_OUT_LOW();
+		}
+
+	}
+	else if(idx ==1){
+		if(state){
+			IO1_OUT_HIGH();
+		}else{
+			IO1_OUT_LOW();
+		}
+	}
+	else if (idx == 2){
+		if(state){
+			IO2_OUT_HIGH();
+		}else{
+			IO2_OUT_LOW();
+		}
+	}
+	else if (idx == 3){
+		if(state){
+			IO3_OUT_HIGH();
+		}else{
+			IO3_OUT_LOW();
+		}
+	}
+
+}
+
 uint32_t convert_baudRate(uint8_t idx){
 
 	switch(idx){
