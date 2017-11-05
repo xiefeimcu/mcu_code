@@ -63,17 +63,6 @@ static void MX_RTC_Init(void);
 
 /* USER CODE BEGIN 0 */
 
-void TTU_sleep(){
-	  HAL_NVIC_ClearPendingIRQ(RTC_IRQn);
-		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFE);
-}
-
-
-void TTU_outSleep(){
-			SystemClock_Config();
-	    HAL_NVIC_EnableIRQ(SysTick_IRQn);
-}
-
 void APP_RTC_SetAlarmCounter_IT(uint32_t AlarmCounter){
     RTC_AlarmTypeDef sAlarm;
     uint32_t counter_alarm = 0;
@@ -96,9 +85,19 @@ void APP_RTC_SetAlarmCounter_IT(uint32_t AlarmCounter){
     {
         /* Initialization Error */
         Error_Handler();
-    }
-		
+    }	
 }
+
+void TTU_sleep(){
+		SysTick->CTRL = 0;
+		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFE);
+}
+
+
+void TTU_outSleep(){
+	 HAL_NVIC_EnableIRQ(SysTick_IRQn);
+}
+
 
 /* USER CODE END 0 */
 
@@ -106,8 +105,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
-
+	int i;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -131,9 +129,10 @@ int main(void)
   MX_RTC_Init();
 
   /* USER CODE BEGIN 2 */
+//	HAL_RTCEx_SetSecond_IT(&hrtc);
+	APP_RTC_SetAlarmCounter_IT(5);
+
   /* USER CODE END 2 */
-		//HAL_RTCEx_SetSecond_IT(&hrtc);
-		APP_RTC_SetAlarmCounter_IT(5);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -142,9 +141,13 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-		;
-	//	TTU_sleep();
-
+		HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,GPIO_PIN_RESET);
+		for(i=0;i<3;i++){
+			
+			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
+			HAL_Delay(1000);
+		}
+	  TTU_sleep();
   }
   /* USER CODE END 3 */
 
@@ -161,11 +164,11 @@ void SystemClock_Config(void)
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -189,7 +192,7 @@ void SystemClock_Config(void)
   }
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -294,10 +297,10 @@ static void MX_GPIO_Init(void)
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI3_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
   HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+  //HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 
@@ -316,14 +319,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 }
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
-			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
-	    HAL_GPIO_WritePin(GPIOE,GPIO_PIN_5,GPIO_PIN_SET);
-			
+	//HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);			
 }
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
+	SystemClock_Config();
 	HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_5);
-	APP_RTC_SetAlarmCounter_IT(5);
+	APP_RTC_SetAlarmCounter_IT(10);
+	//HAL_NVIC_EnableIRQ(SysTick_IRQn);
 
 }
 
