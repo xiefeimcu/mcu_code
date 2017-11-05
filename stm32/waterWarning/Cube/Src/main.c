@@ -143,12 +143,6 @@ int main(void)
 	  HAL_UART_Transmit(&RS2322_UART_HANDLE,a,5,10);
 	  HAL_Delay(1000);
 
-<<<<<<< HEAD
-=======
-
-  /* USER CODE BEGIN 3 */
->>>>>>> 2f1a5d8498858fd6e2cdf5e3e0b59cdadaaeb921
-
   }
   /* USER CODE END 3 */
 

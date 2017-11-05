@@ -106,7 +106,7 @@ void load_config_Default(void){
 	rtuParameter.comBaudRate.baudRateRs4852=BAUD_9600;
 	rtuParameter.sysConfig.lcdCloseTime=55;
 	rtuParameter.sysConfig.lcdcloseBkTime=35;
-	rtuParameter.sysConfig.mcuStopTime=60;
+	rtuParameter.sysConfig.mcuStopTime=2;
 	rtuParameter.upDataArg.RtuStationAddr[0]=0;
 	rtuParameter.upDataArg.RtuStationAddr[1]=12;
 	rtuParameter.upDataArg.RtuStationAddr[2]=34;
@@ -116,6 +116,8 @@ void load_config_Default(void){
 	rtuParameter.upDataArg.passWord = 1234;
 	rtuParameter.upDataArg.rtuType = RTU_TYPE_SK; //水库
 	rtuParameter.upDataArg.timeAverageInterval=5; //5分钟
+	rtuParameter.rainGaugeParamater.rainGaugePsc = 1;
+
 
 
 	 /*雨量计分频系数*/
