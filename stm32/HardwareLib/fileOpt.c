@@ -8,7 +8,7 @@
 #include "fileOpt.h"
 #include "config.h"
 
-int8_t write_one_line(char *str,uitn8_t *data ,uint8_t len,uint32_t *Pointer){
+int8_t write_one_line(char *str,uint8_t *data ,uint8_t len,uint32_t *Pointer){
 	FATFS fs;
 	FIL file;
 	FRESULT ret;
@@ -39,11 +39,11 @@ int8_t write_one_line(char *str,uitn8_t *data ,uint8_t len,uint32_t *Pointer){
 }
 
 int8_t write_config_to_sd(){
-	sysConfig_t      *sysConf = &rtuParameter.sysConfig;
-	comBaudRate_t    *comConf = &rtuParameter.comBaudRate;
-	upDataArg_t      *upConf = &rtuParameter.upDataArg;
-
-	write_one_line("背光时间",sysConf->lcdCloseTime,sizeof(sysConf->lcdCloseTime));
+//	sysConfig_t      *sysConf = &rtuParameter.sysConfig;
+//	comBaudRate_t    *comConf = &rtuParameter.comBaudRate;
+//	upDataArg_t      *upConf = &rtuParameter.upDataArg;
+//
+//	write_one_line("背光时间",sysConf->lcdCloseTime,sizeof(sysConf->lcdCloseTime));
 
 }
 

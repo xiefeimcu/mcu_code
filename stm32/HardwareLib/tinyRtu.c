@@ -22,7 +22,7 @@ void TTU_execute_event(){
 		break;
 	case 	TIME_EVENT_MINUTE:
 		break;
-	case TIME_EVENT_MINUTE5:
+	case TIME_EVENT_5MINUTE:
 		move_waterInf_timeWindow(&hwater);
 		break;
 	case TIME_HOUR_HANG:
@@ -30,7 +30,7 @@ void TTU_execute_event(){
 
 	case TIME_DAY_HANG:
 		break;
-	case TIME_HOUR6_HANG:
+	case TIME_6HOUR_HANG:
 		break;
 	}
 	hevent.timeEvent = TIME_EVENT_NULL;
@@ -66,8 +66,6 @@ void TTU_main_loop(){
  * 雨量计的中断
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	UBaseType_t uxSavedInterruptStatus;
-	static  BaseType_t xHigherPriorityTaskWoken;
 
 	portSET_INTERRUPT_MASK_FROM_ISR();
 	if(GPIO_Pin == GPIO_PIN_6){
@@ -86,16 +84,16 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
 	if(timeCount == TIME_COUNT_MINUTE){
 		hevent.timeEvent = TIME_EVENT_MINUTE;
 	}
-	else if(imeCount == TIME_COUNT_5MINUTE){
+	else if(timeCount == TIME_COUNT_5MINUTE){
 		hevent.timeEvent = TIME_EVENT_5MINUTE;
 	}
-	else if (imeCount == TIME_COUNT_HOUR){
+	else if (timeCount == TIME_COUNT_HOUR){
 		hevent.timeEvent = TIME_HOUR_HANG;
 	}
-	else if (imeCount == TIME_COUNT_6HOUR){
+	else if (timeCount == TIME_COUNT_6HOUR){
 		hevent.timeEvent = TIME_6HOUR_HANG;
 	}
-	else if (imeCount == TIME_COUNT_DAY){
+	else if (imtimeCounteCount == TIME_COUNT_DAY){
 		hevent.timeEvent = TIME_DAY_HANG;
 		timeCount =0;
 	}
