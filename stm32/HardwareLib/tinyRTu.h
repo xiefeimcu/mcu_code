@@ -8,7 +8,7 @@
 #ifndef TINYRTU_H_
 #define TINYRTU_H_
 
-#include "include.h"
+#include "stm32f1xx_hal.h"
 
 #define TIME_COUNT_MINUTE  60
 #define TIME_COUNT_5MINUTE 300

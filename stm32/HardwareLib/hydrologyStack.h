@@ -9,7 +9,6 @@
 #define HYDROLOGYSTACK_H_
 
 #include "stm32f1xx_hal.h"
-#include "include.h"
 
 /**************************–≠“È≈‰÷√**************************************/
 #define MAX_ELEMENT_IN_MESSAGE  8

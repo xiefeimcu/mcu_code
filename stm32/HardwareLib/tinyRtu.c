@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * tinyRtu.c
  *
@@ -100,3 +101,5 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
