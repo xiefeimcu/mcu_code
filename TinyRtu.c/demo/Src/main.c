@@ -45,6 +45,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef hrtc;
+/* 很重要 */
+uint8_t isMcuInRun =1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -90,12 +92,16 @@ void APP_RTC_SetAlarmCounter_IT(uint32_t AlarmCounter){
 
 void TTU_sleep(){
 		SysTick->CTRL = 0;
+	  isMcuInRun = 0;
 		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFE);
 }
 
 
 void TTU_outSleep(){
-	 HAL_NVIC_EnableIRQ(SysTick_IRQn);
+	 if(! isMcuInRun){
+		SystemClock_Config();
+		isMcuInRun =1;
+	}
 }
 
 
@@ -142,10 +148,10 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 		HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,GPIO_PIN_RESET);
-		for(i=0;i<3;i++){
+		for(i=0;i<10;i++){
 			
 			HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
-			HAL_Delay(1000);
+			HAL_Delay(100);
 		}
 	  TTU_sleep();
   }
@@ -297,10 +303,10 @@ static void MX_GPIO_Init(void)
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI3_IRQn, 2, 0);
-//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-  //HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 
@@ -309,13 +315,10 @@ static void MX_GPIO_Init(void)
  * 雨量计的中断
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+  TTU_outSleep();
+	HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_5);
 
-	if(GPIO_Pin == GPIO_PIN_4){
-   // HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
-	}
-		if(GPIO_Pin == GPIO_PIN_3){
-		//HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_5);
-	}
+
 }
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
@@ -323,7 +326,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
 }
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
-	SystemClock_Config();
+  TTU_outSleep();
 	HAL_GPIO_TogglePin(GPIOE,GPIO_PIN_5);
 	APP_RTC_SetAlarmCounter_IT(10);
 	//HAL_NVIC_EnableIRQ(SysTick_IRQn);
