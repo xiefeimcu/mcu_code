@@ -43,9 +43,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "tinyRtu.h"
-#include "config.h"
-#include "hyetal.h"
+#include "include.h"
 
 /* USER CODE END Includes */
 
@@ -65,155 +63,6 @@ void SystemClock_Config(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-/*
- * tinyRtu.c
- *
- *  Created on: 2017年11月2日
- *      Author: Administrator
- */
-
-typedef struct{
-	uint32_t rtcSecondConut;
-	uint8_t  mcuSleepTime; //mcu在此时间范围内是休眠而不是stop，单位分钟。
-}sysTickTimer_t;
-
-sysTickTimer_t sysTickTimer;
-
-event_t hevent;
-
-/*雨量数据*/
-waterInf_t hwater;
-
-void TTU_sleep(){
-
-	/*stop 延时未到*/
-	if(sysTickTimer.mcuSleepTime){
-		HAL_PWR_EnterSLEEPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFI);
-	}
-	/*stop 延时已到 进入停机 RTC EXTI 唤醒模式*/
-	else{
-		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON,PWR_STOPENTRY_WFE);
-		/*停机模式需要重新配置时钟*/
-		SystemClock_Config();
-	}
-
-	PWR_VCC_OFF();
-}
-
-void TTU_execute_event(){
-
-	switch(hevent.timeEvent){
-	case TIME_EVENT_NULL:
-		break;
-	case 	TIME_EVENT_MINUTE:
-		if(sysTickTimer.mcuSleepTime ){
-			sysTickTimer.mcuSleepTime--;
-		}
-
-		break;
-	case TIME_EVENT_5MINUTE:
-
-		/*雨量的存储时间为每五分钟统计一组*/
-		calculate_5minute_rainFall(&hwater);
-
-		break;
-	case TIME_HOUR_HANG:
-		break;
-
-	case TIME_DAY_HANG:
-		break;
-	case TIME_6HOUR_HANG:
-		break;
-	}
-	hevent.timeEvent = TIME_EVENT_NULL;
-
-
-
-	switch(hevent.collEvent){
-	case COLL_EVENT_NULL:
-		break;
-	case  COLL_RAINFAIL:
-		break;
-	}
-	hevent.collEvent = COLL_EVENT_NULL;
-
-
-	switch(hevent.commEvent){
-	case COMM_EVENT_NULL:
-		PWR_NET_OFF();
-		break;
-	case COMM_SEND_MSG_HANG:
-		PWR_NET_ON();
-		if(GET_GPRS_STATE() == ONLINE){
-			/*
-			 * 发送报文
-			 * 关闭通信电源
-			 */
-			// send msg TODO
-			hevent.commEvent = COMM_EVENT_NULL;
-			PWR_NET_OFF();
-		}
-		break;
-	}
-}
-
-void TTU_main_loop(){
-	TTU_execute_event();
-	TTU_sleep();
-}
-
-/*
- * 雨量计的中断
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	if(GPIO_Pin == GPIO_PIN_6){
-		trigger_rain_signal(&waterInf);
-		hevent.collEvent = COLL_RAINFAIL;
-	}
-}
-
-void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
-
-}
-
-void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc){
-	 sysTickTimer.rtcSecondConut++;
-
-	if( sysTickTimer.rtcSecondConut == TIME_COUNT_MINUTE){
-		hevent.timeEvent = TIME_EVENT_MINUTE;
-	}
-	else if( sysTickTimer.rtcSecondConut == TIME_COUNT_5MINUTE){
-		hevent.timeEvent = TIME_EVENT_5MINUTE;
-	}
-	else if ( sysTickTimer.rtcSecondConut == TIME_COUNT_HOUR){
-		hevent.timeEvent = TIME_HOUR_HANG;
-	}
-	else if ( sysTickTimer.rtcSecondConut == TIME_COUNT_6HOUR){
-		hevent.timeEvent = TIME_6HOUR_HANG;
-	}
-	else if ( sysTickTimer.rtcSecondConut == TIME_COUNT_DAY){
-		hevent.timeEvent = TIME_DAY_HANG;
-		 sysTickTimer.rtcSecondConut =0;
-	}
-}
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	/*上位机数据*/
-	if(huart->Instance == USART1){
-
-	}
-	/*GPRS 数据*/
-	else if(huart->Instance == USART2){
-
-	}
-}
-
-void  init_tiny_rtu(){
-	  load_config_Default();
-	  sysTickTimer.rtcSecondConut = 0;
-	  sysTickTimer.mcuSleepTime = rtuParameter.sysConfig.mcuStopTime;
-	  HAL_RTCEx_SetSecond_IT(&hrtc);
-}
-
 
 /* USER CODE END 0 */
 
@@ -243,12 +92,14 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
-  MX_USART1_UART_Init();
+  MX_USART3_UART_Init();
   MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
+  MX_UART5_Init();
+  MX_UART4_Init();
 
   /* USER CODE BEGIN 2 */
-  init_tiny_rtu();
-
+  APP_PWR_SetAlarmCounter(5);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -258,7 +109,9 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  TTU_main_loop();
+	  HAL_Delay(1000);
+	  APP_PWR_stopMode();
+
   }
   /* USER CODE END 3 */
 
@@ -290,7 +143,7 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)

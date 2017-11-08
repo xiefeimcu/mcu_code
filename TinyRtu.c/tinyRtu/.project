@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>tinyRtu</name>
-	<comment />
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -15,7 +15,7 @@
 				</dictionary>
 				<dictionary>
 					<key>?name?</key>
-					<value />
+					<value></value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.append_environment</key>
@@ -23,7 +23,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value />
+					<value></value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>
@@ -71,86 +71,25 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
-		
-	<link>
-			<name>Drivers</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link><link>
-			<name>Drivers/CMSIS</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link><link>
-			<name>Application/TrueSTUDIO</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link><link>
-			<name>Application</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_rcc.c</name>
+		<link>
+			<name>Src/ds18b20.c</name>
 			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_gpio.c</name>
+			<locationURI>PARENT-2-PROJECT_LOC/HardwareLib/ds18b20.c</locationURI>
+		</link>
+		<link>
+			<name>myLib/config.c</name>
 			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_tim.c</name>
+			<locationURI>PARENT-2-PROJECT_LOC/HardwareLib/config.c</locationURI>
+		</link>
+		<link>
+			<name>myLib/hydrologyStack.c</name>
 			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_cortex.c</name>
+			<location>F:/xieF/code/mcu_code/HardwareLib/hydrologyStack.c</location>
+		</link>
+		<link>
+			<name>myLib/stmPwr.c</name>
 			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_flash.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_gpio_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_rcc_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_rtc_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rtc_ex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_flash_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_tim_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_dma.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_pwr.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_rtc.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rtc.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c</location>
-		</link><link>
-			<name>Drivers/STM32F1xx_HAL_Driver/stm32f1xx_hal_uart.c</name>
-			<type>1</type>
-			<location>C:/Users/Administrator/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c</location>
-		</link></linkedResources>
+			<location>F:/xieF/code/mcu_code/HardwareLib/stmPwr.c</location>
+		</link>
+	</linkedResources>
 </projectDescription>
