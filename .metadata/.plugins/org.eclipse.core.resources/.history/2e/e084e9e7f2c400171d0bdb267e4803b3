@@ -1,0 +1,15 @@
+/*
+ * stmBsp.c
+ *
+ *  Created on: 2017Äê11ÔÂ9ÈÕ
+ *      Author: Administrator
+ */
+
+
+#include "include.h"
+
+void BSP_setPinDir(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uitn32_t Dir){
+	 GPIO_InitTypeDef GPIO_InitStruct;
+
+	 GPIO_InitStruct.Mode = Dir;
+}

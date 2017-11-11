@@ -2,37 +2,37 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="TIM_delay_us" key="selection"/>
+		<item value="DS18B20_Init" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="delay_us"/>
-			<item value="AT24C04delayus(50);"/>
-			<item value="NOP"/>
+			<item value="DS18B20_Init"/>
+			<item value="DS18B20_Presence"/>
+			<item value="DS18B20_Data_IN"/>
+			<item value="DS18B20_Delay"/>
+			<item value="Ini_18B20"/>
 			<item value="__NOP"/>
-			<item value="AT24C04delayus(25)"/>
-			<item value="SDA_val"/>
-			<item value="SDA_out"/>
-			<item value="SDA_in"/>
+			<item value="PORTIN &amp; B20"/>
+			<item value="PORTIN"/>
 		</list>
 		<list key="replacehistory">
+			<item value="DQ_READ()"/>
+			<item value="DQ_LOW()"/>
+			<item value="DQ_IN()"/>
+			<item value="DQ_HIGH()"/>
+			<item value="DQ_OUT()"/>
 			<item value="TIM_delay_us"/>
 			<item value="AT24C04delayus(25);"/>
 			<item value="AT24C04delayus(50)"/>
-			<item value="SDA_VAL()"/>
-			<item value="SDA_OUT()"/>
-			<item value="SDA_IN()"/>
-			<item value="__NOP()"/>
-			<item value="SDA_L()"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="278" key="DIALOG_WIDTH"/>
 		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
 		<item value="409" key="DIALOG_HEIGHT"/>
-		<item value="829" key="DIALOG_X_ORIGIN"/>
-		<item value="261" key="DIALOG_Y_ORIGIN"/>
+		<item value="824" key="DIALOG_X_ORIGIN"/>
+		<item value="573" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

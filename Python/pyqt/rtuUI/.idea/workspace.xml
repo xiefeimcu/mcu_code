@@ -18,20 +18,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="91" column="36" lean-forward="false" selection-start-line="91" selection-start-column="36" selection-end-line="91" selection-end-column="36" />
-              <folding>
-                <element signature="e#24#34#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="QTableWidget.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4750">
-              <caret line="254" column="31" lean-forward="false" selection-start-line="254" selection-start-column="15" selection-end-line="254" selection-end-column="31" />
+            <state relative-caret-position="1824">
+              <caret line="113" column="14" lean-forward="false" selection-start-line="113" selection-start-column="14" selection-end-line="113" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -40,11 +28,11 @@
       <file leaf-file-name="rtuUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rtuUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1805">
-              <caret line="95" column="8" lean-forward="false" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+            <state relative-caret-position="1938">
+              <caret line="102" column="8" lean-forward="false" selection-start-line="102" selection-start-column="8" selection-end-line="102" selection-end-column="8" />
               <folding>
-                <marker date="1509283015454" expanded="true" signature="286:342" ph="..." />
-                <marker date="1509283015454" expanded="true" signature="15490:15495" ph="..." />
+                <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+                <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
               </folding>
             </state>
           </provider>
@@ -187,7 +175,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1203125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -246,16 +234,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#24#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4750">
-          <caret line="254" column="31" lean-forward="false" selection-start-line="254" selection-start-column="15" selection-end-line="254" selection-end-column="31" />
           <folding />
         </state>
       </provider>
@@ -265,8 +243,8 @@
         <state relative-caret-position="1805">
           <caret line="95" column="8" lean-forward="false" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
           <folding>
-            <marker date="1509283015454" expanded="true" signature="286:342" ph="..." />
-            <marker date="1509283015454" expanded="true" signature="15490:15495" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
           </folding>
         </state>
       </provider>
@@ -275,27 +253,38 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#24#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4826">
-          <caret line="254" column="31" lean-forward="false" selection-start-line="254" selection-start-column="15" selection-end-line="254" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py" />
+    <entry file="file://$PROJECT_DIR$/rtuUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1805">
+          <caret line="95" column="8" lean-forward="false" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+          <folding>
+            <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py" />
     <entry file="file://$PROJECT_DIR$/rtuUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1672">
           <caret line="88" column="8" lean-forward="false" selection-start-line="88" selection-start-column="8" selection-end-line="88" selection-end-column="43" />
           <folding>
-            <marker date="1509283015454" expanded="true" signature="286:342" ph="..." />
-            <marker date="1509283015454" expanded="true" signature="15490:15495" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
           </folding>
         </state>
       </provider>
@@ -304,9 +293,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#24#34#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -315,8 +302,8 @@
         <state relative-caret-position="1729">
           <caret line="91" column="0" lean-forward="true" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
           <folding>
-            <marker date="1509283015454" expanded="true" signature="286:342" ph="..." />
-            <marker date="1509283015454" expanded="true" signature="15490:15495" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
           </folding>
         </state>
       </provider>
@@ -327,32 +314,23 @@
     <entry file="file://D:/Python/Lib/site-packages/PyQt5/__init__.py" />
     <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-643338342/PyQt5/QtWidgets/QAbstractScrollArea.py" />
     <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-643338342/PyQt5/QtWidgets/QAbstractItemView.py" />
-    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4750">
-          <caret line="254" column="31" lean-forward="false" selection-start-line="254" selection-start-column="15" selection-end-line="254" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2017.2/system/python_stubs/-368219041/PyQt5/QtWidgets/QTableWidget.py" />
     <entry file="file://$PROJECT_DIR$/rtuUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1805">
-          <caret line="95" column="8" lean-forward="false" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+        <state relative-caret-position="1938">
+          <caret line="102" column="8" lean-forward="false" selection-start-line="102" selection-start-column="8" selection-end-line="102" selection-end-column="8" />
           <folding>
-            <marker date="1509283015454" expanded="true" signature="286:342" ph="..." />
-            <marker date="1509283015454" expanded="true" signature="15490:15495" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="286:342" ph="..." />
+            <marker date="1509328497567" expanded="true" signature="15490:15495" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="91" column="36" lean-forward="false" selection-start-line="91" selection-start-column="36" selection-end-line="91" selection-end-column="36" />
-          <folding>
-            <element signature="e#24#34#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1824">
+          <caret line="113" column="14" lean-forward="false" selection-start-line="113" selection-start-column="14" selection-end-line="113" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>

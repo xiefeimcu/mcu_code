@@ -22,7 +22,7 @@
 typedef enum{
 	MCU_PWR_STATE_STOP,
 	MCU_PWR_STATE_RUN,
-};
+}mcuState_t;
 
 typedef struct{
 	uint8_t mcuPwrState;

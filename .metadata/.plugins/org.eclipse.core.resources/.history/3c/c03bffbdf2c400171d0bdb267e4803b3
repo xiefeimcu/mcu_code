@@ -1,0 +1,13 @@
+/*
+ * stmBsp.c
+ *
+ *  Created on: 2017Äê11ÔÂ9ÈÕ
+ *      Author: Administrator
+ */
+
+
+#include "include.h"
+
+void BSP_setPinDir(){
+
+}
