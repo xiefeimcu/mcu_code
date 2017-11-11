@@ -11,10 +11,14 @@ import threading
 import urllib.request
 import serial.tools.list_ports
 
-rxBuf = []
+import pyautogui as pag
+
+
 
 class myWindow(QtWidgets.QWidget,Ui_Form):
     ser = serial.Serial()
+    rxBuf = []
+    rxBuf = []
 
     rtuArg = []
 
@@ -35,14 +39,13 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
 
     def read_data(self):
         print("The receive_data threading is start")
-        res_data = ''
         num = 0
 
         while (self.ser.isOpen()):
             size = self.ser.inWaiting()
             if size:
-                res_data = self.ser.read_all()
-                self.textBrowser.append(binascii.b2a_hex(res_data).decode())
+                self.rxBuf= self.ser.read_all()
+                self.textBrowser.append(binascii.b2a_hex( self.rxBuf).decode())
                 self.textBrowser.moveCursor(QtGui.QTextCursor.End)
                 self.ser.flushInput()
 
@@ -101,31 +104,32 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
             item = self.tableWidget_3.item(idx, 0)
             self.rtuArg.append(int(item.text()))
 
-        # print(self.rtuArg)
-
     def write_rtu(self):
-        idx = 0
-        self.get_arg_data()
 
-        for p in self.rtuArg :
-            idx += 1
-            print(idx ,":")
-            print(p)
+        # 判断串口是否打开
+        if(self.ser.is_open == False):
+            self.textBrowser.append('Write Fail Because The Comm Is Not Open !')
+            self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+            return
+
+        # 得到表格内的数据
+        self.get_arg_data()
+        # 将参配置数据通过串口发送给RTU
+        tempList ='bgbg1' + str(self.tableWidget_1.rowCount()) + self.rtuArg[0:self.tableWidget_1.rowCount()] + "eded"
+        self.ser.write(tempList)
+        self.textBrowser.append('Write :' + str(tempList))
+        self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+
+
         return
+
+    def moveTable(self):
+
+        print( pag.position())
 
     def read_rtu(self):
         print("read_rtu")
-        # python3.4 爬虫教程
-        # 一个简单的示例爬虫
-        # 林炳文Evankaka(博客：http://blog.csdn.net/evankaka/)
 
-        source_stram = urllib.request.urlopen("http://www.sina.com.cn/")
-        # save_path="D:\\baiDuYun\\百度云\\Code\\DotNet\\Download\\Python\\testPythonFiles\\instance_snatch_web\\snatch2.txt"
-        save_path = "D:\\snatch2.txt"
-        # save_path 's file unnecessary to be exist
-        f_obj = open(save_path, 'wb')
-        f_obj.write(source_stram.read())
-        print("snatch successfully.")
 
 if __name__ == '__main__':
     '''

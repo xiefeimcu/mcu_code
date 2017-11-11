@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>938</width>
+    <width>1113</width>
     <height>841</height>
    </rect>
   </property>
@@ -245,7 +245,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -416,6 +416,19 @@
       </property>
      </item>
     </widget>
+    <widget class="QScrollBar" name="verticalScrollBar">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>10</y>
+       <width>16</width>
+       <height>751</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QCheckBox" name="checkBox">
@@ -441,7 +454,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -481,13 +494,7 @@
   </widget>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
-  <zorder>tabWidget_3</zorder>
   <zorder>checkBox</zorder>
-  <zorder>textBrowser</zorder>
-  <zorder>pushButton_4</zorder>
-  <zorder>pushButton_5</zorder>
-  <zorder>textBrowser</zorder>
-  <zorder>textBrowser</zorder>
   <zorder>textBrowser</zorder>
   <zorder>tabWidget_3</zorder>
  </widget>
@@ -500,8 +507,8 @@
    <slot>check_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>94</x>
-     <y>149</y>
+     <x>95</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>242</x>
@@ -516,8 +523,8 @@
    <slot>open_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>179</y>
+     <x>480</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>265</x>
@@ -532,8 +539,8 @@
    <slot>close_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>113</x>
-     <y>209</y>
+     <x>561</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>254</x>
@@ -548,8 +555,8 @@
    <slot>write_rtu()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>490</x>
-     <y>630</y>
+     <x>491</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>635</x>
@@ -564,12 +571,28 @@
    <slot>read_rtu()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>425</x>
-     <y>637</y>
+     <x>552</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>448</x>
      <y>670</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalScrollBar</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>Form</receiver>
+   <slot>moveTable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>895</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>969</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -581,5 +604,6 @@
   <slot>write_rtu()</slot>
   <slot>read_rtu()</slot>
   <slot>test()</slot>
+  <slot>moveTable()</slot>
  </slots>
 </ui>
