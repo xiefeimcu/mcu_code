@@ -47,6 +47,7 @@
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
+extern void SystemClock_Config(void);
 
 /* USER CODE END Private defines */
 
