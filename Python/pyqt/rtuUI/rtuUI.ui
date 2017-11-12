@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>867</height>
+    <width>961</width>
+    <height>869</height>
    </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
   </property>
   <property name="windowTitle">
    <string>易周科技 YZ-G300</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -235,7 +241,7 @@
      <x>640</x>
      <y>30</y>
      <width>261</width>
-     <height>791</height>
+     <height>771</height>
     </rect>
    </property>
    <property name="font">
@@ -257,7 +263,7 @@
        <x>0</x>
        <y>0</y>
        <width>261</width>
-       <height>781</height>
+       <height>741</height>
       </rect>
      </property>
      <row>
@@ -420,7 +426,7 @@
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>10</y>
+       <y>0</y>
        <width>16</width>
        <height>751</height>
       </rect>
@@ -450,15 +456,15 @@
      <x>20</x>
      <y>100</y>
      <width>601</width>
-     <height>139</height>
+     <height>341</height>
     </rect>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>770</y>
+     <x>640</x>
+     <y>810</y>
      <width>248</width>
      <height>51</height>
     </rect>
@@ -492,11 +498,64 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>840</y>
+     <width>541</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>N/A</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>470</y>
+     <width>601</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>450</y>
+     <width>54</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>HEX路径</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_6">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>530</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>更新RTU</string>
+   </property>
+  </widget>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>checkBox</zorder>
   <zorder>textBrowser</zorder>
   <zorder>tabWidget_3</zorder>
+  <zorder>label_2</zorder>
+  <zorder>textEdit</zorder>
+  <zorder>label_3</zorder>
+  <zorder>pushButton_6</zorder>
  </widget>
  <resources/>
  <connections>

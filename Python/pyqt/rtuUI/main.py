@@ -88,6 +88,7 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
 
     def get_arg_data(self):
         self.rtuArg.clear()
+
         for idx in range(0 ,self.tableWidget_1.rowCount()) :
             item = QtWidgets.QTableWidgetItem()
             item = self.tableWidget_1.item(idx, 0)
@@ -104,36 +105,44 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
             self.rtuArg.append(int(item.text()))
 
     def write_rtu(self):
-        messag.getSystime(messag)
-        return
-
+        tempList = []
+        self.get_arg_data()
 
         # 判断串口是否打开
         # if(self.ser.is_open == False):
-        #     self.textBrowser.append('Write Fail Because The Comm Is Not Open !')
-        #     self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        #     self.label_2.setText('Write Fail Because The Comm Is Not Open !')
         #     return
 
-        # # 得到表格内的数据
-        # self.get_arg_data()
-        # # 将参配置数据通过串口发送给RTU
-        # tempList ='bgbg1' + str(self.tableWidget_1.rowCount()) + self.rtuArg[0:self.tableWidget_1.rowCount()] + "eded"
-        # # self.ser.write(tempList)
-        # self.textBrowser.append('Write :' + str(tempList))
-        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
-        #
-        # tempList ='bgbg2' + str(self.tableWidget_2.rowCount()) + self.rtuArg[0:self.tableWidget_2.rowCount()] + "eded"
-        # # self.ser.write(tempList)
-        # self.textBrowser.append('Write :' + str(tempList))
-        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
-        #
-        # tempList ='bgbg3' + str(self.tableWidget_3.rowCount()) + self.rtuArg[0:self.tableWidget_3.rowCount()] + "eded"
-        # # self.ser.write(tempList)
-        # self.textBrowser.append('Write :' + str(tempList))
-        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        tempList='BGBG1 '
+        tempList+= str( self.tableWidget_1.rowCount())
+        tempList += str(self.rtuArg[0 : self.tableWidget_1.rowCount()])
+        tempList+= " EDED"
+
+        for idx in range(0,self.tableWidget_1.rowCount()):
+            del self.rtuArg[0]
+        self.label_2.setText(tempList)
+
+
+        tempList='BGBG2 '
+        tempList+= str( self.tableWidget_2.rowCount())
+        tempList += str(self.rtuArg[0 : self.tableWidget_2.rowCount()])
+        tempList += " EDED"
+
+        for idx in range(0,self.tableWidget_2.rowCount()):
+            del self.rtuArg[0]
+        self.label_2.setText(tempList)
+
+        tempList='BGBG3 '
+        tempList+= str( self.tableWidget_3.rowCount())
+        tempList += str(self.rtuArg[0: self.tableWidget_3.rowCount()])
+        tempList += " EDED"
+
+        for idx in range(0,self.tableWidget_1.rowCount()):
+            del self.rtuArg[0]
+
+        self.label_2.setText(tempList)
 
     def moveTable(self):
-
         print(pag.position())
 
     def read_rtu(self):
