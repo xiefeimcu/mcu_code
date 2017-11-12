@@ -39,9 +39,12 @@
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "rtc.h"
+#include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "include.h"
 
 /* USER CODE END Includes */
 
@@ -68,6 +71,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	float i;
+
 
   /* USER CODE END 1 */
 
@@ -90,20 +95,32 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
+  MX_USART3_UART_Init();
+  MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
+  MX_UART5_Init();
+  MX_UART4_Init();
+  MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	APP_PWR_SetAlarmCounter(5);
+	PWR_VCC_ON();
+	HAL_Delay(10);
+	DS18B20_Init();
+
+	while (1) {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
-  }
+		for(i =0; i<1000;i++){
+			BSP_delayUs(1000);
+		}
+		i = DS18B20_GetTemp_SkipRom();
+	}
   /* USER CODE END 3 */
 
 }
@@ -119,10 +136,9 @@ void SystemClock_Config(void)
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -133,7 +149,7 @@ void SystemClock_Config(void)
     */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
@@ -174,10 +190,9 @@ void SystemClock_Config(void)
 void _Error_Handler(char * file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  while(1) 
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	while (1) {
+	}
   /* USER CODE END Error_Handler_Debug */ 
 }
 
@@ -193,8 +208,12 @@ void _Error_Handler(char * file, int line)
 void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	/* User can add his own implementation to report the file name and line number,
+	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	while(1){
+	__NOP();
+	__NOP();
+	}
   /* USER CODE END 6 */
 
 }

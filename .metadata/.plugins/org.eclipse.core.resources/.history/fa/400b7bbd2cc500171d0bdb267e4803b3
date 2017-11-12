@@ -1,0 +1,239 @@
+/*********************************************************
+ *文件名称：ds18B20.c
+ *摘    要：温度传感器DS18B20驱动程序
+ *
+ *当前版本：1.0
+ *作    者：赵阳
+ *开始日期：2012年5月16日
+ *完成日期：2012年5月16日
+ *
+ * 版本1.0：读取温度值，返回ST7920显示的字符格式
+ **********************************************************/
+
+#include "ds18b20.h"
+#include "include.h"
+
+ClassDS18B20 DS18B20 = { 0 };
+
+//int Temperature=0;
+
+/*******************************************
+ 函数名称：Init_18B20
+ 功    能：对DS18B20进行复位操作
+ 参    数：无
+ 返回值  ：初始化状态标志：0--失败，1--成功
+ ********************************************/
+unsigned char Ini_18B20(void) {
+	unsigned char Error;
+
+	DQ_OUT();
+	DQ_HIGH();
+	DQ_LOW();
+	DS18B20delayus(600);
+	DQ_HIGH();
+	DS18B20delayus(80);
+	DQ_IN();
+	__NOP();
+	if (DQ_READ()) {
+		Error = 0;          //初始化失败
+		DQ_OUT();
+	} else {
+		Error = 1;          //初始化成功
+		DQ_OUT();
+		DQ_HIGH();
+	}
+
+	while(!DQ_READ());
+
+	DS18B20delayus(400);
+	return Error;
+}
+/*******************************************
+ 函数名称：Write_18B20
+ 功    能：向DS18B20写入一个字节的数据
+ 参    数：wdata--写入的数据
+ 返回值  ：无
+ ********************************************/
+void Write_18B20(unsigned char wdata) {
+	unsigned char i;
+	for (i = 0; i < 8; i++) {
+		DQ_LOW();
+		DS18B20delayus(6);            //延时6us
+		if (wdata & 0X01)
+			DQ_HIGH();
+		else
+			DQ_LOW();
+		wdata >>= 1;
+		DS18B20delayus(50);           //延时50us
+		DQ_HIGH();
+		DS18B20delayus(10);          //延时10us
+	}
+}
+/*******************************************
+ 函数名称：Read_18B20
+ 功    能：从DS18B20读取一个字节的数据
+ 参    数：无
+ 返回值  ：读出的一个字节数据
+ ********************************************/
+unsigned char Read_18B20(void) {
+	unsigned char i;
+	unsigned char temp = 0;
+
+	for (i = 0; i < 8; i++) {
+		temp >>= 1;
+		DQ_LOW();
+		DS18B20delayus(6);            //延时6us
+		DQ_HIGH();
+		DS18B20delayus(8);            //延时9us
+		DQ_IN();
+		__NOP();
+		if (DQ_READ())
+			temp |= 0x80;
+		DS18B20delayus(45);          //延时45us
+		DQ_OUT();
+		DQ_HIGH();
+		DS18B20delayus(10);           //延时10us
+	}
+	return temp;
+}
+
+/*******************************************
+ 函数名称：Skip
+ 功    能：发送跳过读取产品ID号命令
+ 参    数：无
+ 返回值  ：无
+ ********************************************/
+void Skip(void) {
+	Write_18B20(0xcc);
+}
+/*******************************************
+ 函数名称：Convert
+ 功    能：发送温度转换命令
+ 参    数：无
+ 返回值  ：无
+ ********************************************/
+void Convert(void) {
+	Write_18B20(0x44);
+}
+/*******************************************
+ 函数名称：Read_SP
+ 功    能：发送读ScratchPad命令
+ 参    数：无
+ 返回值  ：无
+ ********************************************/
+void Read_SP(void) {
+	Write_18B20(0xbe);
+}
+/*******************************************
+ 函数名称：ReadTemp
+ 功    能：从DS18B20的ScratchPad读取温度转换结果
+ 参    数：无
+ 返回值  ：读取的温度数值
+ ********************************************/
+unsigned int ReadTemp(void) {
+	unsigned char temp_low;
+	unsigned int temp;
+
+	temp_low = Read_18B20();      //读低位
+	temp = Read_18B20();          //读高位
+	temp = (temp << 8) | temp_low;
+
+	return temp;
+}
+/*******************************************
+ 函数名称：Do1Convert
+ 功    能：控制DS18B20完成一次温度转换
+ 参    数：无
+ 返回值  ：测量的温度数值,初始化失败返回0XFFFF
+ ********************************************/
+unsigned int Do1Convert(void) {
+	unsigned char i;
+	unsigned char timeout = 100;
+
+	do {
+		i = Ini_18B20();
+		timeout--;
+	} while (!i && timeout);
+	if (0 == timeout)            //初始化超时
+		return 0XFFFF;            //返回初始化失败
+	Skip();
+	Convert();
+	for (i = 20; i > 0; i--) {
+		//RESETWDT;                           //复位看门狗
+		DS18B20delayms(50); //WDTCTL=WDT_ARST_1000;//延时800ms以上
+	}
+
+	timeout = 100;
+	do {
+		i = Ini_18B20();
+		timeout--;
+	} while (!i && timeout);
+	if (0 == timeout)
+		return 0XFFFF;
+	Skip();
+	Read_SP();
+	return ReadTemp();
+}
+
+/*******************************************
+ 函数名称：ReadTemp
+ 功    能：读18B20温度
+ 参    数：无
+ 返回值  ：成功返回温度值 数据类型N(4,1)，单位摄氏度 有负数
+ 失败返回-9999
+ ********************************************/
+int Readtemp(unsigned int temper) {
+	unsigned char fuhao = 0;
+
+	long temp = 0;
+
+	if (0XFFFF == temper)                    //初始化失败
+		return -9999;
+
+	if (temper & 0xfC00)                     //温度值正负判断
+			{
+		temper = 65535 - temper;                  //负温度求补码
+		fuhao = 1;
+	}
+
+	temp = temper;
+	temp = (temp * 625) / 1000;                  //精度为1位小数
+
+	if (1 == fuhao)                            //温度小于0℃
+			{
+		temp = 0 - temp;
+	}
+	return temp;
+}
+
+/*启动一次温度测量，返回值 1：启动成功，0：初始化失败*/
+unsigned char StartDS18B20(void) {
+	unsigned char i;
+	unsigned char timeout = 10;
+
+	do {
+		i = Ini_18B20();
+		timeout--;
+	} while (!i && timeout);
+	if (0 == timeout)            //初始化超时
+		return 0;            //返回初始化失败
+	Skip();
+	Convert();
+	return 1;
+}
+
+/*读温度值，初始化失败返回0XFFFF*/
+unsigned int ReadDs18B20temp(void) {
+	unsigned char i;
+	unsigned char timeout = 10;
+
+	do {
+		i = Ini_18B20();
+		timeout--;
+	} while (!i && timeout);
+	if (0 == timeout)
+		return 0XFFFF;
+	Skip();
+	Read_SP();
+	return ReadTemp();
+}

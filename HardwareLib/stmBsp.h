@@ -1,0 +1,13 @@
+/*
+ * stmBsp.h
+ *
+ *  Created on: 2017Äê11ÔÂ9ÈÕ
+ *      Author: Administrator
+ */
+
+#ifndef MYLIB_STMBSP_H_
+#define MYLIB_STMBSP_H_
+
+void BSP_setPinDir(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, uint16_t Dir);
+void BSP_delayUs(uint32_t num);
+#endif /* MYLIB_STMBSP_H_ */

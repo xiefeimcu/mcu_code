@@ -7,13 +7,12 @@ import binascii
 import time
 from  PyQt5 import QtWidgets,QtGui,QtCore
 from rtuUI import Ui_Form
+from  rtuMsg import  messag
 import threading
 import urllib.request
 import serial.tools.list_ports
 
 import pyautogui as pag
-
-
 
 class myWindow(QtWidgets.QWidget,Ui_Form):
     ser = serial.Serial()
@@ -105,27 +104,37 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
             self.rtuArg.append(int(item.text()))
 
     def write_rtu(self):
+        messag.getSystime(messag)
+        return
+
 
         # 判断串口是否打开
-        if(self.ser.is_open == False):
-            self.textBrowser.append('Write Fail Because The Comm Is Not Open !')
-            self.textBrowser.moveCursor(QtGui.QTextCursor.End)
-            return
+        # if(self.ser.is_open == False):
+        #     self.textBrowser.append('Write Fail Because The Comm Is Not Open !')
+        #     self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        #     return
 
-        # 得到表格内的数据
-        self.get_arg_data()
-        # 将参配置数据通过串口发送给RTU
-        tempList ='bgbg1' + str(self.tableWidget_1.rowCount()) + self.rtuArg[0:self.tableWidget_1.rowCount()] + "eded"
-        self.ser.write(tempList)
-        self.textBrowser.append('Write :' + str(tempList))
-        self.textBrowser.moveCursor(QtGui.QTextCursor.End)
-
-
-        return
+        # # 得到表格内的数据
+        # self.get_arg_data()
+        # # 将参配置数据通过串口发送给RTU
+        # tempList ='bgbg1' + str(self.tableWidget_1.rowCount()) + self.rtuArg[0:self.tableWidget_1.rowCount()] + "eded"
+        # # self.ser.write(tempList)
+        # self.textBrowser.append('Write :' + str(tempList))
+        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        #
+        # tempList ='bgbg2' + str(self.tableWidget_2.rowCount()) + self.rtuArg[0:self.tableWidget_2.rowCount()] + "eded"
+        # # self.ser.write(tempList)
+        # self.textBrowser.append('Write :' + str(tempList))
+        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        #
+        # tempList ='bgbg3' + str(self.tableWidget_3.rowCount()) + self.rtuArg[0:self.tableWidget_3.rowCount()] + "eded"
+        # # self.ser.write(tempList)
+        # self.textBrowser.append('Write :' + str(tempList))
+        # self.textBrowser.moveCursor(QtGui.QTextCursor.End)
 
     def moveTable(self):
 
-        print( pag.position())
+        print(pag.position())
 
     def read_rtu(self):
         print("read_rtu")

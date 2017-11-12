@@ -1,260 +1,389 @@
-/*********************************************************
-*文件名称：ds18B20.c
-*摘    要：温度传感器DS18B20驱动程序
-*          
-*当前版本：1.0
-*作    者：赵阳
-*开始日期：2012年5月16日
-*完成日期：2012年5月16日
-*
-* 版本1.0：读取温度值，返回ST7920显示的字符格式
-**********************************************************/
-
-#include "ds18b20.h"
+/**
+  ******************************************************************************
+  * 文件名程: bsp_DS18B20.c
+  * 作    者: 硬石嵌入式开发团队
+  * 版    本: V1.0
+  * 编写日期: 2015-10-04
+  * 功    能: DS18B20温度传感器底层驱动程序
+  ******************************************************************************
+  * 说明：
+  * 本例程配套硬石stm32开发板YS-F1Pro使用。
+  *
+  * 淘宝：
+  * 论坛：http://www.ing10bbs.com
+  * 版权归硬石嵌入式开发团队所有，请勿商用。
+  ******************************************************************************
+  */
+/* 包含头文件 ----------------------------------------------------------------*/
 #include "include.h"
 
 
-ClassDS18B20 DS18B20={0};
+/* 私有类型定义 --------------------------------------------------------------*/
+/* 私有宏定义 ----------------------------------------------------------------*/
+#define Delay_ms(x)   HAL_Delay(x)
+/* 私有变量 ------------------------------------------------------------------*/
+/* 扩展变量 ------------------------------------------------------------------*/
+/* 私有函数原形 --------------------------------------------------------------*/
+static void DS18B20_Mode_IPU(void);
+static void DS18B20_Mode_Out_PP(void);
+static void DS18B20_Rst(void);
+static uint8_t DS18B20_Presence(void);
+static uint8_t DS18B20_ReadBit(void);
+static uint8_t DS18B20_ReadByte(void);
+static void DS18B20_WriteByte(uint8_t dat);
+static void DS18B20_SkipRom(void);
+static void DS18B20_MatchRom(void);
 
-//int Temperature=0;
-
-/*******************************************
-函数名称：Init_18B20
-功    能：对DS18B20进行复位操作
-参    数：无
-返回值  ：初始化状态标志：0--失败，1--成功
-********************************************/
-unsigned char Ini_18B20(void)
+/* 函数体 --------------------------------------------------------------------*/
+/**
+  * 函数功能:
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_Delay(uint16_t time)
 {
-    unsigned char Error;
-   
-    DQOUT;
-    DQ0;
-    DS18B20delayus(500);
-    DQ1;
-    DS18B20delayus(55);
-    DQIN;
-    _NOP();
-    if(PORTIN & B20)      
-    {
-        Error = 0;          //初始化失败
-        DQOUT;
-    }
-    else
-    {
-        Error = 1;          //初始化成功
-        DQOUT;
-        DQ1;
-    }
-    
-    DS18B20delayus(400);
-    return Error;
-}
-/*******************************************
-函数名称：Write_18B20
-功    能：向DS18B20写入一个字节的数据
-参    数：wdata--写入的数据
-返回值  ：无
-********************************************/
-void Write_18B20(unsigned char wdata)
-{
-    unsigned char i;
-    for(i = 0; i < 8;i++)
-    {
-        DQ0;
-         DS18B20delayus(6);            //延时6us
-        if(wdata & 0X01)    DQ1;
-        else                DQ0;
-        wdata >>= 1;
-        DS18B20delayus(50);           //延时50us
-        DQ1;
-        DS18B20delayus(10);          //延时10us
-    }
-}
-/*******************************************
-函数名称：Read_18B20
-功    能：从DS18B20读取一个字节的数据
-参    数：无
-返回值  ：读出的一个字节数据
-********************************************/
-unsigned char Read_18B20(void)
-{
-    unsigned char i;
-    unsigned char temp = 0;
-    
-    for(i = 0;i < 8;i++)
-    {
-        temp >>= 1;
-        DQ0;
-         DS18B20delayus(6);            //延时6us
-        DQ1;
-         DS18B20delayus(8);            //延时9us
-        DQIN;
-        _NOP();
-        if(PORTIN & B20)   temp |= 0x80;
-         DS18B20delayus(45);          //延时45us
-        DQOUT;
-        DQ1;
-         DS18B20delayus(10);           //延时10us
-    }
-    return  temp;
+	BSP_delayUs(time);
 }
 
-/*******************************************
-函数名称：Skip
-功    能：发送跳过读取产品ID号命令
-参    数：无
-返回值  ：无
-********************************************/
-void Skip(void)
+/**
+  * 函数功能: DS18B20 初始化函数
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+uint8_t DS18B20_Init(void)
 {
-    Write_18B20(0xcc);
-}
-/*******************************************
-函数名称：Convert
-功    能：发送温度转换命令
-参    数：无
-返回值  ：无
-********************************************/
-void Convert(void)
-{
-    Write_18B20(0x44);
-}
-/*******************************************
-函数名称：Read_SP
-功    能：发送读ScratchPad命令
-参    数：无
-返回值  ：无
-********************************************/
-void Read_SP(void)
-{
-    Write_18B20(0xbe);
-}
-/*******************************************
-函数名称：ReadTemp
-功    能：从DS18B20的ScratchPad读取温度转换结果
-参    数：无
-返回值  ：读取的温度数值
-********************************************/
-unsigned int ReadTemp(void)
-{
-    unsigned char temp_low;
-    unsigned int  temp;
-    
-    temp_low = Read_18B20();      //读低位
-    temp = Read_18B20();          //读高位
-    temp = (temp<<8) | temp_low;
+  DS18B20_Dout_GPIO_CLK_ENABLE();
 
-    return  temp;
-}
-/*******************************************
-函数名称：Do1Convert
-功    能：控制DS18B20完成一次温度转换
-参    数：无
-返回值  ：测量的温度数值,初始化失败返回0XFFFF
-********************************************/
-unsigned int Do1Convert(void)
-{
-    unsigned char i;  
-    unsigned char timeout=100;
-    
-    do
-    {
-        i = Ini_18B20();
-        timeout--;
-    }
-    while(!i && timeout);
-    if(0 == timeout)            //初始化超时
-      return 0XFFFF;            //返回初始化失败
-    Skip();
-    Convert();
-    for(i = 20;i > 0;i--)  
-    {
-      //RESETWDT;                           //复位看门狗
-      DS18B20delayms(50); //WDTCTL=WDT_ARST_1000;//延时800ms以上      
-    }
-        
-        
-    timeout = 100;
-    do
-    {
-        i = Ini_18B20();
-        timeout--;
-    }
-    while(!i && timeout);
-    if(0 == timeout)
-      return 0XFFFF;
-    Skip();
-    Read_SP();
-    return ReadTemp();
+  DS18B20_Mode_Out_PP();
+
+        DS18B20_Dout_HIGH();
+
+        DS18B20_Rst();
+
+  return DS18B20_Presence ();
 }
 
-/*******************************************
-函数名称：ReadTemp
-功    能：读18B20温度
-参    数：无
-返回值  ：成功返回温度值 数据类型N(4,1)，单位摄氏度 有负数
-          失败返回-9999
-********************************************/
-int Readtemp(unsigned int temper)
-{
-  unsigned char fuhao=0;
 
-  long temp=0;
-    
-  if(0XFFFF==temper)                    //初始化失败
-    return -9999;
-  
-  if(temper & 0xfC00)                     //温度值正负判断    
-  {
-    temper=65535-temper;                  //负温度求补码
-    fuhao = 1;
-  }
-  
-  temp = temper;
-  temp = (temp*625)/1000;                  //精度为1位小数
-  
-  if(1==fuhao)                            //温度小于0℃
-  {
-    temp = 0-temp;
-  }
-  return temp;
+/**
+  * 函数功能: 使DS18B20-DATA引脚变为上拉输入模式
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_Mode_IPU(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* 串口外设功能GPIO配置 */
+  GPIO_InitStruct.Pin   = DS18B20_Dout_PIN;
+  GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull  = GPIO_PULLUP;
+  HAL_GPIO_Init(DS18B20_Dout_PORT, &GPIO_InitStruct);
+
 }
 
-/*启动一次温度测量，返回值 1：启动成功，0：初始化失败*/
-unsigned char StartDS18B20(void)
+/**
+  * 函数功能: 使DS18B20-DATA引脚变为推挽输出模式
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_Mode_Out_PP(void)
 {
-  unsigned char i;  
-  unsigned char timeout=10;
-  
-  do
-  {
-      i = Ini_18B20();
-      timeout--;
-  }
-  while(!i && timeout);
-  if(0 == timeout)            //初始化超时
-    return 0;            //返回初始化失败
-  Skip();
-  Convert();
-  return 1;
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* 串口外设功能GPIO配置 */
+  GPIO_InitStruct.Pin = DS18B20_Dout_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(DS18B20_Dout_PORT, &GPIO_InitStruct);
 }
 
-/*读温度值，初始化失败返回0XFFFF*/
-unsigned int ReadDs18B20temp(void)
+/**
+  * 函数功能: 主机给从机发送复位脉冲
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_Rst(void)
 {
-  unsigned char i;  
-  unsigned char timeout=10;
-  
-  do
-  {
-      i = Ini_18B20();
-      timeout--;
-  }
-  while(!i && timeout);
-  if(0 == timeout)
-    return 0XFFFF;
-  Skip();
-  Read_SP();
-  return ReadTemp();
+        /* 主机设置为推挽输出 */
+        DS18B20_Mode_Out_PP();
+
+        DS18B20_Dout_LOW();
+
+        /* 主机至少产生480us的低电平复位信号 */
+        DS18B20_Delay(750);
+
+        /* 主机在产生复位信号后，需将总线拉高 */
+        DS18B20_Dout_HIGH();
+
+        /*从机接收到主机的复位信号后，会在15~60us后给主机发一个存在脉冲*/
+        DS18B20_Delay(15);
 }
+
+/**
+  * 函数功能: 检测从机给主机返回的存在脉冲
+  * 输入参数: 无
+  * 返 回 值: 0：成功，1：失败
+  * 说    明：无
+  */
+static uint8_t DS18B20_Presence(void)
+{
+        uint8_t pulse_time = 0;
+
+        /* 主机设置为上拉输入 */
+        DS18B20_Mode_IPU();
+
+        /* 等待存在脉冲的到来，存在脉冲为一个60~240us的低电平信号
+         * 如果存在脉冲没有来则做超时处理，从机接收到主机的复位信号后，会在15~60us后给主机发一个存在脉冲
+         */
+        while( DS18B20_Data_IN() && pulse_time<100 )
+        {
+                pulse_time++;
+                DS18B20_Delay(1);
+        }
+        /* 经过100us后，存在脉冲都还没有到来*/
+        if( pulse_time >=100 )
+                return 1;
+        else
+                pulse_time = 0;
+
+        /* 存在脉冲到来，且存在的时间不能超过240us */
+        while( !DS18B20_Data_IN() && pulse_time<240 )
+        {
+                pulse_time++;
+                DS18B20_Delay(10);
+        }
+        if( pulse_time >=24 )
+                return 1;
+        else
+                return 0;
+}
+
+/**
+  * 函数功能: 从DS18B20读取一个bit
+  * 输入参数: 无
+  * 返 回 值: 读取到的数据
+  * 说    明：无
+  */
+static uint8_t DS18B20_ReadBit(void)
+{
+        uint8_t dat;
+
+        /* 读0和读1的时间至少要大于60us */
+        DS18B20_Mode_Out_PP();
+        /* 读时间的起始：必须由主机产生 >1us <15us 的低电平信号 */
+        DS18B20_Dout_LOW();
+        DS18B20_Delay(10);
+
+        /* 设置成输入，释放总线，由外部上拉电阻将总线拉高 */
+        DS18B20_Mode_IPU();
+        //Delay_us(2);
+
+        if( DS18B20_Data_IN() == GPIO_PIN_SET )
+                dat = 1;
+        else
+                dat = 0;
+
+        /* 这个延时参数请参考时序图 */
+        DS18B20_Delay(45);
+
+        return dat;
+}
+
+/**
+  * 函数功能: 从DS18B20读一个字节，低位先行
+  * 输入参数: 无
+  * 返 回 值: 读到的数据
+  * 说    明：无
+  */
+static uint8_t DS18B20_ReadByte(void)
+{
+        uint8_t i, j, dat = 0;
+
+        for(i=0; i<8; i++)
+        {
+                j = DS18B20_ReadBit();
+                dat = (dat) | (j<<i);
+        }
+
+        return dat;
+}
+
+/**
+  * 函数功能: 写一个字节到DS18B20，低位先行
+  * 输入参数: dat：待写入数据
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_WriteByte(uint8_t dat)
+{
+        uint8_t i, testb;
+        DS18B20_Mode_Out_PP();
+
+        for( i=0; i<8; i++ )
+        {
+                testb = dat&0x01;
+                dat = dat>>1;
+                /* 写0和写1的时间至少要大于60us */
+                if (testb)
+                {
+                        DS18B20_Dout_LOW();
+                        /* 1us < 这个延时 < 15us */
+                        DS18B20_Delay(8);
+
+                        DS18B20_Dout_HIGH();
+                        DS18B20_Delay(58);
+                }
+                else
+                {
+                        DS18B20_Dout_LOW();
+                        /* 60us < Tx 0 < 120us */
+                        DS18B20_Delay(70);
+
+                        DS18B20_Dout_HIGH();
+                        /* 1us < Trec(恢复时间) < 无穷大*/
+                        DS18B20_Delay(2);
+                }
+        }
+}
+
+/**
+  * 函数功能: 跳过匹配 DS18B20 ROM
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_SkipRom ( void )
+{
+        DS18B20_Rst();
+        DS18B20_Presence();
+        DS18B20_WriteByte(0XCC);                /* 跳过 ROM */
+}
+
+/**
+  * 函数功能: 执行匹配 DS18B20 ROM
+  * 输入参数: 无
+  * 返 回 值: 无
+  * 说    明：无
+  */
+static void DS18B20_MatchRom ( void )
+{
+        DS18B20_Rst();
+        DS18B20_Presence();
+        DS18B20_WriteByte(0X55);                /* 匹配 ROM */
+}
+
+
+/*
+ * 存储的温度是16 位的带符号扩展的二进制补码形式
+ * 当工作在12位分辨率时，其中5个符号位，7个整数位，4个小数位
+ *
+ *         |---------整数----------|-----小数 分辨率 1/(2^4)=0.0625----|
+ * 低字节  | 2^3 | 2^2 | 2^1 | 2^0 | 2^(-1) | 2^(-2) | 2^(-3) | 2^(-4) |
+ *
+ *
+ *         |-----符号位：0->正  1->负-------|-----------整数-----------|
+ * 高字节  |  s  |  s  |  s  |  s  |    s   |   2^6  |   2^5  |   2^4  |
+ *
+ *
+ * 温度 = 符号位 + 整数 + 小数*0.0625
+ */
+/**
+  * 函数功能: 在跳过匹配 ROM 情况下获取 DS18B20 温度值
+  * 输入参数: 无
+  * 返 回 值: 温度值
+  * 说    明：无
+  */
+float DS18B20_GetTemp_SkipRom ( void )
+{
+        uint8_t tpmsb, tplsb;
+        short s_tem;
+        float f_tem;
+
+
+        DS18B20_SkipRom ();
+        DS18B20_WriteByte(0X44);                                /* 开始转换 */
+
+
+        DS18B20_SkipRom ();
+        DS18B20_WriteByte(0XBE);                                /* 读温度值 */
+
+        tplsb = DS18B20_ReadByte();
+        tpmsb = DS18B20_ReadByte();
+
+
+        s_tem = tpmsb<<8;
+        s_tem = s_tem | tplsb;
+
+        if( s_tem < 0 )                /* 负温度 */
+                f_tem = (~s_tem+1) * 0.0625;
+        else
+                f_tem = s_tem * 0.0625;
+
+        return f_tem;
+}
+
+/**
+  * 函数功能: 在匹配 ROM 情况下获取 DS18B20 温度值
+  * 输入参数: ds18b20_id：用于存放 DS18B20 序列号的数组的首地址
+  * 返 回 值: 无
+  * 说    明：无
+  */
+void DS18B20_ReadId ( uint8_t * ds18b20_id )
+{
+        uint8_t uc;
+
+        DS18B20_WriteByte(0x33);       //读取序列号
+
+        for ( uc = 0; uc < 8; uc ++ )
+          ds18b20_id [ uc ] = DS18B20_ReadByte();
+}
+
+/**
+  * 函数功能: 在匹配 ROM 情况下获取 DS18B20 温度值
+  * 输入参数: ds18b20_id：存放 DS18B20 序列号的数组的首地址
+  * 返 回 值: 温度值
+  * 说    明：无
+  */
+float DS18B20_GetTemp_MatchRom ( uint8_t * ds18b20_id )
+{
+        uint8_t tpmsb, tplsb, i;
+        short s_tem;
+        float f_tem;
+
+
+        DS18B20_MatchRom ();            //匹配ROM
+
+  for(i=0;i<8;i++)
+                DS18B20_WriteByte ( ds18b20_id [ i ] );
+
+        DS18B20_WriteByte(0X44);                                /* 开始转换 */
+
+
+        DS18B20_MatchRom ();            //匹配ROM
+
+        for(i=0;i<8;i++)
+                DS18B20_WriteByte ( ds18b20_id [ i ] );
+
+        DS18B20_WriteByte(0XBE);                                /* 读温度值 */
+
+        tplsb = DS18B20_ReadByte();
+        tpmsb = DS18B20_ReadByte();
+
+
+        s_tem = tpmsb<<8;
+        s_tem = s_tem | tplsb;
+
+        if( s_tem < 0 )                /* 负温度 */
+                f_tem = (~s_tem+1) * 0.0625;
+        else
+                f_tem = s_tem * 0.0625;
+
+        return f_tem;
+}
+
+/******************* (C) COPYRIGHT 2015-2020 硬石嵌入式开发团队 *****END OF FILE****/
