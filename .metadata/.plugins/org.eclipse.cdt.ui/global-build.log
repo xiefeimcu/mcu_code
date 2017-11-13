@@ -1,5 +1,6 @@
-15:27:11 **** Incremental Build of configuration Debug for project tinyRtu ****
+16:23:25 **** Incremental Build of configuration Debug for project tinyRtu ****
 Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m3 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DSTM32F103xE -DUSE_HAL_DRIVER -I../../../Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../../../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../../../Drivers/CMSIS/Include -IF:\xieF\code\mcu_code\HardwareLib -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o myLib\stmPwr.o ..\..\..\..\HardwareLib\stmPwr.c 
 arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m3 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DSTM32F103xE -DUSE_HAL_DRIVER -I../../../Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../../../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../../../Drivers/CMSIS/Include -IF:\xieF\code\mcu_code\HardwareLib -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Application\User\main.o ..\..\..\Src\main.c 
 ..\..\..\Src\main.c:64:14: warning: 't2' defined but not used [-Wunused-variable]
  static float t2 = 0;
@@ -18,4 +19,3 @@ Generate listing file
 Output sent to: tinyRtu.list
 Generate listing file done
 Generate build reports done
-Info: Nothing to build for tinyRtu

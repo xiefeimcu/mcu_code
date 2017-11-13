@@ -7,14 +7,17 @@ import binascii
 import time
 from  PyQt5 import QtWidgets,QtGui,QtCore
 from rtuUI import Ui_Form
+from  rtuMsg import  messag
 import threading
 import urllib.request
 import serial.tools.list_ports
 
-rxBuf = []
+import pyautogui as pag
 
 class myWindow(QtWidgets.QWidget,Ui_Form):
     ser = serial.Serial()
+    rxBuf = []
+    rxBuf = []
 
     rtuArg = []
 
@@ -35,14 +38,13 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
 
     def read_data(self):
         print("The receive_data threading is start")
-        res_data = ''
         num = 0
 
         while (self.ser.isOpen()):
             size = self.ser.inWaiting()
             if size:
-                res_data = self.ser.read_all()
-                self.textBrowser.append(binascii.b2a_hex(res_data).decode())
+                self.rxBuf= self.ser.read_all()
+                self.textBrowser.append(binascii.b2a_hex( self.rxBuf).decode())
                 self.textBrowser.moveCursor(QtGui.QTextCursor.End)
                 self.ser.flushInput()
 
@@ -86,6 +88,7 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
 
     def get_arg_data(self):
         self.rtuArg.clear()
+
         for idx in range(0 ,self.tableWidget_1.rowCount()) :
             item = QtWidgets.QTableWidgetItem()
             item = self.tableWidget_1.item(idx, 0)
@@ -101,31 +104,50 @@ class myWindow(QtWidgets.QWidget,Ui_Form):
             item = self.tableWidget_3.item(idx, 0)
             self.rtuArg.append(int(item.text()))
 
-        # print(self.rtuArg)
-
     def write_rtu(self):
-        idx = 0
+        tempList = []
         self.get_arg_data()
 
-        for p in self.rtuArg :
-            idx += 1
-            print(idx ,":")
-            print(p)
-        return
+        # 判断串口是否打开
+        # if(self.ser.is_open == False):
+        #     self.label_2.setText('Write Fail Because The Comm Is Not Open !')
+        #     return
+
+        tempList='BGBG1 '
+        tempList+= str( self.tableWidget_1.rowCount())
+        tempList += str(self.rtuArg[0 : self.tableWidget_1.rowCount()])
+        tempList+= " EDED"
+
+        for idx in range(0,self.tableWidget_1.rowCount()):
+            del self.rtuArg[0]
+        self.label_2.setText(tempList)
+
+
+        tempList='BGBG2 '
+        tempList+= str( self.tableWidget_2.rowCount())
+        tempList += str(self.rtuArg[0 : self.tableWidget_2.rowCount()])
+        tempList += " EDED"
+
+        for idx in range(0,self.tableWidget_2.rowCount()):
+            del self.rtuArg[0]
+        self.label_2.setText(tempList)
+
+        tempList='BGBG3 '
+        tempList+= str( self.tableWidget_3.rowCount())
+        tempList += str(self.rtuArg[0: self.tableWidget_3.rowCount()])
+        tempList += " EDED"
+
+        for idx in range(0,self.tableWidget_1.rowCount()):
+            del self.rtuArg[0]
+
+        self.label_2.setText(tempList)
+
+    def moveTable(self):
+        print(pag.position())
 
     def read_rtu(self):
         print("read_rtu")
-        # python3.4 爬虫教程
-        # 一个简单的示例爬虫
-        # 林炳文Evankaka(博客：http://blog.csdn.net/evankaka/)
 
-        source_stram = urllib.request.urlopen("http://www.sina.com.cn/")
-        # save_path="D:\\baiDuYun\\百度云\\Code\\DotNet\\Download\\Python\\testPythonFiles\\instance_snatch_web\\snatch2.txt"
-        save_path = "D:\\snatch2.txt"
-        # save_path 's file unnecessary to be exist
-        f_obj = open(save_path, 'wb')
-        f_obj.write(source_stram.read())
-        print("snatch successfully.")
 
 if __name__ == '__main__':
     '''

@@ -1,1 +1,24 @@
-Info: Nothing to build for tinyRtu
+16:23:25 **** Incremental Build of configuration Debug for project tinyRtu ****
+Info: Internal Builder is used for build
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m3 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DSTM32F103xE -DUSE_HAL_DRIVER -I../../../Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../../../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../../../Drivers/CMSIS/Include -IF:\xieF\code\mcu_code\HardwareLib -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o myLib\stmPwr.o ..\..\..\..\HardwareLib\stmPwr.c 
+arm-atollic-eabi-gcc -c -mthumb -mcpu=cortex-m3 -std=gnu11 -D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DSTM32F103xE -DUSE_HAL_DRIVER -I../../../Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc -I../../../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../../../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../../../Drivers/CMSIS/Include -IF:\xieF\code\mcu_code\HardwareLib -Os -ffunction-sections -fdata-sections -g -fstack-usage -Wall -specs=nano.specs -o Application\User\main.o ..\..\..\Src\main.c 
+..\..\..\Src\main.c:64:14: warning: 't2' defined but not used [-Wunused-variable]
+ static float t2 = 0;
+              ^~
+..\..\..\Src\main.c:62:14: warning: 't1' defined but not used [-Wunused-variable]
+ static float t1 = 0;
+              ^~
+arm-atollic-eabi-gcc -o tinyRtu.elf Application\TrueSTUDIO\startup_stm32f103xe.o Application\User\adc.o Application\User\gpio.o Application\User\main.o Application\User\rtc.o Application\User\stm32f1xx_hal_msp.o Application\User\stm32f1xx_it.o Application\User\tim.o Application\User\usart.o Drivers\CMSIS\system_stm32f1xx.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_adc.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_adc_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_cortex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_dma.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_flash.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_flash_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_gpio.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_gpio_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_pwr.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_rcc.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_rcc_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_rtc.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_rtc_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_tim.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_tim_ex.o Drivers\STM32F1xx_HAL_Driver\stm32f1xx_hal_uart.o myLib\Public.o myLib\appAdc.o myLib\ds18b20.o myLib\hydrologyStack.o myLib\hyetal.o myLib\stmBsp.o myLib\stmPwr.o -mthumb -mcpu=cortex-m3 -T../STM32F103VD_FLASH.ld -specs=nosys.specs -static -LF:\xieF\code\mcu_code\HardwareLib -LF:\xieF\code\mcu_code\TinyRtu\TrueSTUDIO\tinyRtu\myLib -Wl,-Map=tinyRtu.map -Wl,--gc-sections -Wl,--defsym=malloc_getpagesize_P=0x80 -Wl,--start-group -lc -lm -Wl,--end-group -specs=nano.specs 
+E:\Atollic\TrueSTUDIO for ARM 8.1.0\ide\jre\bin\java -jar E:\Atollic\TrueSTUDIO for ARM 8.1.0\Tools\arm-atollic-reports.jar sizeinfo list tinyRtu.elf 
+Generate build reports...
+Print size information
+   text	   data	    bss	    dec	    hex	filename
+  16324	     12	   4724	  21060	   5244	tinyRtu.elf
+Print size information done
+Generate listing file
+Output sent to: tinyRtu.list
+Generate listing file done
+Generate build reports done
+
+16:23:26 Build Finished (took 1s.76ms)
+

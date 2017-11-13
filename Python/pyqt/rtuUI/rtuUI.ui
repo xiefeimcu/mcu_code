@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>938</width>
-    <height>841</height>
+    <width>961</width>
+    <height>869</height>
    </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
   </property>
   <property name="windowTitle">
    <string>易周科技 YZ-G300</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -235,7 +241,7 @@
      <x>640</x>
      <y>30</y>
      <width>261</width>
-     <height>791</height>
+     <height>771</height>
     </rect>
    </property>
    <property name="font">
@@ -245,7 +251,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -257,7 +263,7 @@
        <x>0</x>
        <y>0</y>
        <width>261</width>
-       <height>781</height>
+       <height>741</height>
       </rect>
      </property>
      <row>
@@ -416,6 +422,19 @@
       </property>
      </item>
     </widget>
+    <widget class="QScrollBar" name="verticalScrollBar">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>0</y>
+       <width>16</width>
+       <height>751</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QCheckBox" name="checkBox">
@@ -437,15 +456,15 @@
      <x>20</x>
      <y>100</y>
      <width>601</width>
-     <height>139</height>
+     <height>341</height>
     </rect>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>770</y>
+     <x>640</x>
+     <y>810</y>
      <width>248</width>
      <height>51</height>
     </rect>
@@ -479,17 +498,64 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>840</y>
+     <width>541</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>N/A</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>470</y>
+     <width>601</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>450</y>
+     <width>54</width>
+     <height>12</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>HEX路径</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_6">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>530</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>更新RTU</string>
+   </property>
+  </widget>
   <zorder>layoutWidget</zorder>
   <zorder>layoutWidget</zorder>
-  <zorder>tabWidget_3</zorder>
   <zorder>checkBox</zorder>
   <zorder>textBrowser</zorder>
-  <zorder>pushButton_4</zorder>
-  <zorder>pushButton_5</zorder>
-  <zorder>textBrowser</zorder>
-  <zorder>textBrowser</zorder>
-  <zorder>textBrowser</zorder>
   <zorder>tabWidget_3</zorder>
+  <zorder>label_2</zorder>
+  <zorder>textEdit</zorder>
+  <zorder>label_3</zorder>
+  <zorder>pushButton_6</zorder>
  </widget>
  <resources/>
  <connections>
@@ -500,8 +566,8 @@
    <slot>check_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>94</x>
-     <y>149</y>
+     <x>95</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>242</x>
@@ -516,8 +582,8 @@
    <slot>open_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>179</y>
+     <x>480</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>265</x>
@@ -532,8 +598,8 @@
    <slot>close_port()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>113</x>
-     <y>209</y>
+     <x>561</x>
+     <y>53</y>
     </hint>
     <hint type="destinationlabel">
      <x>254</x>
@@ -548,8 +614,8 @@
    <slot>write_rtu()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>490</x>
-     <y>630</y>
+     <x>491</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>635</x>
@@ -564,12 +630,28 @@
    <slot>read_rtu()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>425</x>
-     <y>637</y>
+     <x>552</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>448</x>
      <y>670</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>verticalScrollBar</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>Form</receiver>
+   <slot>moveTable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>895</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>969</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -581,5 +663,6 @@
   <slot>write_rtu()</slot>
   <slot>read_rtu()</slot>
   <slot>test()</slot>
+  <slot>moveTable()</slot>
  </slots>
 </ui>
