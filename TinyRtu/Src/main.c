@@ -59,10 +59,6 @@ waterInf_t waterInf;
 /*系统的所有配置数据*/
 rtuParameter_t rtuParameter;
 
-static	float t1 = 0;
-
-static	float t2 = 0;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
