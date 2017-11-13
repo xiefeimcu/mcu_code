@@ -1,0 +1,28 @@
+/*
+ * appAdc.c
+ *
+ *  Created on: 2017Äê11ÔÂ13ÈÕ
+ *      Author: Administrator
+ */
+
+uint32_t ADC_getOriginalValue(uint8_t channelIdx){
+	uint8_t i;
+
+	for(i=0;i<=channelIdx;i++){
+		HAL_ADC_Start(&hadc1);
+
+		HAL_ADC_PollForConversion(&adc1,20);
+
+		return HAL_ADC_GetValue(&hadc1);
+	}
+}
+
+float APP_ADC_getTemperature(){
+
+
+
+}
+float APP_ADC_getMainBatteryVoltage(){
+
+}
+

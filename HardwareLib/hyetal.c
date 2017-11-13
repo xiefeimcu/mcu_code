@@ -112,3 +112,4 @@ void trigger_rain_signal(waterInf_t *waterInf) {
 	}
 }
 
+

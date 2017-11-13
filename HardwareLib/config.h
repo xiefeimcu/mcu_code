@@ -12,6 +12,11 @@
 #include "hydrologyStack.h"
 #include "math.h"
 
+/*宏配置*/
+
+/* 雨量计引脚*/
+#define RAINFALL_PIN GPIO_PIN_12
+
 
 /*
  * 端口操作

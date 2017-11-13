@@ -23,5 +23,9 @@
 #include "tim.h"
 #include "ds18b20.h"
 #include "main.h"
+#include "adc.h"
+#include "appAdc.h"
+#include "gpio.h"
+#include "hyetal.h"
 
 #endif /* INCLUDE_H_ */

@@ -1,0 +1,20 @@
+/*
+ * appAdc.c
+ *
+ *  Created on: 2017Äê11ÔÂ13ÈÕ
+ *      Author: Administrator
+ */
+
+uitn16_t ADC_getOriginalValue(){
+
+}
+
+float APP_ADC_getTemperature(){
+	HAL_ADC_Start(&hadc1);
+
+
+}
+float APP_ADC_getMainBatteryVoltage(){
+
+}
+

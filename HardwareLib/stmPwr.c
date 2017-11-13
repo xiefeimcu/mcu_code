@@ -53,11 +53,8 @@ void APP_PWR_runMode(){
 		mcuPwrCfg.mcuPwrState = MCU_PWR_STATE_RUN;
 		SystemClock_Config();
 	}
-
 }
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc){
 	APP_PWR_runMode();
 }
-
-

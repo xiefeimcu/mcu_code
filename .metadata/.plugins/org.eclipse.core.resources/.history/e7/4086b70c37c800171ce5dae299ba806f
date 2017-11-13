@@ -1,0 +1,26 @@
+/*
+ * appAdc.c
+ *
+ *  Created on: 2017Äê11ÔÂ13ÈÕ
+ *      Author: Administrator
+ */
+
+uitn16_t ADC_getOriginalValue(uint8_t channelIdx){
+	uint8_t i;
+
+	for(i=0;i<=channelIdx;i++){
+
+	}
+
+
+}
+
+float APP_ADC_getTemperature(){
+
+
+
+}
+float APP_ADC_getMainBatteryVoltage(){
+
+}
+

@@ -1,0 +1,17 @@
+/*
+ * app_Adc.h
+ *
+ *  Created on: 2017Äê11ÔÂ13ÈÕ
+ *      Author: Administrator
+ */
+
+#ifndef MYLIB_APP_ADC_H_
+#define MYLIB_APP_ADC_H_
+
+#include "include.h"
+
+float APP_ADC_getTemperature();
+
+
+
+#endif /* MYLIB_APP_ADC_H_ */

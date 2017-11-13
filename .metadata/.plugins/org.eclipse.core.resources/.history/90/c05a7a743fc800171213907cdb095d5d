@@ -1,0 +1,42 @@
+/*
+ * appAdc.c
+ *
+ *  Created on: 2017年11月13日
+ *      Author: Administrator
+ */
+#include "appAdc.h"
+
+uint32_t ADC_getOriginalValue(uint8_t channelIdx){
+	uint8_t i;
+
+	for(i=0;i<=channelIdx;i++){
+		HAL_ADC_Start(&hadc1);
+
+		HAL_ADC_PollForConversion(&hadc1,20);
+	}
+	return HAL_ADC_GetValue(&hadc1);
+}
+
+float APP_ADC_getTemperature(){
+	float res =0
+	uint32_t adcValue = 0;
+	adcValue = ADC_getOriginalValue(1);
+
+	/*温度转换*/
+	return (adcValue*3300/4096-760)/2.5+25;
+}
+
+#define VBAT_ALLOT_RES_UP   10
+#define VBAT_ALLOT_RES_DOWN 1
+
+float APP_ADC_getMainBatteryVoltage(){
+	uint32_t adcValue = 0;
+	float k_1 =(VBAT_ALLOT_RES_UP + VBAT_ALLOT_RES_DOWN) / VBAT_ALLOT_RES_DOWN ;
+
+	adcValue = ADC_getOriginalValue(0);
+
+	return (((adcValue / 4096) * 2.5) * k_1);
+}
+
+
+

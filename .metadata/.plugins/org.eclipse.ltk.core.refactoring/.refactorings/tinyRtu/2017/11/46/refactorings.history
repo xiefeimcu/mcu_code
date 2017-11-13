@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="将资源“tinyRtu/myLib/app_Adc.h”重命名为“appAdc.h”" description="重命名资源“app_Adc.h”" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="myLib/app_Adc.h" name="appAdc.h" stamp="1510553922361" updateReferences="true"/>
+</session>

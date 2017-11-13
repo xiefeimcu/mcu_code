@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="2" key="org.eclipse.egit.ui.internal.clone.GitSelectWizardPageWizardSel"/>
+	<item value="F:\xieF\code\mcu_code\.git" key="GitSelectRepositoryPage.lastRepository"/>
 	<list key="CommitDialog.authorValues">
 		<item value="xiefeimcu &lt;1120181085@qq.com&gt;"/>
 	</list>
 	<list key="CommitDialog.committerValues">
 		<item value="xiefeimcu &lt;1120181085@qq.com&gt;"/>
 	</list>
+	<section name="GitImportWizard">
+	</section>
 	<section name="org.eclipse.egit.ui.internal.push.PushResultDialog.dialogBounds">
 		<item value="666" key="DIALOG_WIDTH"/>
 		<item value="1|微软雅黑|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|微软雅黑" key="DIALOG_FONT_NAME"/>
