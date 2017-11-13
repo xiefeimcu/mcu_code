@@ -112,6 +112,11 @@
 			<location>E:/A/xf/Code/GitHub/mcu_code/HardwareLib/appAdc.c</location>
 		</link>
 		<link>
+			<name>myLib/config.c</name>
+			<type>1</type>
+			<location>E:/A/xf/Code/GitHub/mcu_code/HardwareLib/config.c</location>
+		</link>
+		<link>
 			<name>myLib/ds18b20.c</name>
 			<type>1</type>
 			<location>E:/A/xf/Code/GitHub/mcu_code/HardwareLib/ds18b20.c</location>

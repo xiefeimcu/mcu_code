@@ -47,6 +47,17 @@
 /* Private define ------------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
+
+#ifdef  USE_DEBUG
+
+   #define DBUG_INF(str,len) assert_failed((uint8_t *)__FILE__, __LINE__))
+
+  void assert_failed(uint8_t* file, uint32_t line);
+#else
+  #define DBUG_INF(str,len) ((void)0U)
+
+#endif /* USE_FULL_ASSERT */
+
 void SystemClock_Config(void);
 
 /* USER CODE END Private defines */
